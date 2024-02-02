@@ -1,0 +1,66 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+.topbar {
+    width: 100%;
+    height: 100px;
+    padding: 30px;
+    background-color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 23px;
+}
+
+.logo > a {
+    color: white;
+}
+
+.topbar-infobox {
+    width: 300px;
+    height: 25px;
+    font-size: 10px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.search-box {
+    width: 180px;
+    height: 100%;
+    background-color: red;
+}
+
+.cart {
+    width: 30px;
+    height: 100%;
+    background-color: orange;
+}
+
+.sign-box {
+    width: 80px;
+    height: 100%;
+    background-color: green;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.signup > a {
+    color: black;
+}
+
+.login > a {
+    color: black;
+}
