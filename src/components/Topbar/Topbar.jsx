@@ -14,7 +14,7 @@ function Topbar() {
             <div className="topbar-navbar">
                 <div className="container">
                     <div className="categorybox">
-                        <Link to="/">Best</Link>
+                        <Link to="/best">Best</Link>
                         <Link to="/">New</Link>
                         <Link to="/">Unisex</Link>
                         <Link to="/">Men</Link>
