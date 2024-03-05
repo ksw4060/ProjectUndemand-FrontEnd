@@ -6,13 +6,13 @@
     text-decoration: none;
 }
 
-body::-webkit-scrollbar {
+/* body::-webkit-scrollbar {
     display: none;
 }
 
 body {
     -ms-overflow-style: none;
-}
+} */
 
 .contents-body {
     width: 100%;

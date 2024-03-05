@@ -14,12 +14,12 @@ function Topbar() {
             <div className="topbar-navbar">
                 <div className="container">
                     <div className="categorybox">
-                        <Link to="/">Best</Link>
-                        <Link to="/">New</Link>
-                        <Link to="/">Unisex</Link>
-                        <Link to="/">Men</Link>
-                        <Link to="/">Women</Link>
-                        <Link to="/">Sale</Link>
+                        <Link to="/best">Best</Link>
+                        <Link to="/new">New</Link>
+                        <Link to="/unisex">Unisex</Link>
+                        <Link to="/men">Men</Link>
+                        <Link to="/women">Women</Link>
+                        <Link to="/sale">Sale</Link>
                     </div>
                     <div className="userbox">
                         <Link to="/signup">회원가입</Link>
