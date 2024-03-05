@@ -5,6 +5,7 @@ import Topbar from "./components/Topbar/Topbar.jsx";
 import { Main } from "./pages/Main/Main.jsx";
 import { Signup } from "./components/Signup.jsx";
 import { Login } from "./components/Login.jsx";
+import { CategoryBest } from "./pages/Category/CategoryBest/CategoryBest.jsx"
 import Footer from "./components/Footer/Footer.jsx"
 import './App.css';
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" element={<Main />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/best" element={<CategoryBest />}></Route>
         </Routes>
       </div>
 
