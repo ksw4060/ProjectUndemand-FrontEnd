@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import TopbarData from './TopbarData';
+import { IoCartOutline } from "react-icons/io5";
 import './Topbar.css';
 
 function Topbar() {
@@ -25,7 +26,7 @@ function Topbar() {
                         <Link to="/signup">회원가입</Link>
                         <Link to="/login" onClick={handleLoginClick}>로그인</Link>
                         <Link to="/">주문조회</Link>
-                        <Link to="/">장바구니</Link>
+                        <Link to="/"><IoCartOutline /></Link>
                     </div>
                 </div>
             </div>
