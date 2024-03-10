@@ -1,10 +1,18 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import TopbarData from './TopbarData';
+import TopbarData from './TopbarData.jsx';
 import './Topbar.css';
 
 function Topbar() {
-    const { isLoggedin, handleLoginClick } = TopbarData();
+    const { 
+        isLoggedin, 
+        handleLoginClick, 
+        hoveredLinkIndex, 
+        categoryLinks, 
+        handleMouseOver, 
+        handleMouseLeave,
+        isVisible,
+    } = TopbarData();
 
     return (
         <div className="topbar">
@@ -12,14 +20,19 @@ function Topbar() {
                 <Link to="/">Project Undemand</Link>
             </div>
             <div className="topbar-navbar">
-                <div className="container">
+                <div className="topbar-navbar-container">
                     <div className="categorybox">
-                        <Link to="/best">Best</Link>
-                        <Link to="/new">New</Link>
-                        <Link to="/unisex">Unisex</Link>
-                        <Link to="/men">Men</Link>
-                        <Link to="/women">Women</Link>
-                        <Link to="/sale">Sale</Link>
+                        {categoryLinks.map((link, index) => (
+                            <Link
+                                key={index}
+                                to={link.to}
+                                onMouseOver={() => handleMouseOver(index)}
+                                onMouseLeave={() => handleMouseLeave()}
+                                className={hoveredLinkIndex === index ? "hovered" : ""}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
                     </div>
                     <div className="userbox">
                         <Link to="/signup">회원가입</Link>
@@ -28,6 +41,20 @@ function Topbar() {
                         <Link to="/">장바구니</Link>
                     </div>
                 </div>
+                {categoryLinks.map((link, index) => (
+                    <div key={index} className={hoveredLinkIndex === index ? 'accordion-menu active' : 'accordion-menu'} onMouseOver={() => handleMouseOver(index)} onMouseLeave={handleMouseLeave}>
+                        <div className="accordion-menu-container">
+                            {isVisible && link.contents.map((content, i) => (
+                                <ul className="options-box" key={i}>
+                                    <li className="option-title">{content.title}</li>
+                                    {content.options.map((option, j) => (
+                                        <li key={j} className="option">{option}</li>
+                                    ))}
+                                </ul>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
