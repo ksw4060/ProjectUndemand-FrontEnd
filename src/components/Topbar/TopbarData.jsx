@@ -82,41 +82,12 @@ function TopbarData() {
         setHoveredLinkIndex(index);
     };
 
-    const handleMouseLeave = () => {
-        setHoveredLinkIndex(null);
-    };
-
-    // useEffect(() => {
-    //     const handleMouseOverWrapper = (index) => {
-    //         return () => handleMouseOver(index);
-    //     };
-
-    //     const handleMouseLeaveWrapper = () => {
-    //         return () => handleMouseLeave();
-    //     };
-
-    //     categoryLinks.forEach((link, index) => {
-    //         const element = document.getElementById(`category-link-${index}`);
-    //         element.addEventListener('mouseover', handleMouseOverWrapper(index));
-    //         element.addEventListener('mouseleave', handleMouseLeaveWrapper());
-    //     });
-
-    //     return () => {
-    //         categoryLinks.forEach((link, index) => {
-    //             const element = document.getElementById(`category-link-${index}`);
-    //             element.removeEventListener('mouseover', handleMouseOverWrapper(index));
-    //             element.removeEventListener('mouseleave', handleMouseLeaveWrapper());
-    //         });
-    //     };
-    // }, [categoryLinks]);
-
     return {
         isLoggedIn,
         handleLoginClick,
         hoveredLinkIndex,
         categoryLinks,
         handleMouseOver,
-        handleMouseLeave,
         isMenuVisible,
         setIsMenuVisible
     };

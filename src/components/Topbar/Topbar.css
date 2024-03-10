@@ -7,7 +7,6 @@
 }
 
 .topbar {
-    position: relative;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
@@ -66,21 +65,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 2px 0px;
 }
 
 .categorybox>a {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 60px;
+    height: 45px;
     color: black;
     font-size: 20px;
     text-align: center;
-    padding: 0px 15px;
+    padding: 10px 15px;
 }
 
 .hovered {
-    border-bottom: 1px solid black;
+    border-bottom: 2px solid black;
 }
 
 .userbox {
@@ -102,11 +101,12 @@
 .accordion-menu {
     position: absolute;
     top: 100%;
-    width: 102%;
+    left: 0;
+    width: 100vw;
     height: 0px;
     background-color: white;
-    justify-content: center;
     display: flex;
+    justify-content: center;
     align-items: flex-start;
     overflow: hidden;
     transition: height 0.3s linear;
@@ -119,10 +119,10 @@
 }
 
 .accordion-menu-container {
-    width: 1470px;
-    margin-top: 15px;
+    width: 100vw;
+    margin-top: 30px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: flex-start;
 }
 
@@ -131,8 +131,7 @@
     flex-flow: column;
     justify-content: space-between;
     align-items: center;
-    margin-right: 100px;
-    width: 120px;
+    width: 180px;
 }
 
 .option-title {

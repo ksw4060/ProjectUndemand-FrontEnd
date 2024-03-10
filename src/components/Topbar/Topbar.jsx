@@ -9,8 +9,7 @@ function Topbar() {
         handleLoginClick, 
         hoveredLinkIndex, 
         categoryLinks, 
-        handleMouseOver, 
-        handleMouseLeave,
+        handleMouseOver,
         isMenuVisible,
         setIsMenuVisible
     } = TopbarData();
@@ -22,24 +21,35 @@ function Topbar() {
             </div>
             <div className="topbar-navbar">
                 <div className="topbar-navbar-container">
-                    <div className="categorybox">
+                    <div 
+                        className="categorybox"                                 
+                        onMouseOver={() => setIsMenuVisible(true)}
+                        onMouseLeave={() => setIsMenuVisible(false)}
+                    >
                         {categoryLinks.map((link, index) => (
                             <Link
                                 key={index}
                                 to={link.to}
-                                onMouseOver={() => {
-                                    handleMouseOver(index);
-                                    setIsMenuVisible(true);
-                                }}
-                                onMouseLeave={() => {
-                                    handleMouseLeave();
-                                    setIsMenuVisible(false);
-                                }}
+                                onMouseOver={() => handleMouseOver(index)}
                                 className={hoveredLinkIndex === index ? "hovered" : ""}
                             >
                                 {link.label}
                             </Link>
                         ))}
+                        <div className={`accordion-menu ${isMenuVisible && 'active'}`}>
+                            {(hoveredLinkIndex !== null) && 
+                                <div className='accordion-menu-container'>
+                                    {categoryLinks[hoveredLinkIndex].contents.map((content, i) => (
+                                        <ul className="options-box" key={i}>
+                                            <li className="option-title">{content.title}</li>
+                                            {content.options.map((option, j) => (
+                                                <li key={j} className="option">{option}</li>
+                                            ))}
+                                        </ul>
+                                    ))}
+                                </div>
+                            }
+                        </div>
                     </div>
                     <div className="userbox">
                         <Link to="/signup">회원가입</Link>
@@ -47,18 +57,6 @@ function Topbar() {
                         <Link to="/">주문조회</Link>
                         <Link to="/">장바구니</Link>
                     </div>
-                </div>
-                <div className={`accordion-menu ${isMenuVisible && 'active'}`}>
-                    {(hoveredLinkIndex  !== null) && <div className='accordion-menu-container'>
-                        {categoryLinks[hoveredLinkIndex].contents.map((content, i) => 
-                            (<ul className="options-box" key={i}>
-                                <li className="option-title">{content.title}</li>
-                                {content.options.map((option, j) => (
-                                    <li key={j} className="option">{option}</li>
-                                ))}
-                            </ul>)
-                        )}
-                    </div>}
                 </div>
             </div>
         </div>
