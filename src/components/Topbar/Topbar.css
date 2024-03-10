@@ -155,22 +155,3 @@
     font-size: 14px;
     font-weight: bold;
 }
-
-.test {
-    position: absolute;
-    top: 100%;
-    width: 102%;
-    height: 0px;
-    background-color: white;
-    justify-content: center;
-    display: flex;
-    align-items: flex-start;
-    overflow: hidden;
-    transition: height 0.3s linear;
-    z-index: 100;
-}
-
-.test.active {
-    height: 360px;
-    transition: height 0.3s linear;
-}

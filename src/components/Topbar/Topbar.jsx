@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from "react-router-dom";
 import TopbarData from './TopbarData.jsx';
 import './Topbar.css';
-import { hover } from '@testing-library/user-event/dist/hover.js';
 
 function Topbar() {
     const { 
@@ -12,7 +11,6 @@ function Topbar() {
         categoryLinks, 
         handleMouseOver, 
         handleMouseLeave,
-        // isVisible,
         isMenuVisible,
         setIsMenuVisible
     } = TopbarData();
@@ -50,36 +48,18 @@ function Topbar() {
                         <Link to="/">장바구니</Link>
                     </div>
                 </div>
-                <div className={`test ${isMenuVisible && 'active'}`}>
+                <div className={`accordion-menu ${isMenuVisible && 'active'}`}>
                     {(hoveredLinkIndex  !== null) && <div className='accordion-menu-container'>
                         {categoryLinks[hoveredLinkIndex].contents.map((content, i) => 
-                            {   
-                                return (
-                                    <ul className="options-box" key={i}>
-                                        <li className="option-title">{content.title}</li>
-                                        {content.options.map((option, j) => (
-                                            <li key={j} className="option">{option}</li>
-                                        ))}
-                                    </ul>
-                                )
-                            }
+                            (<ul className="options-box" key={i}>
+                                <li className="option-title">{content.title}</li>
+                                {content.options.map((option, j) => (
+                                    <li key={j} className="option">{option}</li>
+                                ))}
+                            </ul>)
                         )}
                     </div>}
                 </div>
-                {/* {categoryLinks.map((link, index) => (
-                    <div key={index} className={hoveredLinkIndex === index ? 'accordion-menu active' : 'accordion-menu'} onMouseOver={() => handleMouseOver(index)} onMouseLeave={handleMouseLeave}>
-                        <div className="accordion-menu-container">
-                            {isVisible && link.contents.map((content, i) => (
-                                <ul className="options-box" key={i}>
-                                    <li className="option-title">{content.title}</li>
-                                    {content.options.map((option, j) => (
-                                        <li key={j} className="option">{option}</li>
-                                    ))}
-                                </ul>
-                            ))}
-                        </div>
-                    </div>
-                ))} */}
             </div>
         </div>
     );

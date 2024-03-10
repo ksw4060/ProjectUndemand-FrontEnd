@@ -3,7 +3,6 @@ import { useState } from 'react';
 function TopbarData() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
-    // const [isVisible, setIsVisible] = useState(false);
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const categoryLinks = [
         { 
@@ -118,7 +117,6 @@ function TopbarData() {
         categoryLinks,
         handleMouseOver,
         handleMouseLeave,
-        // isVisible,
         isMenuVisible,
         setIsMenuVisible
     };
