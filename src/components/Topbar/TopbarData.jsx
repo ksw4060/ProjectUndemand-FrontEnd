@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function TopbarData() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
-    const [isVisible, setIsVisible] = useState(false);
+    // const [isVisible, setIsVisible] = useState(false);
+    const [isMenuVisible, setIsMenuVisible] = useState(false);
     const categoryLinks = [
         { 
             to: "/best", 
@@ -86,14 +87,6 @@ function TopbarData() {
         setHoveredLinkIndex(null);
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(true);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [hoveredLinkIndex]);
-
     // useEffect(() => {
     //     const handleMouseOverWrapper = (index) => {
     //         return () => handleMouseOver(index);
@@ -125,7 +118,9 @@ function TopbarData() {
         categoryLinks,
         handleMouseOver,
         handleMouseLeave,
-        isVisible,
+        // isVisible,
+        isMenuVisible,
+        setIsMenuVisible
     };
 }
 
