@@ -82,12 +82,17 @@ function TopbarData() {
         setHoveredLinkIndex(index);
     };
 
+    const handleMouseLeave = () => {
+        setHoveredLinkIndex(null);
+    };
+
     return {
         isLoggedIn,
         handleLoginClick,
         hoveredLinkIndex,
         categoryLinks,
         handleMouseOver,
+        handleMouseLeave,
         isMenuVisible,
         setIsMenuVisible
     };

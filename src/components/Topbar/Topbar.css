@@ -65,17 +65,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 0px;
 }
 
-.categorybox>a {
+.categorybox>li {
     display: flex;
-    justify-content: center;
-    height: 45px;
+    height: 85%;
+}
+
+.categorybox>li>a {
     color: black;
     font-size: 20px;
-    text-align: center;
-    padding: 10px 15px;
+    font-weight: bold;
+    padding: 13px 15px;
 }
 
 .hovered {
@@ -83,19 +84,17 @@
 }
 
 .userbox {
-    width: 25%;
+    width: 11%;
     height: 60px;
-    font-size: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    text-align: center;
 }
 
-.userbox>a {
+.userbox>li>a {
     color: black;
-    font-size: 14px;
-    padding: 0px 15px;
+    font-size: 17px;
+    padding: 10px 15px;
 }
 
 .accordion-menu {
@@ -109,13 +108,13 @@
     justify-content: center;
     align-items: flex-start;
     overflow: hidden;
-    transition: height 0.3s linear;
+    transition: height 0.3s ease;
     z-index: 100;
 }
 
 .accordion-menu.active {
-    height: 360px;
-    transition: height 0.3s linear;
+    height: 390px;
+    transition: height 0.3s ease;
 }
 
 .accordion-menu-container {
@@ -135,7 +134,7 @@
 }
 
 .option-title {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: bold;
     margin-bottom: 7px;
 }
@@ -145,12 +144,11 @@
 }
 
 .option {
-    font-size: 14px;
+    font-size: 17px;
     margin-top: 13px;
 }
 
 .option:hover {
     cursor: pointer;
-    font-size: 14px;
     font-weight: bold;
 }

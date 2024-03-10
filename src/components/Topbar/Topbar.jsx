@@ -10,6 +10,7 @@ function Topbar() {
         hoveredLinkIndex, 
         categoryLinks, 
         handleMouseOver,
+        handleMouseLeave,
         isMenuVisible,
         setIsMenuVisible
     } = TopbarData();
@@ -21,42 +22,45 @@ function Topbar() {
             </div>
             <div className="topbar-navbar">
                 <div className="topbar-navbar-container">
-                    <div 
+                    <ul 
                         className="categorybox"                                 
-                        onMouseOver={() => setIsMenuVisible(true)}
-                        onMouseLeave={() => setIsMenuVisible(false)}
+                        onMouseLeave={() => {
+                            setIsMenuVisible(false);
+                            handleMouseLeave();
+                        }}
                     >
                         {categoryLinks.map((link, index) => (
-                            <Link
-                                key={index}
-                                to={link.to}
-                                onMouseOver={() => handleMouseOver(index)}
+                            <li 
+                                key={index} 
+                                onMouseOver={() => setIsMenuVisible(true)}
                                 className={hoveredLinkIndex === index ? "hovered" : ""}
                             >
-                                {link.label}
-                            </Link>
-                        ))}
-                        <div className={`accordion-menu ${isMenuVisible && 'active'}`}>
-                            {(hoveredLinkIndex !== null) && 
-                                <div className='accordion-menu-container'>
-                                    {categoryLinks[hoveredLinkIndex].contents.map((content, i) => (
-                                        <ul className="options-box" key={i}>
-                                            <li className="option-title">{content.title}</li>
-                                            {content.options.map((option, j) => (
-                                                <li key={j} className="option">{option}</li>
+                                <Link to={link.to} onMouseOver={() => handleMouseOver(index)}>{link.label}</Link>
+                                <div className={`accordion-menu ${isMenuVisible && 'active'}`}>
+                                    {(hoveredLinkIndex !== null) &&
+                                        <div className='accordion-menu-container'>
+                                            {categoryLinks[hoveredLinkIndex].contents.map((content, i) => (
+                                                <ul className="options-box" key={i}>
+                                                    <li className="option-title">{content.title}</li>
+                                                    {content.options.map((option, j) => (
+                                                        <li key={j} className="option">{option}</li>
+                                                    ))}
+                                                </ul>
                                             ))}
-                                        </ul>
-                                    ))}
+                                        </div>
+                                    }
                                 </div>
-                            }
-                        </div>
-                    </div>
-                    <div className="userbox">
-                        <Link to="/signup">회원가입</Link>
-                        <Link to="/login" onClick={handleLoginClick}>로그인</Link>
-                        <Link to="/">주문조회</Link>
-                        <Link to="/">장바구니</Link>
-                    </div>
+                            </li>
+                        ))}
+                    </ul>
+                    <ul className="userbox">
+                        <li>
+                            <Link to="/signup">회원가입</Link>
+                        </li>
+                        <li>
+                            <Link to="/login" onClick={handleLoginClick}>로그인</Link>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
