@@ -112,6 +112,10 @@
     font-size: 17px;
 }
 
+.filter-option-more>p:hover {
+    cursor: pointer;
+}
+
 .products-section {
     width: 1440px;
     z-index: 10;
