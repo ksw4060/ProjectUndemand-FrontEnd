@@ -1,0 +1,199 @@
+.category-page {
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.title-section {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto 0px;
+    background-color: white;
+}
+
+.title-section.scroll-category {
+    position: fixed;
+    top: 3%;
+    height: 60px;
+    z-index: 1000;
+}
+
+.wrapper {
+    width: 1440px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-box {
+    width: 240px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.filter-box>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter {
+    margin-right: 30px;
+}
+
+.filter:hover {
+    cursor: pointer;
+}
+
+.filter-box>div>p {
+    margin-right: 8px;
+    font-size: 17px;
+}
+
+.icons {
+    font-size: 20px;
+}
+
+.contents-section {
+    position: relative;
+    width: 1440px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.contents-section.scroll-category {
+    margin-top: 90px;
+}
+
+.filter-section {
+    position: sticky;
+    width: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+    overflow: hidden;
+    transition: width 0.3s ease;
+    background-color: white;
+    margin-top: 15px;
+}
+
+.filter-active {
+    width: 240px;
+    overflow: visible;
+    transition: width 0.3s ease;
+}
+
+.filter-section>ul {
+    width: 210px;
+    margin-right: 30px;
+    border-bottom: 1px solid rgba(229, 229, 229, 1);
+    padding: 15px 0px 30px 0px;
+}
+
+.filter-option-title {
+    margin-bottom: 30px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.filter-option {
+    margin-bottom: 15px;
+    font-size: 17px;
+}
+
+.products-section {
+    width: 1440px;
+    z-index: 10;
+}
+
+.product-card-box {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    /* transition: flex-wrap 0.3s ease; */
+}
+
+.product-card {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;    
+    width: 340px;
+    height: 540px;
+    margin: 30px 10px;
+    transition: width 0.5s ease;
+    transition: height 0.5s ease;
+}
+
+.filter-active-margin {
+    width: 280px;
+    height: 480px;
+    transition: width 0.5s ease;
+    transition: height 0.5s ease;
+}
+
+.img-section {
+    width: 340px;
+    height: 480px;
+    background-position: center;
+    background-size: cover;
+}
+
+.filter-active-img {
+    width: 280px;
+    height: 460px;
+}
+
+.img1 {
+    background-image: url('https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img2 {
+    background-image: url('https://images.unsplash.com/photo-1538329972958-465d6d2144ed?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img3 {
+    background-image: url('https://images.unsplash.com/photo-1517938889432-a2ac9241a486?q=80&w=2668&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img4 {
+    background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img5 {
+    background-image: url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img6 {
+    background-image: url('https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=2595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.img7 {
+    background-image: url('https://images.unsplash.com/photo-1559697242-a465f2578a95?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+}
+
+.product-info {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.product-info>a {
+    color: black;
+    font-size: 17px;
+}
