@@ -62,11 +62,27 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .contents-section.scroll-category {
     margin-top: 90px;
+}
+
+.filter-section {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.filter-section>ul {
+    height: 33.3%;
+}
+
+.product-section {
+    height: 100%;
 }
 
 .product-card-box {
@@ -83,11 +99,7 @@
     justify-content: center;    
     width: 340px;
     height: 540px;
-    margin: 30px 26.6px 30px 0px;
-}
-
-.product-card:nth-child(4n) {
-    margin: 30px 0px 30px 0px;
+    margin: 30px 10px;
 }
 
 .img-section {
