@@ -112,6 +112,15 @@
     font-size: 17px;
 }
 
+.filter-option:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.selected {
+    font-weight: bold;
+}
+
 .filter-option-more>p:hover {
     cursor: pointer;
 }
