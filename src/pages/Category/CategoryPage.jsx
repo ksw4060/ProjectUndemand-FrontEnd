@@ -11,9 +11,22 @@ function CategoryPage() {
     const [isCategoryScroll, setIsCategoryScroll] = useState(false);
     const [isFilterClicked, setIsFilterClicked] = useState(false);
     const [activeOption, setActiveOption] = useState(null);
+    const [currentCategory, setCurrentCategory] = useState(null);
+    const [prevCategory, setPrevCategory] = useState(null);
     const { category } = useParams();
-    const upperCaseCategory = category.toUpperCase();
+    const categoryTitle = category.toUpperCase().replace(/-/g, ' ');
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setCurrentCategory(category.split('-')[0]);
+    }, [category]);
+
+    useEffect(() => {
+        if (prevCategory && prevCategory !== currentCategory) {
+            window.location.reload();
+        }
+        setPrevCategory(currentCategory);
+    }, [currentCategory, prevCategory]);
 
     const categoryOptions = [
         { id: 'tops', name: '상의' },
@@ -23,7 +36,7 @@ function CategoryPage() {
         { id: 'accessories', name: '악세서리' }
     ];
 
-    if (category === 'women') {
+    if (category.split('-')[0] === 'women') {
         const dressSetOption = { id: 'dress&set', name: '드레스&세트' };
         const index = categoryOptions.findIndex(option => option.id === 'shoes');
         categoryOptions.splice(index, 0, dressSetOption);
@@ -103,22 +116,16 @@ function CategoryPage() {
         if (activeOption === id) {
             return;
         }
-    
         setActiveOption(id);
-    
-        const currentCategory = category.split('-')[0];
-
         const newUrl = `/${currentCategory}-${id}`;
-    
         navigate(newUrl, { replace: true });
     };
-    
 
     return (
         <div className="category-page">
             <div className={`title-section ${isCategoryScroll ? 'scroll-category' : ''}`}>
                 <div className="wrapper">
-                    <h2>{ upperCaseCategory } Products</h2>
+                    <h2>{ categoryTitle }</h2>
                     <div className="filter-box">
                         <div className="filter" onClick={() => hanldeFilterClick()}>
                             <p>필터 표시</p>
@@ -137,7 +144,7 @@ function CategoryPage() {
                     {categoryOptions.map(option => (
                         <li 
                             key={option.id} 
-                            className={`filter-option ${activeOption === option.id ? 'active' : ''}`}
+                            className={`filter-option ${activeOption === option.id ? 'selected' : ''}`}
                             onClick={() => handleCategorySelect(option.id)}
                         >
                             {option.name}
