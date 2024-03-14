@@ -23,7 +23,7 @@ function CategoryPage() {
         { id: 'accessories', name: '악세서리' }
     ];
 
-    if (category === 'women') {
+    if (category.split('-')[0] === 'women') {
         const dressSetOption = { id: 'dress&set', name: '드레스&세트' };
         const index = categoryOptions.findIndex(option => option.id === 'shoes');
         categoryOptions.splice(index, 0, dressSetOption);
