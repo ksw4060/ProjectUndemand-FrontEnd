@@ -1,0 +1,338 @@
+.detail-page {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 1440px;
+    margin-top: 60px;
+}
+
+.img-and-option-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 720px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid rgb(210, 210, 210);
+}
+
+.img-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+}
+
+.thumbnail-img-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 20%;
+    height: 660px;
+}
+
+.thumbnail-img {
+    width: 100px;
+    height: 100px;
+    background-color: orange;
+    margin-bottom: 10px;
+}
+
+.hero-img-container {
+    width: 80%;
+    height: 660px;
+}
+
+.hero-img {
+    width: 480px;
+    height: 660px;
+    background-color: orange;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.option-box {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 420px;
+    height: 660px;
+}
+
+.option-txt-box {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 20%;
+}
+
+.option-txt-box>li {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.option-txt-box>li:nth-child(1) {
+    color: orange;
+}
+
+.option-txt-box>li:nth-child(2) {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.option-txt-box>li:nth-child(4) {
+    margin-top: 15px;
+}
+
+.option-select-box {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 40%;
+    margin-top: 30px;
+}
+
+.option-color-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 35%;
+}
+
+.option-color-container>ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.option-color-container>ul>li {
+    width: 50px;
+    height: 50px;
+    margin: 2px;
+    border-radius: 8px;
+}
+
+.option-color-container>ul>li:nth-child(1) {
+    background-color: green;
+}
+
+.option-color-container>ul>li:nth-child(2) {
+    background-color: red;
+}
+
+.option-color-container>ul>li:nth-child(3) {
+    background-color: blue;
+}
+
+.option-color-container>ul>li:nth-child(4) {
+    background-color: orange;
+}
+
+.option-color-container>ul>li:nth-child(5) {
+    background-color: black;
+}
+
+.option-size-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 35%;
+}
+
+.option-size-container>ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.option-size-container>ul>li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 50px;
+    margin: 2px;
+    border: 1.5px solid rgb(210, 210, 210);
+    border-radius: 8px;
+}
+
+.option-quantity-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    height: 35%;
+}
+
+.quantity-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80px;
+    height: 40px;
+    border: 1.5px solid rgb(210, 210, 210);
+    border-radius: 8px;
+}
+
+.quantity-input>p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+}
+
+.btn-flex {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.btn-flex>svg {
+    width: 30px;
+    height: 50%;
+}
+
+.btn-flex>svg:hover {
+    cursor: pointer;
+}
+
+.option-btn-box {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 30%;
+    margin-top: 30px;
+}
+
+.option-btn-container {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.option-btn-container>li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.option-btn-container>li:nth-child(3) {
+    background-color: white;
+    color: black;
+    border: 2px solid rgb(210, 210, 210);
+}
+
+.detail-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 60px;
+}
+
+.detail-img-box {
+    width: 990px;
+    height: 100%;
+}
+
+.detail-img-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.detail-img {
+    width: 480px;
+    height: 660px;
+    margin: 0px 15px 5px 0px;
+}
+
+.detail-img>img {
+    width: 480px;
+    height: 660px;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.detail-dropdown-info {
+    width: 430px;
+}
+
+.detail-dropdown-info-container {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-dropdown-info-container>li {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+}
+
+.detail-info-title {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-dropdown-info-container>li:nth-child(1) {
+    border-top: 1.5px solid rgb(210, 210, 210);
+}
+
+.detail-info-title>p {
+    font-size: 18px;
+}
+
+.detail-info-title>svg {
+    font-size: 30px;
+}
+
+.detail-info-script {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.detail-info-script.open {
+    max-height: 100px;
+}
