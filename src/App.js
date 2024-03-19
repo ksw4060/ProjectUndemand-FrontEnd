@@ -6,6 +6,7 @@ import { Main } from "./pages/Main/Main.jsx";
 import { Signup } from "./components/Signup.jsx";
 import { Login } from "./components/Login.jsx";
 import { CategoryPage } from "./pages/Category/CategoryPage.jsx";
+import { ProductDetailPage } from "./pages/ProductDetailPage/ProductDetailPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import './App.css';
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/:category" element={<CategoryPage />}></Route>
+          <Route path="/detail" element={<ProductDetailPage />}></Route>
         </Routes>
       </div>
 
