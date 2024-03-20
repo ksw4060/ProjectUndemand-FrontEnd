@@ -219,10 +219,10 @@ function CategoryPage() {
                             </li>
                         ))}
                     </ul>
-                    <ul className="category-sub-options">
-                        {categoryOptions.map(option => (
-                            selectedCategoryOption === option.id && option.subOptions && (
-                                option.subOptions.map(subOption => (
+                    {categoryOptions.map(option => (
+                        selectedCategoryOption === option.id && option.subOptions && (
+                            <ul className="category-sub-options">
+                                {option.subOptions.map(subOption => (
                                     <li 
                                         key={subOption.id} 
                                         className={`filter-option ${selectedSubcategoryOption === subOption.id ? 'selected' : ''}`}
@@ -230,10 +230,10 @@ function CategoryPage() {
                                     >
                                         {subOption.name}
                                     </li>
-                                ))
-                            )
-                        ))}
-                    </ul>
+                                ))}
+                            </ul>
+                        )
+                    ))}
                     <CheckBox
                         options={priceOptions}
                         selectedOptions={selectedPriceOptions}
