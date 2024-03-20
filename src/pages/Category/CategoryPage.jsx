@@ -36,11 +36,11 @@ function CategoryPage() {
             subOptions: [
                 { id: 'hoodie', name: '후드' },
                 { id: 'sweatshirt', name: '맨투맨' },
-                { id: 'short-sleeve shirt', name: '반팔 셔츠' },
-                { id: 'long-sleeve shirt', name: '긴팔 셔츠' },
-                { id: 'short-sleeve tee', name: '반팔티' },
-                { id: 'long-sleeve tee', name: '긴팔티' },
-                { id: 'knit/sweater', name: '니트/스웨터' },
+                { id: 'short-sleeve-shirt', name: '반팔 셔츠' },
+                { id: 'long-sleeve-shirt', name: '긴팔 셔츠' },
+                { id: 'short-sleeve-tee', name: '반팔티' },
+                { id: 'long-sleeve-tee', name: '긴팔티' },
+                { id: 'knit-sweater', name: '니트/스웨터' },
                 { id: 'blouse', name: '블라우스' }
             ] 
         },
@@ -57,14 +57,14 @@ function CategoryPage() {
             id: 'outerwear', 
             name: '아우터',
             subOptions: [
-                { id: 'short padding', name: '숏패딩' },
-                { id: 'long padding', name: '롱패딩' },
+                { id: 'short-padding', name: '숏패딩' },
+                { id: 'long-padding', name: '롱패딩' },
                 { id: 'cardigan', name: '가디건' },
                 { id: 'jacket', name: '재킷' },
                 { id: 'coat', name: '코트' },
                 { id: 'mustang', name: '무스탕' },
                 { id: 'vest', name: '조끼' },
-                { id: 'lightweight padding', name: '경량패딩' }
+                { id: 'lightweight-padding', name: '경량패딩' }
             ] 
         },
         { 
@@ -72,7 +72,7 @@ function CategoryPage() {
             name: '신발',
             subOptions: [
                 { id: 'sneakers', name: '스니커즈' },
-                { id: 'sandals/slippers', name: '샌들/슬리퍼' },
+                { id: 'sandals-slippers', name: '샌들/슬리퍼' },
                 { id: 'boots', name: '부츠' }
             ] 
         },
@@ -85,11 +85,11 @@ function CategoryPage() {
                 { id: 'bag', name: '가방' }
             ] 
         }
-    ];    
+    ];     
 
     if (category.split('-')[0] === 'women') {
         const dressSetOption = { 
-            id: 'dress&set', 
+            id: 'dress-and-set', 
             name: '드레스&세트', 
             subOptions: [
                 { id: 'dress', name: '원피스' },
