@@ -3,7 +3,6 @@ import { useState } from 'react';
 function TopbarData() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
-    const [isMenuVisible, setIsMenuVisible] = useState(false);
     const categoryLinks = [
         { 
             to: "/best", 
@@ -93,8 +92,6 @@ function TopbarData() {
         categoryLinks,
         handleMouseOver,
         handleMouseLeave,
-        isMenuVisible,
-        setIsMenuVisible
     };
 }
 
