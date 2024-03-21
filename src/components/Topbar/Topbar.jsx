@@ -3,16 +3,14 @@ import { Link } from "react-router-dom";
 import TopbarData from './TopbarData.jsx';
 import './Topbar.css';
 
-function Topbar() {
+function Topbar({ isMenuVisible, setIsMenuVisible }) {
     const { 
         isLoggedin, 
         handleLoginClick, 
         hoveredLinkIndex, 
         categoryLinks, 
         handleMouseOver,
-        handleMouseLeave,
-        isMenuVisible,
-        setIsMenuVisible
+        handleMouseLeave
     } = TopbarData();
 
     return (

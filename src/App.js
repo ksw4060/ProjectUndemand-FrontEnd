@@ -12,6 +12,7 @@ import './App.css';
 
 function App() {
   const [isScroll, setIscroll] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ function App() {
   return (
     <div className="Body">
       <div className={`Top-section ${isScroll ? 'scroll' : ''}`}>
-        <Topbar />
+        <Topbar isMenuVisible={isMenuVisible} setIsMenuVisible={setIsMenuVisible} />
       </div>
 
       <div className={`Middle-section ${isScroll ? 'scroll' : ''}`}>
