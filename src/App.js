@@ -41,7 +41,7 @@ function App() {
         <Topbar isMenuVisible={isMenuVisible} setIsMenuVisible={setIsMenuVisible} />
       </div>
 
-      <div className={`Middle-section ${isScroll ? 'scroll' : ''}`}>
+      <div className={`Middle-section ${isScroll ? 'scroll' : ''} ${isMenuVisible ? 'blur' : ''}`}>
         <Routes>
           <Route path="/" element={<Main />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
