@@ -84,7 +84,7 @@
     font-size: 17px;
 }
 
-.left-arrow {
+.product-slide-left-arrow {
     position: absolute;
     top: 40%;
     left: 10%;
@@ -93,11 +93,11 @@
     color: rgba(177, 177, 177, 0.5);
 }
 
-.left-arrow:hover {
+.product-slide-left-arrow:hover {
     cursor: pointer;
 }
 
-.right-arrow {
+.product-slide-right-arrow {
     position: absolute;
     top: 40%;
     right: 10%;
@@ -106,7 +106,7 @@
     color: rgba(177, 177, 177, 0.5);
 }
 
-.right-arrow:hover {
+.product-slide-right-arrow:hover {
     cursor: pointer;
 }
 
