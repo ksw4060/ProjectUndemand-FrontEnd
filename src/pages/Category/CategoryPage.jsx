@@ -5,7 +5,7 @@ import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import CheckBox from '../../components/CheckBox/CheckBox.jsx';
-// import axios from 'axios';
+import axios from 'axios';
 
 function CategoryPage() {
     const [isCategoryScroll, setIsCategoryScroll] = useState(false);
@@ -17,6 +17,87 @@ function CategoryPage() {
     const { category } = useParams();
     const categoryTitle = category.toUpperCase().replace(/-/g, ' ');
     const navigate = useNavigate();
+    const [filterOptionData, setFilterOptionData] = useState([]);
+
+    const filterUrlMap = {
+        "상의": "tops",
+        "하의": "bottoms",
+        "dress&set": "dressandset",
+        "아우터": "outerwear",
+        "신발": "shoes",
+        "악세서리": "accessories"
+    };
+    
+    const subFilterUrlMap = {
+        "후드": "hoodie",
+        "맨투맨": "sweatshirt",
+        "반팔 셔츠": "shortsleeveshirt",
+        "긴팔 셔츠": "longsleeveshirt",
+        "반팔티": "shortsleevetee",
+        "긴팔티": "longsleevetee",
+        "니트/스웨터": "knitsweater",
+        "블라우스": "blouse",
+        "긴바지": "trousers",
+        "반바지": "shorts",
+        "치마": "skirt",
+        "원피스": "dress",
+        "투피스": "twopiece",
+        "셋업": "setup",
+        "숏패딩": "shortpadding",
+        "롱패딩": "longpadding",
+        "가디건": "cardigan",
+        "재킷": "jacket",
+        "코트": "coat",
+        "무스탕": "mustang",
+        "조끼": "vest",
+        "경량패딩": "lightweightpadding",
+        "스니커즈": "sneakers",
+        "샌들/슬리퍼": "sandalslippers",
+        "부츠": "boots",
+        "모자": "hat",
+        "양말": "socks",
+        "가방": "bag"
+    };
+    
+    const filterOptions = filterOptionData.map(category => {
+        const filterUrl = filterUrlMap[category.name];
+        const subOptions = category.children.map(child => ({
+            id: subFilterUrlMap[child.name],
+            name: child.name
+        }));
+        return {
+            id: filterUrl,
+            name: category.name,
+            subOptions: subOptions
+        };
+    });
+
+    const genderOptions = filterOptions.filter(category => category.name !== "dress&set");
+
+    const menUnisexFilterOptions = genderOptions.map(filterOptions => {
+        if (filterOptions.name === "하의") {
+            const updatedSubOptions = filterOptions.subOptions.filter(subOption => subOption.name !== "치마");
+            return {
+                ...filterOptions,
+                subOptions: updatedSubOptions
+            };
+        } else {
+            return filterOptions;
+        }
+    });
+
+    useEffect(() => {
+        const fetchFilterData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/v1/categorys');
+                setFilterOptionData(response.data);
+            } catch (error) {
+                console.error('Error fetching category data:', error);
+            }
+        };
+
+        fetchFilterData();
+    }, []);
 
     useEffect(() => {
         setCurrentCategory(category.split('-')[0]);
@@ -28,78 +109,6 @@ function CategoryPage() {
         }
         setPrevCategory(currentCategory);
     }, [currentCategory, prevCategory]);
-
-    const categoryOptions = [
-        { 
-            id: 'tops', 
-            name: '상의',
-            subOptions: [
-                { id: 'hoodie', name: '후드' },
-                { id: 'sweatshirt', name: '맨투맨' },
-                { id: 'short-sleeve-shirt', name: '반팔 셔츠' },
-                { id: 'long-sleeve-shirt', name: '긴팔 셔츠' },
-                { id: 'short-sleeve-tee', name: '반팔티' },
-                { id: 'long-sleeve-tee', name: '긴팔티' },
-                { id: 'knit-sweater', name: '니트/스웨터' },
-                { id: 'blouse', name: '블라우스' }
-            ] 
-        },
-        { 
-            id: 'bottoms', 
-            name: '하의',
-            subOptions: [
-                { id: 'trousers', name: '긴바지' },
-                { id: 'shorts', name: '반바지' },
-                { id: 'skirt', name: '치마' }
-            ] 
-        },
-        { 
-            id: 'outerwear', 
-            name: '아우터',
-            subOptions: [
-                { id: 'short-padding', name: '숏패딩' },
-                { id: 'long-padding', name: '롱패딩' },
-                { id: 'cardigan', name: '가디건' },
-                { id: 'jacket', name: '재킷' },
-                { id: 'coat', name: '코트' },
-                { id: 'mustang', name: '무스탕' },
-                { id: 'vest', name: '조끼' },
-                { id: 'lightweight-padding', name: '경량패딩' }
-            ] 
-        },
-        { 
-            id: 'shoes', 
-            name: '신발',
-            subOptions: [
-                { id: 'sneakers', name: '스니커즈' },
-                { id: 'sandals-slippers', name: '샌들/슬리퍼' },
-                { id: 'boots', name: '부츠' }
-            ] 
-        },
-        { 
-            id: 'accessories', 
-            name: '악세서리',
-            subOptions: [
-                { id: 'hat', name: '모자' },
-                { id: 'socks', name: '양말' },
-                { id: 'bag', name: '가방' }
-            ] 
-        }
-    ];     
-
-    if (category.split('-')[0] === 'women') {
-        const dressSetOption = { 
-            id: 'dress-and-set', 
-            name: '드레스&세트', 
-            subOptions: [
-                { id: 'dress', name: '원피스' },
-                { id: 'two-piece', name: '투피스' },
-                { id: 'setup', name: '셋업' }
-            ]
-        };
-        const index = categoryOptions.findIndex(option => option.id === 'shoes');
-        categoryOptions.splice(index, 0, dressSetOption);
-    }
 
     const priceOptions = [
         { id: 'price0', range: '0 ~ 50,000 원' },
@@ -144,20 +153,6 @@ function CategoryPage() {
             window.removeEventListener('scroll', handleCategoryScroll);
         };
     }, []);
-
-    // 상품 데이터 받아온 이후에 사용 할 코드
-    // useEffect(() => {
-    //     axios.get('/products')
-    //         .then(response => {
-    //             setProducts(response.data);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching products:', error);
-    //         });
-    // }, []);
-
-    // 상품 데이터 받아온 이후에 사용 할 코드
-    // const [products, setProducts] = useState([]);
 
     const hanldeFilterClick = () => {
         setIsFilterClicked(prevState => !prevState);
@@ -209,31 +204,61 @@ function CategoryPage() {
             <div className={`contents-section ${isCategoryScroll ? 'scroll-category' : ''}`}>
                 <div className={`filter-section ${isFilterClicked && 'filter-active'}`}>
                     <ul className="category-options">
-                        {categoryOptions.map(option => (
-                            <li 
-                                key={option.id} 
-                                className={`filter-option ${selectedCategoryOption === option.id ? 'selected' : ''}`}
-                                onClick={() => handleCategoryOptionSelect(option.id)}
-                            >
-                                {option.name}
-                            </li>
-                        ))}
+                        {currentCategory === "best" || currentCategory === "new" || currentCategory === "women" || currentCategory === "sale" ?
+                            filterOptions.map(option => (
+                                <li 
+                                    key={option.id} 
+                                    className={`filter-option ${selectedCategoryOption === option.id ? 'selected' : ''}`}
+                                    onClick={() => handleCategoryOptionSelect(option.id)}
+                                >
+                                    {option.name}
+                                </li>
+                            ))
+                        : 
+                            menUnisexFilterOptions.map(option => (
+                                <li 
+                                    key={option.id} 
+                                    className={`filter-option ${selectedCategoryOption === option.id ? 'selected' : ''}`}
+                                    onClick={() => handleCategoryOptionSelect(option.id)}
+                                >
+                                    {option.name}
+                                </li>
+                            ))
+                        }
                     </ul>
-                    {categoryOptions.map(option => (
-                        selectedCategoryOption === option.id && option.subOptions && (
-                            <ul className="category-sub-options">
-                                {option.subOptions.map(subOption => (
-                                    <li 
-                                        key={subOption.id} 
-                                        className={`filter-option ${selectedSubcategoryOption === subOption.id ? 'selected' : ''}`}
-                                        onClick={() => handleSubcategoryOptionSelect(subOption.id)}
-                                    >
-                                        {subOption.name}
-                                    </li>
-                                ))}
-                            </ul>
-                        )
-                    ))}
+                        {currentCategory === "best" || currentCategory === "new" || currentCategory === "women" || currentCategory === "sale" ?
+                            filterOptions.map(option => (
+                                selectedCategoryOption === option.id && option.subOptions && (
+                                    <ul key={option.id} className="category-sub-options">
+                                        {option.subOptions.map(subOption => (
+                                            <li 
+                                                key={subOption.id} 
+                                                className={`filter-option ${selectedSubcategoryOption === subOption.id ? 'selected' : ''}`}
+                                                onClick={() => handleSubcategoryOptionSelect(subOption.id)}
+                                            >
+                                                {subOption.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )
+                            ))
+                        :
+                            menUnisexFilterOptions.map(option => (
+                                selectedCategoryOption === option.id && option.subOptions && (
+                                    <ul key={option.id} className="category-sub-options">
+                                        {option.subOptions.map(subOption => (
+                                            <li 
+                                                key={subOption.id} 
+                                                className={`filter-option ${selectedSubcategoryOption === subOption.id ? 'selected' : ''}`}
+                                                onClick={() => handleSubcategoryOptionSelect(subOption.id)}
+                                            >
+                                                {subOption.name}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )
+                            ))
+                        }
                     <CheckBox
                         options={priceOptions}
                         selectedOptions={selectedPriceOptions}
@@ -324,19 +349,6 @@ function CategoryPage() {
                         </li>
                     </ul>
                 </div>
-
-                {/* 상품 데이터 받아온 이후에 사용 할 코드 */}
-                {/* <ul className="product-card-box">
-                    {products.map(product => (
-                        <li key={product.id} className="product-card">
-                            <div className={`img-section img${product.id}`}></div>
-                            <div className="product-info">
-                                <Link to="/">{product.name}</Link>
-                                <Link to="/">{product.price}</Link>
-                            </div>
-                        </li>
-                    ))}
-                </ul> */}
             </div>
         </div>
     );
