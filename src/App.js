@@ -48,7 +48,7 @@ function App() {
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/:category" element={<CategoryPage />}></Route>
-          <Route path="/detail" element={<ProductDetailPage />}></Route>
+          <Route path="/product/:productId" element={<ProductDetailPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
       </div>

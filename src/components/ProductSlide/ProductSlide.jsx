@@ -61,8 +61,8 @@ function ProductSlide({ products, sectionTitle }) {
                         <li key={product.productId} className="product-card">
                             <img className={`product-img${index + 1} product-card-img`} src={product.product_img} alt={product.productName} />
                             <div className="product-small-info">
-                                <Link to={`/${product.productId}`}>{product.productName}</Link>
-                                <Link to={`/${product.productId}`}>{product.price}</Link>
+                                <Link to={`/product/${product.productId}`}>{product.productName}</Link>
+                                <Link to={`/product/${product.productId}`}>{product.price}</Link>
                             </div>
                         </li>
                     ))}
