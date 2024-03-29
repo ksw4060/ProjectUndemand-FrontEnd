@@ -39,9 +39,9 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                                         <div className='accordion-menu-container'>
                                             {categoryLinks[hoveredLinkIndex].contents.map((content, i) => (
                                                 <ul className="options-box" key={i}>
-                                                    <li className="option-title">{content.title}</li>
-                                                    {content.options.map((option, j) => (
-                                                        <li key={j} className="option">{option}</li>
+                                                    <li className="option-title"><Link to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}`}>{content.name}</Link></li>
+                                                    {content.subOptions.map((subOption, j) => (
+                                                        <li key={j} className="option"><Link to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}-${subOption.id}`}>{subOption.name}</Link></li>
                                                     ))}
                                                 </ul>
                                             ))}

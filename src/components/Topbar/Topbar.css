@@ -134,9 +134,13 @@
 }
 
 .option-title {
+    margin-bottom: 7px;
+}
+
+.option-title>a {
     font-size: 20px;
     font-weight: bold;
-    margin-bottom: 7px;
+    color: rgb(0, 0, 0);
 }
 
 .option-title:hover {
@@ -144,8 +148,12 @@
 }
 
 .option {
-    font-size: 17px;
     margin-top: 13px;
+}
+
+.option>a {
+    font-size: 17px;
+    color: rgb(0, 0, 0);
 }
 
 .option:hover {

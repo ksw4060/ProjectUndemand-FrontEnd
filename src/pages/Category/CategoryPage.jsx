@@ -19,6 +19,19 @@ function CategoryPage() {
     const navigate = useNavigate();
     const [filterOptionData, setFilterOptionData] = useState([]);
 
+    useEffect(() => {
+        const fetchFilterData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/v1/categorys');
+                setFilterOptionData(response.data);
+            } catch (error) {
+                console.error('Error fetching category data:', error);
+            }
+        };
+
+        fetchFilterData();
+    }, []);
+
     const filterUrlMap = {
         "상의": "tops",
         "하의": "bottoms",
@@ -85,19 +98,6 @@ function CategoryPage() {
             return filterOptions;
         }
     });
-
-    useEffect(() => {
-        const fetchFilterData = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/v1/categorys');
-                setFilterOptionData(response.data);
-            } catch (error) {
-                console.error('Error fetching category data:', error);
-            }
-        };
-
-        fetchFilterData();
-    }, []);
 
     useEffect(() => {
         setCurrentCategory(category.split('-')[0]);

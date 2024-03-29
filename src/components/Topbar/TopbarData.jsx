@@ -6,30 +6,6 @@ function TopbarData() {
     const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
     const [categoryData, setCategoryData] = useState([]);
 
-    const categories = [];
-
-    categoryData.forEach(category => {
-        categories.push({
-            title: category.name,
-            options: category.children.map(child => child.name)
-        });
-    });
-
-    const genderOptions = categories.filter(category => category.title !== "dress&set");
-
-    const menUnisexCategories = genderOptions.map(category => {
-        if (category.title === "하의") {
-            const updatedOptions = category.options.filter(option => option !== "치마");
-
-            return {
-                ...category,
-                options: updatedOptions
-            };
-        } else {
-            return category;
-        }
-    });
-
     useEffect(() => {
         const fetchCategoryData = async () => {
             try {
@@ -43,36 +19,103 @@ function TopbarData() {
         fetchCategoryData();
     }, []);
 
+    const categoryUrlMap = {
+        "상의": "tops",
+        "하의": "bottoms",
+        "dress&set": "dressandset",
+        "아우터": "outerwear",
+        "신발": "shoes",
+        "악세서리": "accessories"
+    };
+    
+    const subCategoryUrlMap = {
+        "후드": "hoodie",
+        "맨투맨": "sweatshirt",
+        "반팔 셔츠": "shortsleeveshirt",
+        "긴팔 셔츠": "longsleeveshirt",
+        "반팔티": "shortsleevetee",
+        "긴팔티": "longsleevetee",
+        "니트/스웨터": "knitsweater",
+        "블라우스": "blouse",
+        "긴바지": "trousers",
+        "반바지": "shorts",
+        "치마": "skirt",
+        "원피스": "dress",
+        "투피스": "twopiece",
+        "셋업": "setup",
+        "숏패딩": "shortpadding",
+        "롱패딩": "longpadding",
+        "가디건": "cardigan",
+        "재킷": "jacket",
+        "코트": "coat",
+        "무스탕": "mustang",
+        "조끼": "vest",
+        "경량패딩": "lightweightpadding",
+        "스니커즈": "sneakers",
+        "샌들/슬리퍼": "sandalslippers",
+        "부츠": "boots",
+        "모자": "hat",
+        "양말": "socks",
+        "가방": "bag"
+    };
+    
+    const categoryOptions = categoryData.map(category => {
+        const categoryUrl = categoryUrlMap[category.name];
+        const subOptions = category.children.map(child => ({
+            id: subCategoryUrlMap[child.name],
+            name: child.name
+        }));
+        return {
+            id: categoryUrl,
+            name: category.name,
+            subOptions: subOptions
+        };
+    });
+
+    const genderOptions = categoryOptions.filter(category => category.name !== "dress&set");
+
+    const menUnisexCategoryOptions = genderOptions.map(categoryOptions => {
+        if (categoryOptions.name === "하의") {
+            const updatedSubOptions = categoryOptions.subOptions.filter(subOption => subOption.name !== "치마");
+            return {
+                ...categoryOptions,
+                subOptions: updatedSubOptions
+            };
+        } else {
+            return categoryOptions;
+        }
+    });
+
     const categoryLinks = [
         { 
             to: "/best", 
             label: "Best", 
-            contents: categories
+            contents: categoryOptions
         },
         { 
             to: "/new", 
             label: "New",
-            contents: categories
+            contents: categoryOptions
         },
         { 
             to: "/unisex", 
             label: "Unisex",
-            contents: menUnisexCategories
+            contents: menUnisexCategoryOptions
         },
         { 
             to: "/men", 
             label: "Men",
-            contents: menUnisexCategories
+            contents: menUnisexCategoryOptions
         },
         { 
             to: "/women", 
             label: "Women",
-            contents: categories
+            contents: categoryOptions
         },
         { 
             to: "/sale", 
             label: "Sale",
-            contents: categories
+            contents: categoryOptions
         }
     ];
 
