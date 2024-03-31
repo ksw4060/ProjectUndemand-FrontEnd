@@ -7,9 +7,11 @@ import { Signup } from "./components/Signup.jsx";
 import { Login } from "./components/Login.jsx";
 import { CategoryPage } from "./pages/Category/CategoryPage.jsx";
 import { ProductDetailPage } from "./pages/ProductDetailPage/ProductDetailPage.jsx";
+import { InquiryPage } from "./pages/InquiryPage/InquiryPage.jsx";
+import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import './App.css';
+import "./App.css";
 
 function App() {
   const [isScroll, setIscroll] = useState(false);
@@ -49,6 +51,8 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/:category" element={<CategoryPage />}></Route>
           <Route path="/product/:productId" element={<ProductDetailPage />}></Route>
+          <Route path="/inquiry" element={<InquiryPage />}></Route>
+          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
       </div>
