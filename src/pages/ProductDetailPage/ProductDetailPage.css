@@ -75,20 +75,25 @@
 }
 
 .option-txt-box>li {
-    font-size: 18px;
     margin-bottom: 5px;
 }
 
-.option-txt-box>li:nth-child(1) {
+.is-sale {
+    font-size: 18px;
     color: orange;
 }
 
-.option-txt-box>li:nth-child(2) {
+.product-name {
     font-size: 25px;
     font-weight: bold;
 }
 
-.option-txt-box>li:nth-child(4) {
+.product-type {
+    font-size: 18px;
+}
+
+.product-price {
+    font-size: 18px;
     margin-top: 15px;
 }
 

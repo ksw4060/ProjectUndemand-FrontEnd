@@ -27,6 +27,11 @@
   margin-top: 60px;
 }
 
+.blur {
+  background: rgba(255, 255, 255, 0.8);
+  filter: blur(3px) brightness(0.7);
+}
+
 .Bottom-section {
   height: 360px;
   background-color: rgba(245, 245, 245, 1);
