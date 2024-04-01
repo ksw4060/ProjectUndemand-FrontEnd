@@ -18,19 +18,80 @@ function CategoryPage() {
     const categoryTitle = category.toUpperCase().replace(/-/g, ' ');
     const navigate = useNavigate();
     const [filterOptionData, setFilterOptionData] = useState([]);
+    // const [productsData, setProductsData] = useState([]);
+    const [bestProducts, setBestProducts] = useState([]);
+    const [newProducts, setNewProducts] = useState([]);
+    const [unisexProducts, setUnisexProducts] = useState([]);
+    const [manProducts, setManProducts] = useState([]);
+    const [womanProducts, setWomanProducts] = useState([]);
+    const [saleProducts, setSaleProducts] = useState([]);
 
     useEffect(() => {
-        const fetchFilterData = async () => {
+        const fetchFilterAndProductsData = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/v1/categorys');
-                setFilterOptionData(response.data);
+                const categoryResponse = await axios.get('http://localhost:8080/api/v1/categorys');
+                setFilterOptionData(categoryResponse.data);
+
+                const productsResponse = await axios.get('http://localhost:8080/api/v1/products');
+                // setProductsData(productsResponse.data)
+
+                const bestProductsFiltered = productsResponse.data.sort((a, b) => b.likeCnt - a.likeCnt);
+                setBestProducts(bestProductsFiltered);
+
+                const createDateFromCreatedAt = (createdAtArray) => {
+                    const [year, month, day] = createdAtArray;
+                    return new Date(year, month - 1, day);
+                };
+
+                const newProductsFiltered = productsResponse.data.sort((productA, productB) => {
+                    const dateA = createDateFromCreatedAt(productA.createdAt);
+                    const dateB = createDateFromCreatedAt(productB.createdAt);
+                    return dateA - dateB;
+                });
+                setNewProducts(newProductsFiltered);
+
+                const unisexProductsFiltered = productsResponse.data.filter(product => product.productType === "UNISEX");
+                setUnisexProducts(unisexProductsFiltered);
+
+                const manProductsFiltered = productsResponse.data.filter(product => product.productType === "MAN");
+                setManProducts(manProductsFiltered);
+
+                const womanProductsFiltered = productsResponse.data.filter(product => product.productType === "WOMAN");
+                setWomanProducts(womanProductsFiltered);
+
+                const saleProductsFiltered = productsResponse.data.filter(product => product.sale === true);
+                setSaleProducts(saleProductsFiltered);
             } catch (error) {
                 console.error('Error fetching category data:', error);
             }
         };
 
-        fetchFilterData();
+        fetchFilterAndProductsData();
     }, []);
+
+    const sectionProducts = {
+        best: bestProducts,
+        new: newProducts,
+        unisex: unisexProducts,
+        men: manProducts,
+        women: womanProducts,
+        sale: saleProducts
+    };
+
+    const renderProductCards = () => {
+        const products = sectionProducts[currentCategory] || [];
+    
+        return products.map((product, index) => (
+            <li key={index} className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
+                <div className={`img-section img${index + 1} ${isFilterClicked && 'filter-active-img'}`}></div>
+                <div className="product-info">
+                    <Link to={`/product/${product.id}`}>{product.productName}</Link>
+                    <Link to={`/product/${product.id}`}>{product.price}</Link>
+                </div>
+            </li>
+        ));
+    };
+    
 
     const filterUrlMap = {
         "상의": "tops",
@@ -298,55 +359,7 @@ function CategoryPage() {
                 </div>
                 <div className="products-section">
                     <ul className="product-card-box">
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img1 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img2 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img3 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img4 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img5 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img6 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
-                        <li className={`product-card ${isFilterClicked && "filter-active-margin"}`}>
-                            <div className={`img-section img7 ${isFilterClicked && 'filter-active-img'}`}></div>
-                            <div className="product-info">
-                                <Link to="/">Product Name</Link>
-                                <Link to="/">Price</Link>
-                            </div>
-                        </li>
+                        {renderProductCards()}
                     </ul>
                 </div>
             </div>
