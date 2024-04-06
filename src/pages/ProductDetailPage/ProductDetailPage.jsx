@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
 import "./ProductDetailPage.css";
+import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
+import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx"
+import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 
 function ProductDetailPage() {
     let { productId } = useParams();
@@ -10,6 +12,9 @@ function ProductDetailPage() {
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(0);
     const [dropdownStates, setDropdownStates] = useState([false, false, false, false]);
+    const [reviewAndInquiryModalOpen, setReviewAndInquiryModalOpen] = useState(false);
+    const [reviewWritingAndInquiryPostingModalOpen, setReviewWritingAndInquiryPostingModalOpen] = useState(false);
+    const [modalType, setModalType] = useState(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -45,6 +50,24 @@ function ProductDetailPage() {
             return newStates;
         });
     };
+
+    const openArticleViewModal = (type) => {
+        setModalType(type);
+        setReviewAndInquiryModalOpen(true);
+    };
+
+    const closeArticleViewModal = () => {
+        setReviewAndInquiryModalOpen(false);
+    };
+    
+    const openArticleSubmitModal = (type) => {
+        setModalType(type);
+        setReviewWritingAndInquiryPostingModalOpen(true);
+    }
+
+    const closeArticleSubmitModal = () => {
+        setReviewWritingAndInquiryPostingModalOpen(false);
+    }
 
     return (
         <div className="detail-page">
@@ -101,8 +124,8 @@ function ProductDetailPage() {
                                         <div className="quantity-input">
                                             <p>{quantity}</p>
                                             <div className="btn-flex">
-                                                <MdOutlineKeyboardArrowUp onClick={handleIncrement} />
-                                                <MdOutlineKeyboardArrowDown onClick={handleDecrement}/>
+                                                <MdOutlineKeyboardArrowUp onClick={() => handleIncrement()} />
+                                                <MdOutlineKeyboardArrowDown onClick={() => handleDecrement()}/>
                                             </div>
                                         </div>
                                     </div>
@@ -133,9 +156,9 @@ function ProductDetailPage() {
                                             {dropdownStates[1] ? <MdOutlineKeyboardArrowUp /> : <MdOutlineKeyboardArrowDown />}
                                         </div>
                                         <ul className={`option-info-script ${dropdownStates[1] ? 'open' : ''}`}>
-                                            <li><Link>리뷰 작성하기</Link></li>
+                                            <li><Link onClick={() => openArticleSubmitModal('review')}>리뷰 작성하기</Link></li>
                                             <li>상품에 대한 리뷰들을 볼 수 있습니다.</li>
-                                            <li>리뷰 더 보기</li>
+                                            <li><Link onClick={() => openArticleViewModal('review')}>리뷰 더 보기</Link></li>
                                         </ul>
                                     </li>
                                     <li className="option-info">
@@ -153,12 +176,14 @@ function ProductDetailPage() {
                                             {dropdownStates[3] ? <MdOutlineKeyboardArrowUp /> : <MdOutlineKeyboardArrowDown />}
                                         </div>
                                         <ul className={`option-info-script ${dropdownStates[3] ? 'open' : ''}`}>
-                                            <li><Link>상품 문의하기</Link></li>
+                                            <li><Link onClick={() => openArticleSubmitModal('inquiry')}>상품 문의하기</Link></li>
                                             <li>상품에 대한 문의 글들을 볼 수 있습니다.</li>
-                                            <li>문의 글 더 보기</li>
+                                            <li><Link onClick={() => openArticleViewModal('inquiry')}>문의 글 더 보기</Link></li>
                                         </ul>
                                     </li>
                                 </ul>
+                                {reviewAndInquiryModalOpen && (<ArticleViewModal modalType={modalType} modalClose={closeArticleViewModal}></ArticleViewModal>)}
+                                {reviewWritingAndInquiryPostingModalOpen && (<ArticleSubmitModal modalType={modalType} modalClose={closeArticleSubmitModal}></ArticleSubmitModal>)}
                             </div>
                         </div>
                     </div>
