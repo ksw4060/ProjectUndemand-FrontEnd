@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import TopbarData from './TopbarData.jsx';
+import { MdOutlineShoppingBag } from "react-icons/md";
 import './Topbar.css';
 
 function Topbar({ isMenuVisible, setIsMenuVisible }) {
@@ -60,6 +61,9 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                         </li>
                         <li>
                             <Link to="/inquiry">Q&A</Link>
+                        </li>
+                        <li>
+                            <Link to="/cart" ><MdOutlineShoppingBag /></Link>
                         </li>
                     </ul>
                 </div>
