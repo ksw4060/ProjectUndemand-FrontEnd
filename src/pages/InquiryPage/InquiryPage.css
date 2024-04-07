@@ -1,122 +1,120 @@
-/* .inquiry-page {
+.inquiry-page {
     width: 100%;
-    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.inquiry-page-top {
+    width: 70%;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
     align-items: center;
 }
 
-.inquiry-title-section {
-    width: 1440px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
+.inquiry-page-top>.inquiry-count {
+    font-size: 1.25rem;
+    font-weight: bold;
 }
 
-.inquiry-category-section {
+.inquiry-page-top>.count-box {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 1440px;
-    height: 60px;
-    margin-top: 30px;
-    border: 1.5px solid rgb(210, 210, 210);
+    margin-top: 60px;
 }
 
-.inquiry-category-section>div {
+.inquiry-page-middle {
+    width: 70%;
+    padding: 60px 0px;
+}
+
+.inquiry-filter {
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+}
+
+.inquiry-filter>.inquiry-sort-box {
     width: 20%;
-    height: 100%;
-    border-right: 1.5px solid rgb(210, 210, 210);
+    position: relative;
 }
 
-.inquiry-category-section>div:nth-child(5) {
-    border-right: none;
-}
-
-.inquiry-article-section {
-    margin-top: 30px;
-    width: 1440px;
-}
-
-.table-head {
+.inquiry-filter>.inquiry-sort-box>.selected-sort-option {
+    width: 100%;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 40px;
-    border-top: 1.5px solid rgb(210, 210, 210);
-    border-bottom: 1.5px solid rgb(210, 210, 210);
+    padding: 15px 5px;
 }
 
-.table-head>div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.inquiry-num {
-    width: 5%;
-}
-.inquiry-info {
-    width: 30%;
-}
-.inquiry-category {
-    width: 10%;
-}
-.inquiry-title {
-    width: 35%;
-}
-.inquiry-writer {
-    width: 10%;
-}
-.inquiry-date {
-    width: 10%;
-}
-
-.table-row-wrapper {
-    display: flex;
+.inquiry-filter>.inquiry-sort-box>.inquiry-sort-option {
+    width: 70%;
+    display: none;
     flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    position: absolute;
+    top: 50px;
+    background-color: white;
+    padding: 10px 0px 10px 20px;
+    box-shadow: rgb(0 0 0 / 7%) 0px 0px 6px 3px;
+}
+
+.inquiry-filter>.inquiry-sort-box>.inquiry-sort-option.drop-option {
+    display: flex;
+}
+
+.inquiry-filter>.inquiry-sort-box>.inquiry-sort-option>li {
+    width: 100%;
+    height: 50px;
+    display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.table-row {
+.inquiry-filter>.inquiry-filter-box {
+    width: 20%;
+    position: relative;
+}
+
+.inquiry-filter>.inquiry-filter-box>.selected-filter-option {
+    width: 100%;
+    height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 15px 5px;
+}
+
+.inquiry-filter>.inquiry-filter-box>.inquiry-filter-option {
+    width: 75%;
+    display: none;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    top: 50px;
+    background-color: white;
+    padding: 10px 0px 10px 20px;
+    box-shadow: rgb(0 0 0 / 7%) 0px 0px 6px 3px;
+}
+
+.inquiry-filter>.inquiry-filter-box>.inquiry-filter-option.drop-option {
+    display: flex;
+}
+
+.inquiry-filter>.inquiry-filter-box>.inquiry-filter-option>li {
     width: 100%;
-    height: 90px;
-    border-bottom: 1.5px solid rgb(210, 210, 210);
-}
-
-.table-row>p {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.table-row>div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.table-row>div>a {
-    color: black;
-}
-
-.inquiry-img {
-    width: 50px;
     height: 50px;
-    object-fit: cover;
-    object-position: center;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
-
-.inquiry-detail-link {
-    color: black;
-} */

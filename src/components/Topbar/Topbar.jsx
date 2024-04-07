@@ -58,6 +58,9 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                         <li>
                             <Link to="/login" onClick={handleLoginClick}>로그인</Link>
                         </li>
+                        <li>
+                            <Link to="/inquiry">Q&A</Link>
+                        </li>
                     </ul>
                 </div>
             </div>
