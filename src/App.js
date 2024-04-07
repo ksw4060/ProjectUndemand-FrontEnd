@@ -9,6 +9,7 @@ import { CategoryPage } from "./pages/Category/CategoryPage.jsx";
 import { ProductDetailPage } from "./pages/ProductDetailPage/ProductDetailPage.jsx";
 import { InquiryPage } from "./pages/InquiryPage/InquiryPage.jsx";
 import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.jsx";
+import { CartPage } from "./pages/CartPage/CartPage.jsx";
 import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -54,6 +55,7 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetailPage />}></Route>
           <Route path="/inquiry" element={<InquiryPage />}></Route>
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />}></Route>
+          <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/cart/order" element={<PaymentPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
