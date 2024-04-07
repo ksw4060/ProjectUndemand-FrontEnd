@@ -1,92 +1,101 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import './InquiryPage.css';
-// import axios from 'axios';
-
-const inquiryCategories = [
-    {className: "view-all", title: "전체 보기"},
-    {className: "product-inquiry", title: "상품 문의"},
-    {className: "shipping-inquiry", title: "배송 문의"},
-    {className: "exchange-return-cancellation-inquiry", title: "교환/반품/취소 문의"},
-    {className: "other-inquiry", title: "기타 문의"}
-]
-
-const inquiryTableHeads = [
-    {className: "inquiry-num", title: "번호"},
-    {className: "inquiry-info", title: "상품정보"},
-    {className: "inquiry-category", title: "카테고리"},
-    {className: "inquiry-title", title: "제목"},
-    {className: "inquiry-writer", title: "작성자"},
-    {className: "inquiry-date", title: "작성일"}
-]
-
-const inquiryTableRows = [
-    {   
-        inquiryNum: 1,
-        inquiryInfo: {
-            productImgSrc: "https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-            productName: "Test Product 1",
-            productId: 1
-        },
-        inquiryCategory: "배송 문의",
-        inquiryTitle: "배송을 3일 이내에 받아볼 수 있을까요?",
-        inquiryWriter: "l****",
-        inquiryDate: "2024/03/25"
-    },
-    {
-        inquiryNum: 2,
-        inquiryInfo: {
-                productImgSrc: "https://images.unsplash.com/photo-1538329972958-465d6d2144ed?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                productName: "Test Product 2",
-                productId: 2
-            },
-        inquiryCategory: "교환/반품/취소 문의",
-        inquiryTitle: "사이즈 교환 문의 드려요!",
-        inquiryWriter: "b******",
-        inquiryDate: "2024/03/31"
-    }
-]
+import axios from 'axios';
 
 function InquiryPage () {
+    const [selectedInquirySortOption, setSelectedInquirySortOption] = useState("최신순");
+    const [sortOptionClick, setSortOptionClick] = useState(false);
+    const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] = useState("전체 보기");
+    const [filterOptionClick, setFilterOptionClick] = useState(false);
+    const [inquiryData, setInquiryData] = useState([]);
+    const [inquiryDataLength, setInquiryDataLength] = useState(0);
+    
+    useEffect(() => {
+        const fetchInquiryData = async () => {
+            try {
+                const inquiryResponse = await axios.get(`http://localhost:8080/api/v1/inquiry`);
+                setInquiryData(inquiryResponse.data);
+                setInquiryDataLength(inquiryResponse.data.length)
+            } catch (error) {
+                console.error('Error fetching category data:', error);
+            }
+        };
+
+        fetchInquiryData();
+    }, []);
+
     return (
         <div className="inquiry-page">
-            <div className="inquiry-title-section">
-                <h3>문의하기</h3>
+            <div className="inquiry-page-top">
+                <h3>Q&A</h3>
+                <div className="inquiry-count">{`${inquiryDataLength}개의 문의 글`}</div>
+                <div className="count-box">
+                    <div className="product-inquiry-count">
+                        <span>상품 문의 글</span>
+                    </div>
+                    <div className="delivery-inquiry-count">
+                        <span>배송 문의 글</span>
+                    </div>
+                    <div className="exchange-inquiry-count">
+                        <span>교환 문의 글</span>
+                    </div>
+                    <div className="return-inquiry-count">
+                        <span>반품 문의 글</span>
+                    </div>
+                    <div className="cancellation-inquiry-count">
+                        <span>취소 문의 글</span>
+                    </div>
+                    <div className="other-inquiry-count">
+                        <span>기타 문의 글</span>
+                    </div>
+                </div>
             </div>
-            <div className="inquiry-category-section">
-                {inquiryCategories.map(category => (
-                    <div key={category.className} className={category.className}>{category.title}</div>
-                ))}
+            <div className="inquiry-page-middle">
+                <div className="inquiry-filter">
+                    <div className="inquiry-sort-box">
+                        <div className="selected-sort-option" onClick={() => setSortOptionClick(prevState => !prevState)}>{`정렬: ${selectedInquirySortOption}`}</div>
+                        <ul className={`inquiry-sort-option ${sortOptionClick && "drop-option"}`}>
+                            <li>최신순</li>
+                            <li>오래된순</li>
+                        </ul>
+                    </div>
+                    <div className="inquiry-search"></div>
+                    <div className="inquiry-filter-box">
+                        <div className="selected-filter-option" onClick={() => setFilterOptionClick(prevState => !prevState)}>{`필터: ${selectedInquiryFilterOption}`}</div>
+                        <ul className={`inquiry-filter-option ${filterOptionClick && "drop-option"}`}>
+                            <li>{`전체 보기`}</li>
+                            <li>{`상품 문의`}</li>
+                            <li>{`배송 문의`}</li>
+                            <li>{`교환 문의`}</li>
+                            <li>{`반품 문의`}</li>
+                            <li>{`취소 문의`}</li>
+                            <li>{`기타 문의`}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div className="inquiry-article-section">
-                <div className="table-head">
-                    {inquiryTableHeads.map(tableHead => (
-                        <div key={tableHead.className} className={tableHead.className}>{tableHead.title}</div>
-                    ))}
-                </div>
-                <div className="table-row-wrapper">
-                    {inquiryTableRows.map(tableRow => (
-                        <div key={tableRow.inquiryNum} className="table-row">
-                            <p className="inquiry-num">{tableRow.inquiryNum}</p>
-                            <div className="inquiry-info">
-                                <Link to={`/product/${tableRow.inquiryInfo.productId}`}>
-                                    <img src={tableRow.inquiryInfo.productImgSrc} alt={tableRow.inquiryInfo.productName} className="inquiry-img"/>
-                                </Link>
-                                <Link to={`/product/${tableRow.inquiryInfo.productId}`}>
-                                    <p>{tableRow.inquiryInfo.productName}</p>
-                                </Link>
+                {inquiryData.map(tableRow => (
+                    <div key={tableRow.inquiryId} className="inquiry-section">
+                        <div className="inquiry-num-and-category-box">
+                            <div className="inquiry-num">
+                                <span>{`번호: ${tableRow.inquiryId}`}</span>
                             </div>
-                            <p className="inquiry-category">{tableRow.inquiryCategory}</p>
-                            <p className="inquiry-title">
-                                <Link to={`/inquiry/${tableRow.inquiryNum}`} className="inquiry-detail-link">
-                                    {tableRow.inquiryTitle}
-                                </Link>
-                            </p>
-                            <p className="inquiry-writer">{tableRow.inquiryWriter}</p>
-                            <p className="inquiry-date">{tableRow.inquiryDate}</p>
+                            <div className="inquiry-category">
+                                <span>{`카테고리: ${tableRow.inquiryType}`}</span>
+                            </div>
                         </div>
-                    ))}
-                </div>
+                        <div className="inquiry-content-box">
+                            <h2 className="inquiry-title">{tableRow.inquiryTitle}</h2>
+                            {/* <img src={tableRow.inquiryInfo ? tableRow.inquiryInfo.productImgSrc : ''} alt={tableRow.inquiryInfo ? tableRow.inquiryInfo.productName : ''} className="inquiry-img"/> */}
+                        </div>
+                        <div className="writer-info-box">
+                            <div className="inquiry-writer">{`${tableRow.name.slice(0, 1)}${'*'.repeat(Math.max(0, tableRow.name.length - 1)).slice(0, 2)}`}</div>
+                            <div className="inquiry-date">{tableRow.createdAt}</div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )

@@ -25,7 +25,7 @@ function ArticleViewModal({ modalType, modalClose }) {
         };
 
         fetchArticleData();
-    }, );
+    }, [productId]);
 
     return (
         <div className="article-view-modal">
