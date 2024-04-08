@@ -63,7 +63,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                             <Link to="/inquiry">Q&A</Link>
                         </li>
                         <li>
-                            <Link to="/cart" ><MdOutlineShoppingBag /></Link>
+                            <Link to="/cart?memberId=1" ><MdOutlineShoppingBag /></Link>
                         </li>
                     </ul>
                 </div>
