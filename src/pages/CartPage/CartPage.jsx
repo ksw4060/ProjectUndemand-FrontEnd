@@ -75,7 +75,7 @@ function CartPage() {
     };
 
     const totalPrice = cartProducts.reduce((acc, cartProduct) => {
-        return acc + (cartProduct.price);
+        return acc + (cartProduct.totalPrice);
     }, 0);
 
     const handleOrderBtn = async () => {
@@ -102,8 +102,8 @@ function CartPage() {
                         <div key={cartProduct.cartId} className="cart-middle">
                             <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className="cart-img"/>
                             <div className="cart-option-info">
-                                <div className="cart-product-name">{cartProduct.product.productName}</div>
-                                <div className="cart-product-type">{cartProduct.product.productType}</div>
+                                <div className="cart-product-name">{cartProduct.productName}</div>
+                                <div className="cart-product-type">{cartProduct.productType}</div>
                                 <div className="cart-product-color">yellow</div>
                                 <div className="cart-product-size-quantity">
                                     <div className="size">
@@ -133,7 +133,7 @@ function CartPage() {
                                     <FaRegTrashCan onClick={() => handleRemoveBtn(cartProduct.cartId)} />
                                 </div>
                             </div>
-                            <div className="cart-product-price">{`${cartProduct.price} 원`}</div>
+                            <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
                         </div>
                     ))}
                 </div>
