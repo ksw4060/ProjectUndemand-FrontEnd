@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./ProductDetailPage.css";
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -8,6 +8,7 @@ import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmi
 
 function ProductDetailPage() {
     let { productId } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState([]);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(0);
@@ -15,6 +16,7 @@ function ProductDetailPage() {
     const [reviewAndInquiryModalOpen, setReviewAndInquiryModalOpen] = useState(false);
     const [reviewWritingAndInquiryPostingModalOpen, setReviewWritingAndInquiryPostingModalOpen] = useState(false);
     const [modalType, setModalType] = useState(null);
+    const memberId = 1;
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -30,6 +32,20 @@ function ProductDetailPage() {
         };
         fetchProduct();
     }, [productId]);
+
+    const handleCartSubmit = async () => {
+        await axios.post(`http://localhost:8080/api/v1/cart/add/${productId}`, {
+            memberId: memberId,
+            quantity: quantity
+        })
+        .then(response => {
+            alert(`장바구니에 상품을 담았습니다!`);
+            navigate(`/cart?memberId=${memberId}`)
+        })
+        .catch(error => {
+            console.error('요청을 보내는 중 오류가 발생했습니다:', error);
+        });
+    };
 
     const handleIncrement = () => {
         if (quantity < 100) {
@@ -133,7 +149,7 @@ function ProductDetailPage() {
                                 <div className="option-btn-box">
                                     <ul className="option-btn-container">
                                         {/* <li className="option-btn">주문하기</li> */}
-                                        <li className="option-btn">장바구니</li>
+                                        <li className="option-btn" onClick={() => handleCartSubmit()}>장바구니</li>
                                         <li className="option-btn">찜하기</li>
                                     </ul>
                                 </div>

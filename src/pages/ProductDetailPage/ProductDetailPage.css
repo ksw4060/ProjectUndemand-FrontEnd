@@ -270,6 +270,10 @@
     border: 2px solid rgb(210, 210, 210);
 }
 
+.option-btn {
+    cursor: pointer;
+}
+
 .option-dropdown-info {
     width: 100%;
     margin-top: 90px;
