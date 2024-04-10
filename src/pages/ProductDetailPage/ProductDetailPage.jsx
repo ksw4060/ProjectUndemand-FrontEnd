@@ -17,6 +17,13 @@ function ProductDetailPage() {
     const [reviewWritingAndInquiryPostingModalOpen, setReviewWritingAndInquiryPostingModalOpen] = useState(false);
     const [modalType, setModalType] = useState(null);
     const memberId = 1;
+    const [productInventory, setProductInventory] = useState([]);
+    const [productColor, setProductColor] = useState([]);
+    const [selectedColor, setSelectedColor] = useState(null);
+    const [sizes, setSizes] = useState([]);
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedInvenId, setSelectedInvenId] = useState(null);
+    const [firstClick, setFirstClick] = useState(true);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -26,6 +33,10 @@ function ProductDetailPage() {
                     setProduct(response.data);
                     setLoading(false);
                 }
+                const invenResponse = await axios.get(`http://localhost:8080/api/v1/inventory`);
+                const invenResData = invenResponse.data;
+                const filteredInventory = invenResData.filter(inven => parseInt(inven.productId) === parseInt(productId));
+                setProductInventory(filteredInventory);
             } catch (error) {
                 setLoading(false);
             }
@@ -33,14 +44,48 @@ function ProductDetailPage() {
         fetchProduct();
     }, [productId]);
 
+    useEffect(() => {
+        const colors = productInventory.map(item => item.color);
+        const uniqueColors = [...new Set(colors)];
+        setProductColor(uniqueColors);
+    }, [productInventory]); 
+
+    const handleColorClick = (color) => {
+        setSelectedColor(color);
+        const filteredSizes = productInventory.filter(item => item.color === color).map(item => item.size);
+        setSizes(filteredSizes);
+    };
+
+    useEffect(() => {
+        setSelectedSize(null);
+        setQuantity(0);
+    }, [selectedColor]);
+
+    useEffect(() => {
+        setQuantity(0);
+    }, [selectedSize]);
+
+    const handleSizeClick = (size) => {
+        if (!checkSizeAvailability(size)) {
+            return;
+        } else {
+            setSelectedSize(size);
+        }
+    };
+
+    const checkSizeAvailability = (size) => {
+        const availableInventory = productInventory.find(item => item.color === selectedColor && item.size === size && item.productStock > 0);
+        return availableInventory ? true : false
+    };
+
     const handleCartSubmit = async () => {
-        await axios.post(`http://localhost:8080/api/v1/cart/add/${productId}`, {
+        await axios.post(`http://localhost:8080/api/v1/cart/add/${selectedInvenId}`, {
             memberId: memberId,
             quantity: quantity
         })
         .then(response => {
             alert(`장바구니에 상품을 담았습니다!`);
-            navigate(`/cart?memberId=${memberId}`)
+            navigate(`/cart?memberId=${memberId}`);
         })
         .catch(error => {
             console.error('요청을 보내는 중 오류가 발생했습니다:', error);
@@ -50,14 +95,22 @@ function ProductDetailPage() {
     const handleIncrement = () => {
         if (quantity < 100) {
             setQuantity(prevQuantity => prevQuantity + 1);
+            if (firstClick) {
+                handleSearchInvenId();
+                setFirstClick(false);
+            }
         }
     };
-    
+
     const handleDecrement = () => {
         if (quantity > 0) {
             setQuantity(prevQuantity => prevQuantity - 1);
         }
     };
+
+    useEffect(() => {
+        setFirstClick(true);
+    }, [selectedSize, productColor]);
 
     const toggleDropdown = (index) => {
         setDropdownStates(prevStates => {
@@ -84,6 +137,11 @@ function ProductDetailPage() {
     const closeArticleSubmitModal = () => {
         setReviewWritingAndInquiryPostingModalOpen(false);
     }
+
+    const handleSearchInvenId = () => {
+        const searchInventory = productInventory.find(item => item.color === selectedColor && item.size === selectedSize);
+        setSelectedInvenId(searchInventory.inventoryId)
+    };
 
     return (
         <div className="detail-page">
@@ -118,33 +176,52 @@ function ProductDetailPage() {
                                     <div className="option-color-container">
                                         <p>색상 선택</p>
                                         <ul>
-                                            <li className="option-color"></li>
-                                            <li className="option-color"></li>
-                                            <li className="option-color"></li>
-                                            <li className="option-color"></li>
-                                            <li className="option-color"></li>
+                                            {productColor.map((color, index) => (
+                                                <li 
+                                                    key={index} 
+                                                    className={`option-color ${selectedColor === color ? 'selected-color' : ''}`}
+                                                    onClick={() => handleColorClick(color)}
+                                                >
+                                                    {color}
+                                                </li>
+                                            ))}
                                         </ul>
                                     </div>
-                                    <div className="option-size-container">
-                                        <p>사이즈 선택</p>
-                                        <ul>
-                                            <li className="option-size">S</li>
-                                            <li className="option-size">M</li>
-                                            <li className="option-size">L</li>
-                                            <li className="option-size">XL</li>
-                                            <li className="option-size">XXL</li>
-                                        </ul>
-                                    </div>
-                                    <div className="option-quantity-container">
-                                        <p>수량 선택</p>
-                                        <div className="quantity-input">
-                                            <p>{quantity}</p>
-                                            <div className="btn-flex">
-                                                <MdOutlineKeyboardArrowUp onClick={() => handleIncrement()} />
-                                                <MdOutlineKeyboardArrowDown onClick={() => handleDecrement()}/>
+                                    {selectedColor ? (
+                                        <div className={`option-size-container`}>
+                                            <p>사이즈 선택</p>
+                                            <ul>
+                                                {sizes.map((size, index) => {
+                                                    const available = checkSizeAvailability(size);
+                                                    return (
+                                                        <li 
+                                                            key={index} 
+                                                            className={`option-size ${selectedSize === size ? 'selected-size' : ''} ${!available ? 'unavailable' : ' '}`}
+                                                            onClick={() => handleSizeClick(size)}
+                                                        >
+                                                            {size}
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        </div>
+                                    ) : (
+                                        <div className="selected-color-null"></div>
+                                    )}
+                                    {selectedSize ? (
+                                        <div className={`option-quantity-container`}>
+                                            <p>수량 선택</p>
+                                            <div className="quantity-input">
+                                                <p>{quantity}</p>
+                                                <div className="btn-flex">
+                                                    <MdOutlineKeyboardArrowUp onClick={() => handleIncrement()} />
+                                                    <MdOutlineKeyboardArrowDown onClick={() => handleDecrement()}/>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        <div className="selected-size-null"></div>
+                                    )}
                                 </div>
                                 <div className="option-btn-box">
                                     <ul className="option-btn-container">

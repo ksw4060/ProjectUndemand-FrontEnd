@@ -11,7 +11,6 @@ function CartPage() {
     const axiosInstance = axios.create({ withCredentials: true });
     const queryParams = new URLSearchParams(location.search);
     const memberId = parseInt(queryParams.get('memberId'));
-    const [selectedSize, setSelectedSize] = useState('XS');
     const [cartProducts, setCartProducts] = useState([]);
 
     useEffect(() => {
@@ -104,18 +103,10 @@ function CartPage() {
                             <div className="cart-option-info">
                                 <div className="cart-product-name">{cartProduct.productName}</div>
                                 <div className="cart-product-type">{cartProduct.productType}</div>
-                                <div className="cart-product-color">yellow</div>
+                                <div className="cart-product-color">{cartProduct.color}</div>
                                 <div className="cart-product-size-quantity">
                                     <div className="size">
-                                        <span>사이즈</span>
-                                        <select value={selectedSize} onChange={(e) => setSelectedSize(e.target.value)}>
-                                            <option value="XS">XS</option>
-                                            <option value="S">S</option>
-                                            <option value="M">M</option>
-                                            <option value="L">L</option>
-                                            <option value="XL">XL</option>
-                                            <option value="FREE">FREE</option>
-                                        </select>
+                                        <span>{cartProduct.size}</span>
                                     </div>
                                     <div className="quantity">
                                         <span>수량</span>
