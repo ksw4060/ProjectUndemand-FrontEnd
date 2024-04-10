@@ -22,17 +22,17 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-        if (window.scrollY > 120) {
-          setIscroll(true);
-        } else {
-          setIscroll(false);
-        }
+      if (window.scrollY > 120) {
+        setIscroll(true);
+      } else {
+        setIscroll(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -42,19 +42,32 @@ function App() {
 
   return (
     <div className="Body">
-      <div className={`Top-section ${isScroll ? 'scroll' : ''}`}>
-        <Topbar isMenuVisible={isMenuVisible} setIsMenuVisible={setIsMenuVisible} />
+      <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
+        <Topbar
+          isMenuVisible={isMenuVisible}
+          setIsMenuVisible={setIsMenuVisible}
+        />
       </div>
 
-      <div className={`Middle-section ${isScroll ? 'scroll' : ''} ${isMenuVisible ? 'blur' : ''}`}>
+      <div
+        className={`Middle-section ${isScroll ? "scroll" : ""} ${
+          isMenuVisible ? "blur" : ""
+        }`}
+      >
         <Routes>
           <Route path="/" element={<Main />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/:category" element={<CategoryPage />}></Route>
-          <Route path="/product/:productId" element={<ProductDetailPage />}></Route>
+          <Route
+            path="/product/:productId"
+            element={<ProductDetailPage />}
+          ></Route>
           <Route path="/inquiry" element={<InquiryPage />}></Route>
-          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />}></Route>
+          <Route
+            path="/inquiry/:inquiryId"
+            element={<InquiryDetailPage />}
+          ></Route>
           <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/cart/order" element={<PaymentPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
