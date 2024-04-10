@@ -14,14 +14,16 @@
 }
 
 .payment-page-wrapper {
+    width: 70%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 70%;
+    position: relative;
+    padding-top: 30px;
 }
 
 .order-section {
-    width: 65%;
+    width: 60%;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
@@ -113,15 +115,13 @@
     height: 50px;
     border-radius: 5px;
     border-style: none;
-    background-color: black;
-    color: white;
+    font-size: 16px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
     transition: 0.3s;
     margin-top: 30px;
     margin-bottom: 30px;
-}
-
-.save-button:hover {
-    cursor: pointer;
 }
 
 .payment-option {
@@ -132,32 +132,43 @@
     align-items: flex-start;
 }
 
-.option-card {
+.payment-option-select {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-pay-method {
+    width: 20%;
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 13px 15px;
     border-radius: 5px;
     font-size: 1.0rem;
-    width: 20%;
-    height: 50px;
     outline-style: none;
-    border: 1.5px solid rgb(170, 170, 170);
+    border: 1.5px solid rgb(210, 210, 210);
+    background-color: rgb(255, 255, 255);
+    /* background-color: rgb(0, 78, 255); */
+    color: rgb(0, 0, 0);
+    cursor: pointer;
     margin-top: 30px;
-    background-color: rgb(0, 78, 255);
-    color: white;
 }
 
-.option-card:hover {
-    cursor: pointer;
+.option-pay-method.selected-pay-method {
+    border: 1.8px solid rgb(0, 0, 0);
 }
 
 .cart-section {
-    width: 30%;
+    width: 23%;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
     align-items: center;
+    position: sticky;
+    top: 60px;
     overflow-y: auto;
 }
 
@@ -179,18 +190,57 @@
     align-items: center;
 }
 
-.cart-info>div {
+.cart-price,
+.cart-delivery-fee,
+.cart-total-payment {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+.cart-total-payment {
+    font-weight: bold;
+    margin: 10px 0px 30px 0px;
+}
+
+.cart-product {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+.cart-product-info {
+    width: 80%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-left: 30px;
+}
+
+.cart-product-info>span {
+    color: rgb(150, 150, 150);
+}
+
+.cart-product-info>span:nth-child(1) {
+    font-size: 17px;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    margin-bottom: 10px;
+}
+
+
 .cart-product>img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
     object-position: center;
+    margin: 5px 0px 0px 5px;
 }
 
 

@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
-function InquiryDetailPage () {
-    return (
-        <div className="inquiry-detail-page">
-
-        </div>
-    )
+function InquiryDetailPage() {
+  return <div className="inquiry-detail-page"></div>;
 }
 
-export { InquiryDetailPage }
+export { InquiryDetailPage };
