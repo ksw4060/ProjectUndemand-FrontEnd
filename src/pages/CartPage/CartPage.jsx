@@ -109,7 +109,7 @@ function CartPage() {
       <div className="cart-page-wrapper">
         <div className="cart">
           <div className="cart-top">
-            <h3 className="page-title">장바구니</h3>
+            <header className="page-title">장바구니</header>
           </div>
           {cartProducts.map((cartProduct, index) => (
             <div key={cartProduct.cartId} className="cart-middle">
@@ -158,7 +158,7 @@ function CartPage() {
         </div>
         <div className="bill">
           <div className="bill-top">
-            <h3 className="page-title">주문 내역</h3>
+            <header className="page-title">주문 내역</header>
           </div>
           <div className="bill-middle">
             <div className="bill-product-price">

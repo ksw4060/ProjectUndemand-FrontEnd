@@ -30,6 +30,11 @@
     align-items: center;
 }
 
+.page-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
 .cart-middle {
     width: 100%;
     display: flex;

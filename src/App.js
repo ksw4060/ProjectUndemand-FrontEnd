@@ -11,6 +11,7 @@ import { InquiryPage } from "./pages/InquiryPage/InquiryPage.jsx";
 import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.jsx";
 import { CartPage } from "./pages/CartPage/CartPage.jsx";
 import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
+import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
@@ -19,6 +20,16 @@ function App() {
   const [isScroll, setIscroll] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isReceiptPage, setIsReceiptPage] = useState(false);
+
+  useEffect(() => {
+    if (location.pathname === "/cart/order/done") {
+      setIsReceiptPage(true);
+    } else {
+      setIsReceiptPage(false);
+    }
+  }, [location.pathname === "/cart/order/done"]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,17 +53,21 @@ function App() {
 
   return (
     <div className="Body">
-      <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
-        <Topbar
-          isMenuVisible={isMenuVisible}
-          setIsMenuVisible={setIsMenuVisible}
-        />
-      </div>
+      {isReceiptPage === false ? (
+        <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
+          <Topbar
+            isMenuVisible={isMenuVisible}
+            setIsMenuVisible={setIsMenuVisible}
+          />
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       <div
-        className={`Middle-section ${isScroll ? "scroll" : ""} ${
-          isMenuVisible ? "blur" : ""
-        }`}
+        className={`Middle-section ${
+          isScroll && !isReceiptPage ? "scroll" : ""
+        } ${isMenuVisible ? "blur" : ""}`}
       >
         <Routes>
           <Route path="/" element={<Main />}></Route>
@@ -70,6 +85,7 @@ function App() {
           ></Route>
           <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/cart/order" element={<PaymentPage />}></Route>
+          <Route path="/cart/order/done" element={<ReceiptPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
       </div>
