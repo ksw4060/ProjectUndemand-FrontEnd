@@ -24,6 +24,7 @@ function ReceiptPage() {
   const receiptAddress = address;
   const receiptDetailAddress = detailAddress;
   const receiptTotalPrice = totalPrice;
+  const axiosInstance = axios.create({ withCredentials: true });
   const [orderedProducts, setOrderedProducts] = useState([]);
 
   // useEffect(() => {
@@ -60,7 +61,7 @@ function ReceiptPage() {
 
   const handleReceiptConfirm = async () => {
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         "http://localhost:8080/api/v1/order/paymentconfirm"
       );
       console.log(response);
