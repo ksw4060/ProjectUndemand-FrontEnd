@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./PaymentPage.css";
 
 function PaymentPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { memberId } = location.state;
   const orderMemberId = memberId;
   const [familyName, setFamilyName] = useState("");
@@ -90,13 +91,11 @@ function PaymentPage() {
     }
   }
 
-  // 프론트에서 결제 진행 -> 완료되면 그때 백엔드 전달(결제 api 호출)
   async function handlePayment(orderInfo) {
-    // index.html에 iamport CDN 불러와야 사용할 수 있음
-    window.IMP.init("imp04081725"); // 이 값은 계정 고유번호이므로 고정
+    window.IMP.init("imp04081725");
     window.IMP.request_pay(
       {
-        pg: "html5_inicis", // 고정
+        pg: "html5_inicis",
         pay_method: orderInfo.payMethod,
         merchant_uid: orderInfo.merchantUid,
         name: orderInfo.productName,
@@ -108,16 +107,27 @@ function PaymentPage() {
       },
       (rsp) => {
         if (rsp.success) {
-          // 프론트에서 결제가 완료되면
           axios
             .post(`http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`, {
               memberId: orderInfo.memberId,
               orderId: orderInfo.orderId,
               price: orderInfo.totalPrice,
               inventoryIdList: orderInfo.productMgtIds,
-            }) // 백엔드 결제 api 호출 orderInfo.member.id
+            })
             .then((res) => {
               console.log(rsp);
+              navigate("/cart/order/done", {
+                state: {
+                  memberId: orderInfo.memberId,
+                  ordererName: orderInfo.ordererName,
+                  productMgtIds: orderInfo.productMgtIds,
+                  orderId: orderInfo.orderId,
+                  orderDay: orderInfo.orderDay,
+                  address: orderInfo.address,
+                  detailAddress: orderInfo.detailAddress,
+                  totalPrice: orderInfo.totalPrice,
+                },
+              });
             })
             .catch((error) => {
               console.error(error);
@@ -266,7 +276,7 @@ function PaymentPage() {
               <span>배송비</span>
               <span>0 원</span>
             </div>
-            <div className="cart-total-payment">
+            <div className="cart-total-price">
               <span>총 결제 금액</span>
               <span>{`${totalPrice} 원`}</span>
             </div>
@@ -280,8 +290,8 @@ function PaymentPage() {
                   <span>{cartProduct.productName}</span>
                   <span>{`색상: ${cartProduct.color}`}</span>
                   <span>{`사이즈: ${cartProduct.size}`}</span>
-                  <span>{`수량: ${cartProduct.quantity} / ${cartProduct.totalPrice}`}</span>
-                  <span>{`${cartProduct.productPrice}`}</span>
+                  <span>{`가격: ${cartProduct.productPrice} 원`}</span>
+                  <span>{`수량: ${cartProduct.quantity} / ${cartProduct.totalPrice} 원`}</span>
                 </div>
               </div>
             ))}

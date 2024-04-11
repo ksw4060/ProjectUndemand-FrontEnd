@@ -1,0 +1,120 @@
+.receipt-page {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.receipt-page-title {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 23px;
+    font-weight: bold;
+    margin-top: 30px;
+}
+
+.receipt-page-content {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: rgb(245, 245, 245);
+    margin-top: 60px;
+}
+
+.receipt-page-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: rgb(245, 245, 245);
+    padding: 60px 0px;
+}
+
+.ordered-products-container {
+    width: 50%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-star;
+    border-right: 1.5px solid rgb(210, 210, 210);
+    padding: 0px 60px;
+}
+
+.container-title {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.ordered-products {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 30px 0px;
+}
+
+.ordered-products>img {
+    width: 164px;
+    height: 164px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.receipt-products-info {
+    width: 60%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: 15px;
+}
+
+.receipt-products-info>span:nth-child(1) {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+    padding-bottom: 15px;
+}
+
+.receipt-products-info>span {
+    font-size: 16px;
+    color: rgb(150, 150, 150);
+    padding-bottom: 5px;
+}
+
+.ordered-products-container>span {
+    margin-top: 30px;
+}
+
+.receipt-box-container {
+    width: 50%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    /* background-color: rgb(255, 255, 255); */
+    padding: 0px 60px;
+}
+
+.receipt-box {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 30px 0px;
+}
+
+.receipt-box>span {
+    font-size: 18px;
+    font-weight: bold;
+    padding-bottom: 23px;
+}
