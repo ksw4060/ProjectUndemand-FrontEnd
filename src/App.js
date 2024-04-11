@@ -20,6 +20,16 @@ function App() {
   const [isScroll, setIscroll] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isReceiptPage, setIsReceiptPage] = useState(false);
+
+  useEffect(() => {
+    if (location.pathname === "/cart/order/done") {
+      setIsReceiptPage(true);
+    } else {
+      setIsReceiptPage(false);
+    }
+  }, [location.pathname === "/cart/order/done"]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,17 +53,21 @@ function App() {
 
   return (
     <div className="Body">
-      <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
-        <Topbar
-          isMenuVisible={isMenuVisible}
-          setIsMenuVisible={setIsMenuVisible}
-        />
-      </div>
+      {isReceiptPage === false ? (
+        <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
+          <Topbar
+            isMenuVisible={isMenuVisible}
+            setIsMenuVisible={setIsMenuVisible}
+          />
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       <div
-        className={`Middle-section ${isScroll ? "scroll" : ""} ${
-          isMenuVisible ? "blur" : ""
-        }`}
+        className={`Middle-section ${
+          isScroll && !isReceiptPage ? "scroll" : ""
+        } ${isMenuVisible ? "blur" : ""}`}
       >
         <Routes>
           <Route path="/" element={<Main />}></Route>

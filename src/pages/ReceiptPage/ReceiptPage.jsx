@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ReceiptPage.css";
 
 function ReceiptPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const {
     memberId,
     ordererName,
@@ -57,27 +58,30 @@ function ReceiptPage() {
     fetchProducts();
   }, [orderMemberId]);
 
-  useEffect(() => {
-    const paymentConfirm = async () => {
-      try {
-        if (orderedProducts.length > 0) {
-          const response = await axios.get(
-            "http://localhost:8080/api/v1/order/paymentconfirm"
-          );
-          console.log(response);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    paymentConfirm();
-  }, [orderedProducts]);
-
-  console.log(orderedProducts);
+  const handleReceiptConfirm = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/order/paymentconfirm"
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="receipt-page">
+      <div className="topbar-logo">
+        <Link
+          to="/"
+          onClick={() => {
+            handleReceiptConfirm();
+            navigate("/");
+          }}
+        >
+          Project Undemand
+        </Link>
+      </div>
       <header className="receipt-page-title">결제 완료</header>
       <div className="receipt-page-content">
         <div className="receipt-page-wrapper">
@@ -111,6 +115,15 @@ function ReceiptPage() {
           </div>
         </div>
       </div>
+      <button
+        className="receipt-confirm-btn"
+        onClick={() => {
+          handleReceiptConfirm();
+          navigate("/");
+        }}
+      >
+        확인
+      </button>
     </div>
   );
 }

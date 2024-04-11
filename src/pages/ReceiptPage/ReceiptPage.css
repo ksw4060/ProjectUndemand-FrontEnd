@@ -13,7 +13,6 @@
     align-items: center;
     font-size: 23px;
     font-weight: bold;
-    margin-top: 30px;
 }
 
 .receipt-page-content {
@@ -117,4 +116,16 @@
     font-size: 18px;
     font-weight: bold;
     padding-bottom: 23px;
+}
+
+.receipt-confirm-btn {
+    width: 15%;
+    height: 60px;
+    outline: none;
+    font-size: 17px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
+    cursor: pointer;
+    border-radius: 8px;
+    margin-top: 60px;
 }
