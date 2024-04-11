@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
 import { Main } from "./pages/Main/Main.jsx";
-import { Signup } from "./components/Signup.jsx";
-import { Login } from "./components/Login.jsx";
+import { Signup } from "./pages/AuthPages/Signup.jsx";
+import { Login } from "./pages/AuthPages/Login.jsx";
 import { CategoryPage } from "./pages/Category/CategoryPage.jsx";
 import { ProductDetailPage } from "./pages/ProductDetailPage/ProductDetailPage.jsx";
 import { InquiryPage } from "./pages/InquiryPage/InquiryPage.jsx";
@@ -21,17 +21,17 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-        if (window.scrollY > 120) {
-          setIscroll(true);
-        } else {
-          setIscroll(false);
-        }
+      if (window.scrollY > 120) {
+        setIscroll(true);
+      } else {
+        setIscroll(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-        window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -41,19 +41,44 @@ function App() {
 
   return (
     <div className="Body">
-      <div className={`Top-section ${isScroll ? 'scroll' : ''}`}>
-        <Topbar isMenuVisible={isMenuVisible} setIsMenuVisible={setIsMenuVisible} />
+      <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
+        <Topbar
+          isMenuVisible={isMenuVisible}
+          setIsMenuVisible={setIsMenuVisible}
+        />
       </div>
 
-      <div className={`Middle-section ${isScroll ? 'scroll' : ''} ${isMenuVisible ? 'blur' : ''}`}>
+      <div
+        className={`Middle-section ${isScroll ? "scroll" : ""} ${
+          isMenuVisible ? "blur" : ""
+        }`}
+      >
         <Routes>
           <Route path="/" element={<Main />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          {/* <Route
+            path="/login/oauth2/code/kakao"
+            element={<KakaoLogin />}
+          ></Route>
+          <Route
+            path="/login/oauth2/code/google"
+            element={<GoogleLogin />}
+          ></Route>
+          <Route
+            path="/login/oauth2/code/naver"
+            element={<NaverLogin />}
+          ></Route> */}
           <Route path="/:category" element={<CategoryPage />}></Route>
-          <Route path="/product/:productId" element={<ProductDetailPage />}></Route>
+          <Route
+            path="/product/:productId"
+            element={<ProductDetailPage />}
+          ></Route>
           <Route path="/inquiry" element={<InquiryPage />}></Route>
-          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />}></Route>
+          <Route
+            path="/inquiry/:inquiryId"
+            element={<InquiryDetailPage />}
+          ></Route>
           <Route path="/cart/order" element={<PaymentPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
