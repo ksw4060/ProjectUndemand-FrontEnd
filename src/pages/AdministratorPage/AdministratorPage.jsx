@@ -94,6 +94,8 @@ function AdministratorPage() {
           price,
           productInfo,
           manufacturer,
+          //isSale, // 추가 필요
+          //isRecommend, // 추가 필요
         }
       );
       console.log(response.data);
@@ -112,8 +114,12 @@ function AdministratorPage() {
           categoryId,
           size,
           initialStock,
-          additionalStock,
-          productStock,
+          // 변경사항 : additionalStock(추가 재고)은 생성 요청시 등록 불가, productStock은 초기 재고로 자동 저장
+          additionalStock, // 삭제 필요
+          productStock, // 삭제 필요
+          //isRestockAvailable, // or true // 추가 필요
+          //isRestocked, // or true // 추가 필요
+          //isSoldOut, // or true // 추가 필요
         }
       );
       console.log(response.data);
