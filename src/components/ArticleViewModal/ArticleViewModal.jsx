@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import "./ArticleViewModal.css";
 import { MdClose } from "react-icons/md";
-import axios from "axios";
+import { FaRegStar, FaStar } from "react-icons/fa6";
 
-function ArticleViewModal({ modalType, modalClose }) {
+function ArticleViewModal({
+  modalType,
+  modalClose,
+  productReviewData,
+  productInquiryData,
+}) {
   const [selectedReviewSortOption, setSelectedReviewSortOption] =
     useState("최신순");
   const [selectedInquirySortOption, setSelectedInquirySortOption] =
@@ -15,23 +19,40 @@ function ArticleViewModal({ modalType, modalClose }) {
   const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] =
     useState("전체 보기");
   const [filterOptionClick, setFilterOptionClick] = useState(false);
-  const [productInquiryData, setProductInquiryData] = useState([]);
-  const { productId } = useParams();
 
-  useEffect(() => {
-    const fetchArticleData = async () => {
-      try {
-        const productInquiryResponse = await axios.get(
-          `http://localhost:8080/api/v1/inquiry/list/${productId}`
-        );
-        setProductInquiryData(productInquiryResponse.data);
-      } catch (error) {
-        console.error("Error fetching category data:", error);
-      }
-    };
+  const calculateAverageRating = () => {
+    // productReviewData 배열의 모든 리뷰의 rating 값을 합산
+    const totalRating = productReviewData.reduce(
+      (total, review) => total + review.rating,
+      0
+    );
 
-    fetchArticleData();
-  }, [productId]);
+    const numberOfReviews = productReviewData.length;
+
+    if (numberOfReviews === 0) return null;
+
+    const averageRating = Math.ceil(totalRating / numberOfReviews);
+
+    return averageRating;
+  };
+
+  const averageRating = calculateAverageRating();
+
+  const renderStars = (rating) => {
+    const filledStars = Math.floor(rating);
+    const remainingStars = 5 - filledStars;
+
+    return (
+      <>
+        {[...Array(filledStars)].map((_, index) => (
+          <FaStar key={index} />
+        ))}
+        {[...Array(remainingStars)].map((_, index) => (
+          <FaRegStar key={filledStars + index} />
+        ))}
+      </>
+    );
+  };
 
   return (
     <div className="article-view-modal">
@@ -50,19 +71,10 @@ function ArticleViewModal({ modalType, modalClose }) {
       {modalType === "review" ? (
         <>
           <div className="rating-and-recommendations-section">
-            <div className="star-rate">별별별별별</div>
-            <div className="review-count">{`10개의 리뷰`}</div>
-            <div className="rate-box">
-              <div className="size-rate">
-                <span>제품의 사이즈는 어떤가요?</span>
-              </div>
-              <div className="comfort-rate">
-                <span>제품의 착용감은 어떤가요?</span>
-              </div>
-              <div className="recommend-rate">
-                <span>제품을 추천하실 의향이 있으신가요?</span>
-              </div>
+            <div className="star-rate">
+              {averageRating && renderStars(averageRating)}
             </div>
+            <div className="review-count">{`10개의 리뷰`}</div>
           </div>
           <div className="pagination-info-section">{`1-10/10개의 리뷰`}</div>
           <div className="review-filter-section">
@@ -101,35 +113,24 @@ function ArticleViewModal({ modalType, modalClose }) {
               </ul>
             </div>
           </div>
-          <div className="review-section">
-            <div className="rating-and-recommendations-box">
-              <div className="star-rate">별별별별별</div>
-              <div className="rate-box">
-                <div className="size-rate">
-                  <span>제품의 사이즈는 어떤가요?</span>
+          {productReviewData.map((tableRow) => (
+            <div key={tableRow.reviewId} className="review-section">
+              <div className="rating-and-recommendations-box">
+                <div className="star-rate">{renderStars(tableRow.rating)}</div>
+              </div>
+              <div className="review-box">
+                <div className="review-content">{tableRow.reviewContent}</div>
+              </div>
+              <div className="writer-info-box">
+                <div className="review-writer">
+                  {`${tableRow.writer.slice(0, 1)}${"*"
+                    .repeat(Math.max(0, tableRow.writer.length - 1))
+                    .slice(0, 2)}`}
                 </div>
-                <div className="comfort-rate">
-                  <span>제품의 착용감은 어떤가요?</span>
-                </div>
-                <div className="recommend-rate">
-                  <span>제품을 추천하실 의향이 있으신가요?</span>
-                </div>
+                <div className="review-date">{tableRow.updatedAt}</div>
               </div>
             </div>
-            <div className="review-box">
-              <h2 className="review-title">테스트 리뷰 1</h2>
-              <div className="review-content">첫번째 테스트 리뷰입니다.</div>
-              <div className="like-box">
-                <div className="like">좋아요</div>
-                <div className="bad">싫어요</div>
-              </div>
-            </div>
-            <div className="writer-info-box">
-              <div className="review-writer">{`찰스`}</div>
-              <div className="review-date">{`2024.04.03`}</div>
-              <div className="review-usual-size">{`260mm`}</div>
-            </div>
-          </div>
+          ))}
         </>
       ) : (
         <>

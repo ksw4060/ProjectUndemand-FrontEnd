@@ -2,16 +2,54 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import "./ArticleSubmitModal.css";
 import { MdClose } from "react-icons/md";
+import { FaRegStar, FaStar } from "react-icons/fa6";
 import axios from "axios";
 
-function ArticleSubmitModal({ modalType, modalClose }) {
+function ArticleSubmitModal({
+  modalType,
+  modalClose,
+  paymentHistories,
+  product,
+  updateReviewData,
+  updateinquiryData,
+}) {
   const [writer, setWriter] = useState("");
   const [email, setEmail] = useState("");
   const [inquiryContent, setInquiryContent] = useState("");
   const [inquiryTitle, setInquiryTitle] = useState("");
   const [inquiryPassword, setInquiryPassword] = useState("");
   const [inquiryCategory, setInquiryCategory] = useState("");
+  const [paymentId, setPaymentId] = useState("");
+  const [reviewContent, setReviewContent] = useState("");
+  const [rating, setRating] = useState(0);
   const { productId } = useParams();
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const handleReviewSubmit = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/v1/review/new/${paymentId}`,
+        {
+          reviewContent: reviewContent,
+          rating: rating,
+        }
+      );
+      setModalMessage(`${response.data.writer}님의 문의 글을 등록하였습니다.`);
+      setShowModal(true);
+      updateReviewData();
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const handleReviewSubmitBtn = async () => {
+    if (paymentId && reviewContent && rating) {
+      await handleReviewSubmit();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
 
   const handleInquirySubmit = async () => {
     await axios
@@ -23,10 +61,11 @@ function ArticleSubmitModal({ modalType, modalClose }) {
         inquiryTitle: inquiryTitle,
         password: inquiryPassword,
         inquiryType: inquiryCategory,
-        isSecret: "true",
       })
       .then((response) => {
-        alert(`${response.data.name}님의 문의 글을 등록하였습니다.`);
+        setModalMessage(`${writer}님의 문의 글을 등록하였습니다.`);
+        setShowModal(true);
+        updateinquiryData();
       })
       .catch((error) => {
         console.error("요청을 보내는 중 오류가 발생했습니다:", error);
@@ -37,28 +76,37 @@ function ArticleSubmitModal({ modalType, modalClose }) {
     setInquiryCategory(category);
   };
 
-  const handleSubmitBtnClick = async () => {
+  const handleInquirySubmitBtn = async () => {
     if (writer && email && inquiryContent && inquiryTitle && inquiryPassword) {
       await handleInquirySubmit();
     } else {
-      alert("모든 필수 정보를 입력해주세요.");
+      alert("모든 입력란을 작성해 주세요.");
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    modalClose();
   };
 
   return (
     <div className="article-submit-modal">
       {modalType === "review" ? (
-        <div className="review-writing-modal">
+        <div
+          className={`review-writing-modal ${
+            showModal && "confirm-modal-active"
+          }`}
+        >
           <div className="modal-top-section">
             <h2>리뷰 작성</h2>
-            <h3>제품에 대한 리뷰를 작성해 주세요</h3>
+            <h3>상품에 대한 리뷰를 작성해 주세요</h3>
             <div className="review-writing-modal-product-info">
               <img
                 src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt=""
                 className="review-writing-modal-img-info"
               />
-              <span>상품 이름</span>
+              <span>{product.productName}</span>
             </div>
             <MdClose
               onClick={modalClose}
@@ -66,50 +114,64 @@ function ArticleSubmitModal({ modalType, modalClose }) {
             />
           </div>
           <div className="modal-content-section">
+            <div className="review-option-select">
+              <span>리뷰를 남길 상품 옵션 선택</span>
+              <select
+                value={paymentId}
+                onChange={(e) => setPaymentId(e.target.value)}
+              >
+                <option value="">리뷰를 남길 옵션을 선택해 주세요.</option>
+                {paymentHistories.map((paymentHistory) => (
+                  <option
+                    key={paymentHistory.paymentId}
+                    value={paymentHistory.paymentId}
+                  >
+                    {paymentHistory.option}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="review-rate">
               <span>평점</span>
-              <span>별 별 별 별 별</span>
+              <div className="review-rate-input">
+                {[...Array(5)].map((_, index) => (
+                  <span
+                    key={index}
+                    onClick={() => setRating(index + 1)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {index < rating ? <FaStar /> : <FaRegStar />}
+                  </span>
+                ))}
+              </div>
             </div>
             <div className="review-writing">
               <div className="review-content">
                 <span>내 리뷰</span>
-                <input type="text" />
-              </div>
-              <div className="review-title">
-                <span>리뷰 제목</span>
-                <input type="text" />
-              </div>
-            </div>
-            <div className="review-select-option">
-              <div className="size-option">
-                <span>제품의 사이즈는 어떤가요?</span>
-              </div>
-              <div className="comfort-option">
-                <span>제품의 착용감은 어떤가요?</span>
-              </div>
-              <div className="recommend-option">
-                <span>제품을 추천하실 의향이 있으신가요?</span>
+                <div className="content-input-cover">
+                  <textarea
+                    value={reviewContent}
+                    onChange={(e) => setReviewContent(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
-            <div className="review-add-picture">
-              <span>사진 추가</span>
-              <span>{`제품 착용 모습, 스타일링을 보여주는 사진을 추가하세요. (최대 5장)`}</span>
-              <div className="add-btn"></div>
+            <div className="review-btn-box">
+              <button
+                className="submit-btn"
+                onClick={() => handleReviewSubmitBtn()}
+              >
+                등록
+              </button>
             </div>
-            <div className="additional-info">
-              <span>추가 정보</span>
-              <span>
-                해당 정보는 다른 구매자가 제품을 선택 및 구매하는데 도움이
-                됩니다.
-              </span>
-              <span>평소 착용하는 사이즈</span>
-              <input type="" />
-            </div>
-            <button className="submit-btn">등록</button>
           </div>
         </div>
       ) : (
-        <div className="inquiry-writing-modal">
+        <div
+          className={`inquiry-writing-modal ${
+            showModal && "confirm-modal-active"
+          }`}
+        >
           <div className="modal-top-section">
             <h2>문의 글 작성</h2>
             <h3>제품에 대한 문의 사항을 작성해 주세요</h3>
@@ -203,7 +265,6 @@ function ArticleSubmitModal({ modalType, modalClose }) {
                 >
                   기타 문의 글
                 </button>
-                {console.log(inquiryCategory)}
               </div>
             </div>
             <div className="additional-info">
@@ -222,13 +283,19 @@ function ArticleSubmitModal({ modalType, modalClose }) {
             <div className="inquiry-btn-box">
               <button
                 className="submit-btn"
-                onClick={() => {
-                  handleSubmitBtnClick();
-                }}
+                onClick={() => handleInquirySubmitBtn()}
               >
                 등록
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showModal && (
+        <div className="confirm-modal">
+          <div className="confirm-modal-content">
+            <p>{modalMessage}</p>
+            <button onClick={closeModal}>확인</button>
           </div>
         </div>
       )}
