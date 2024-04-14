@@ -298,7 +298,9 @@ function ProductDetailPage() {
             <div className="option-and-info-box">
               <div className="option-container">
                 <ul className="option-txt-box">
-                  {product.sale && <li className="is-sale">30% 할인 중!</li>}
+                  {product.isDiscount && (
+                    <li className="is-discount">30% 할인 중!</li>
+                  )}
                   <li className="product-name">{product.productName}</li>
                   <li className="product-type">{product.productType}</li>
                   <li className="product-price">{product.price} 원</li>
