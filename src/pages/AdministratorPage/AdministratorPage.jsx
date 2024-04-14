@@ -28,7 +28,8 @@ function AdministratorPage() {
   const [price, setPrice] = useState("");
   const [productInfo, setProductInfo] = useState("");
   const [manufacturer, setManufacturer] = useState("");
-  const [isSale, setIsSale] = useState(false);
+  const [isDiscount, setIsDiscount] = useState(false);
+  const [discountRate, setDiscountRate] = useState("");
   const [isRecommend, setIsRecommend] = useState(false);
 
   // 상품 수정
@@ -107,10 +108,11 @@ function AdministratorPage() {
         {
           productName: productName,
           productType: productType,
-          price: price,
+          price: parseInt(price),
           productInfo: productInfo,
           manufacturer: manufacturer,
-          isSale: isSale,
+          isDiscount: isDiscount,
+          discountRate: parseInt(discountRate),
           isRecommend: isRecommend,
         }
       );
@@ -130,7 +132,7 @@ function AdministratorPage() {
           price: price,
           productInfo: productInfo,
           manufacturer: manufacturer,
-          isSale: isSale,
+          isDiscount: isDiscount,
           isRecommend: isRecommend,
         }
       );
@@ -334,11 +336,22 @@ function AdministratorPage() {
               onChange={(e) => setManufacturer(e.target.value)}
               placeholder="Enter manufacturer"
             />
-            <select value={isSale} onChange={(e) => setIsSale(e.target.value)}>
+            <select
+              value={isDiscount}
+              onChange={(e) => setIsDiscount(e.target.value)}
+            >
               <option value={false}>세일 상품으로 등록 할까요?</option>
               <option value={true}>Yes</option>
               <option value={false}>No</option>
             </select>
+            {isDiscount && (
+              <input
+                type="number"
+                value={discountRate}
+                onChange={(e) => setDiscountRate(e.target.value)}
+                placeholder="Enter discount rate"
+              />
+            )}
             <select
               value={isRecommend}
               onChange={(e) => setIsRecommend(e.target.value)}
@@ -392,7 +405,10 @@ function AdministratorPage() {
               onChange={(e) => setManufacturer(e.target.value)}
               placeholder="Enter manufacturer"
             />
-            <select value={isSale} onChange={(e) => setIsSale(e.target.value)}>
+            <select
+              value={isDiscount}
+              onChange={(e) => setIsDiscount(e.target.value)}
+            >
               <option value={false}>세일 상품으로 등록 할까요?</option>
               <option value={true}>Yes</option>
               <option value={false}>No</option>
