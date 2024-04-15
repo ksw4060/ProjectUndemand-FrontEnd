@@ -22,9 +22,11 @@ function ArticleSubmitModal({
   const [paymentId, setPaymentId] = useState("");
   const [reviewContent, setReviewContent] = useState("");
   const [rating, setRating] = useState(0);
+  const [imageFile, setImageFile] = useState(null);
   const { productId } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const reviewId = 1;
 
   const handleReviewSubmit = async () => {
     try {
@@ -46,8 +48,34 @@ function ArticleSubmitModal({
   const handleReviewSubmitBtn = async () => {
     if (paymentId && reviewContent && rating) {
       await handleReviewSubmit();
+      await handleImageUpload();
     } else {
       alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("reviewId", reviewId);
+      formData.append("image", imageFile);
+
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/review/img/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("이미지 업로드 에러:", error);
     }
   };
 
@@ -155,6 +183,14 @@ function ArticleSubmitModal({
                   />
                 </div>
               </div>
+            </div>
+            <div className="review-img">
+              <span>이미지 등록</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
             </div>
             <div className="review-btn-box">
               <button

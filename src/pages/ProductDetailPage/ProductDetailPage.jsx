@@ -36,6 +36,8 @@ function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  // const [reviewImage, setReviewImage] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,7 +61,21 @@ function ProductDetailPage() {
         setLoading(false);
       }
     };
+
+    const fetchThumbnail = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/thumbnail/${productId}`
+        );
+        setThumbnailImage(response.data[0]);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching thumbnail:", error);
+      }
+    };
+
     fetchProduct();
+    fetchThumbnail();
   }, [productId]);
 
   useEffect(() => {
@@ -101,6 +117,33 @@ function ProductDetailPage() {
       console.error(error.response.data);
     }
   };
+
+  // const fetchReviewImg = async (reviewId) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:8080/api/v1/review/img/${reviewId}`
+  //     );
+  //     console.log(response.data);
+  //     return response.data[0];
+  //     // setReviewImage(response.data[0]);
+  //   } catch (error) {
+  //     console.error("Error fetching review image:", error);
+  //     return null;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const fetchReviewImages = async () => {
+  //     const reviewImages = await Promise.all(
+  //       productReviewData.map(async (review) => {
+  //         const imgUrl = await fetchReviewImg(review.reviewId);
+  //         return imgUrl;
+  //       })
+  //     );
+  //     setReviewImage(reviewImages);
+  //   };
+  //   fetchReviewImages();
+  // }, [productReviewData]);
 
   const fetchProductInquiryData = async () => {
     try {
@@ -288,11 +331,13 @@ function ProductDetailPage() {
                 <li className="thumbnail-img"></li>
               </ul>
               <div className="hero-img-container">
-                <img
-                  src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
-                  className="hero-img"
-                />
+                {thumbnailImage && (
+                  <img
+                    src={`http://localhost:8080${thumbnailImage}`}
+                    alt="Thumbnail"
+                    className="hero-img"
+                  />
+                )}
               </div>
             </div>
             <div className="option-and-info-box">
@@ -440,6 +485,11 @@ function ProductDetailPage() {
                               <span>{tableRow.updatedAt.substring(0, 10)}</span>
                             </div>
                           </div>
+                          {/* <img
+                            src={`http://localhost:8080${reviewImage}`}
+                            alt={`${index}번 리뷰`}
+                            className="detail-page-review-img"
+                          /> */}
                           <div className="detail-page-review-content">
                             {tableRow.reviewContent}
                           </div>
