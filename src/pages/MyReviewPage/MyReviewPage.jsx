@@ -19,6 +19,8 @@ function MyReviewPage() {
   const [rUModalOpen, setRUModalOpen] = useState(false);
   const [selectedRId, setSelectedRId] = useState(null);
   const memberId = 1;
+  // const [reviewImage, setReviewImage] = useState(null);
+  // const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     fetchProductReviewData();
@@ -56,6 +58,58 @@ function MyReviewPage() {
       console.error(error.response.data);
     }
   };
+
+  // const handleImageChange = (e) => {
+  //   setImageFile(e.target.files[0]);
+  // };
+
+  // const handleImageUpload = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("reviewId", reviewId);
+  //     formData.append("image", imageFile);
+
+  //     const response = await axios.post(
+  //       "http://localhost:8080/api/v1/review/img/upload",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error("이미지 업로드 에러:", error);
+  //   }
+  // };
+
+  // const fetchReviewImg = async (reviewId) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:8080/api/v1/review/img/${reviewId}`
+  //     );
+  //     console.log(response.data);
+  //     return response.data[0];
+  //     // setReviewImage(response.data[0]);
+  //   } catch (error) {
+  //     console.error("Error fetching review image:", error);
+  //     return null;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const fetchReviewImages = async () => {
+  //     const reviewImages = await Promise.all(
+  //       productReviewData.map(async (review) => {
+  //         const imgUrl = await fetchReviewImg(review.reviewId);
+  //         return imgUrl;
+  //       })
+  //     );
+  //     setReviewImage(reviewImages);
+  //   };
+  //   fetchReviewImages();
+  // }, [productReviewData]);
 
   const renderStars = (rating) => {
     const filledStars = Math.floor(rating);

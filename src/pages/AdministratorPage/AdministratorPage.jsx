@@ -32,6 +32,12 @@ function AdministratorPage() {
   const [discountRate, setDiscountRate] = useState("");
   const [isRecommend, setIsRecommend] = useState(false);
 
+  //상품 이미지 등록
+  const [imageFile, setImageFile] = useState(null);
+
+  //상품 이미지 삭제
+  const [thumbnailId, setThumbnailId] = useState(null);
+
   // 상품 수정
 
   // 상품 인벤토리 생성
@@ -122,6 +128,42 @@ function AdministratorPage() {
     }
   };
 
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("productId", productId);
+      formData.append("image", imageFile);
+
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/thumbnail/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("이미지 업로드 에러:", error);
+    }
+  };
+
+  const handleImageDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("이미지 삭제 에러:", error);
+    }
+  };
+
   const handleProductUpdate = async () => {
     try {
       const response = await axios.put(
@@ -188,7 +230,7 @@ function AdministratorPage() {
       const response = await axios.post(
         `http://localhost:8080/api/v1/color/new`,
         {
-          color,
+          color: color,
         }
       );
       console.log(response.data);
@@ -302,66 +344,95 @@ function AdministratorPage() {
         );
       case "productCreate":
         return (
-          <div className="input-section">
-            <h2>Product</h2>
-            <input
-              type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="Enter product name"
-            />
-            <select
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
-            >
-              <option value="WOMAN">Woman</option>
-              <option value="MAN">Man</option>
-              <option value="UNISEX">Unisex</option>
-            </select>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Enter price"
-            />
-            <input
-              type="text"
-              value={productInfo}
-              onChange={(e) => setProductInfo(e.target.value)}
-              placeholder="Enter product info"
-            />
-            <input
-              type="text"
-              value={manufacturer}
-              onChange={(e) => setManufacturer(e.target.value)}
-              placeholder="Enter manufacturer"
-            />
-            <select
-              value={isDiscount}
-              onChange={(e) => setIsDiscount(e.target.value)}
-            >
-              <option value={false}>세일 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
-            </select>
-            {isDiscount && (
+          <>
+            <div className="input-section">
+              <h2>Product</h2>
+              <input
+                type="text"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Enter product name"
+              />
+              <select
+                value={productType}
+                onChange={(e) => setProductType(e.target.value)}
+              >
+                <option value="WOMAN">Woman</option>
+                <option value="MAN">Man</option>
+                <option value="UNISEX">Unisex</option>
+              </select>
               <input
                 type="number"
-                value={discountRate}
-                onChange={(e) => setDiscountRate(e.target.value)}
-                placeholder="Enter discount rate"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Enter price"
               />
-            )}
-            <select
-              value={isRecommend}
-              onChange={(e) => setIsRecommend(e.target.value)}
-            >
-              <option value={false}>추천 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
-            </select>
-            <button onClick={handleProductSubmit}>Create Product</button>
-          </div>
+              <input
+                type="text"
+                value={productInfo}
+                onChange={(e) => setProductInfo(e.target.value)}
+                placeholder="Enter product info"
+              />
+              <input
+                type="text"
+                value={manufacturer}
+                onChange={(e) => setManufacturer(e.target.value)}
+                placeholder="Enter manufacturer"
+              />
+              <select
+                value={isDiscount ? "true" : "false"}
+                onChange={(e) => setIsDiscount(e.target.value === "true")}
+              >
+                <option value="">세일 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              {isDiscount && (
+                <input
+                  type="number"
+                  value={discountRate}
+                  onChange={(e) => setDiscountRate(e.target.value)}
+                  placeholder="Enter discount rate"
+                />
+              )}
+              <select
+                value={isRecommend ? "true" : "false"}
+                onChange={(e) => setIsRecommend(e.target.value === "true")}
+              >
+                <option value="">추천 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              <button onClick={handleProductSubmit}>Create Product</button>
+            </div>
+
+            <div className="input-section">
+              <h2>Submit product image</h2>
+              <input
+                type="text"
+                value={productId}
+                onChange={(e) => setProductId(e.target.value)}
+                placeholder="Enter product Id"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              <button onClick={handleImageUpload}>이미지 업로드</button>
+            </div>
+
+            <div className="input-section">
+              <h2>Delete product image</h2>
+              <input
+                type="text"
+                value={thumbnailId}
+                onChange={(e) => setThumbnailId(e.target.value)}
+                placeholder="Enter the thumbnail ID you want to delete"
+              />
+              <button onClick={handleImageDelete}>이미지 삭제</button>
+            </div>
+          </>
         );
       case "productUpdate":
         return (
@@ -406,20 +477,20 @@ function AdministratorPage() {
               placeholder="Enter manufacturer"
             />
             <select
-              value={isDiscount}
-              onChange={(e) => setIsDiscount(e.target.value)}
+              value={isDiscount ? "true" : "false"}
+              onChange={(e) => setIsDiscount(e.target.value === "true")}
             >
-              <option value={false}>세일 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value="">세일 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
             <select
-              value={isRecommend}
-              onChange={(e) => setIsRecommend(e.target.value)}
+              value={isRecommend ? "true" : "false"}
+              onChange={(e) => setIsRecommend(e.target.value === "true")}
             >
-              <option value={false}>추천 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value="">추천 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
             <button onClick={handleProductUpdate}>Update Product</button>
           </div>
@@ -473,28 +544,30 @@ function AdministratorPage() {
                 placeholder="Enter initial stock"
               />
               <select
-                value={isRestockAvailable}
-                onChange={(e) => setIsRestockAvailable(e.target.value)}
+                value={isRestockAvailable ? "true" : "false"}
+                onChange={(e) =>
+                  setIsRestockAvailable(e.target.value === "true")
+                }
               >
-                <option value={false}>재입고 가능 상품으로 등록 할까요?</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
+                <option value="">재입고 가능 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
               <select
-                value={isRestocked}
-                onChange={(e) => setIsRestocked(e.target.value)}
+                value={isRestocked ? "true" : "false"}
+                onChange={(e) => setIsRestocked(e.target.value === "true")}
               >
-                <option value={false}>재입고 상품으로 등록 할까요?</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
+                <option value="">재입고 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
               <select
-                value={isSoldOut}
-                onChange={(e) => setIsSoldOut(e.target.value)}
+                value={isSoldOut ? "true" : "false"}
+                onChange={(e) => setIsSoldOut(e.target.value === "true")}
               >
-                <option value={false}>품절 상품으로 등록 할까요?</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
+                <option value="">품절 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
               </select>
               <button onClick={handleInventorySubmit}>Create Inventory</button>
             </div>
@@ -537,28 +610,28 @@ function AdministratorPage() {
               placeholder="Enter additional stock"
             />
             <select
-              value={isRestockAvailable}
-              onChange={(e) => setIsRestockAvailable(e.target.value)}
+              value={isRestockAvailable ? "true" : "false"}
+              onChange={(e) => setIsRestockAvailable(e.target.value === "true")}
             >
-              <option value={false}>재입고 가능 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value="">재입고 가능 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
             <select
-              value={isRestocked}
-              onChange={(e) => setIsRestocked(e.target.value)}
+              value={isRestocked ? "true" : "false"}
+              onChange={(e) => setIsRestocked(e.target.value === "true")}
             >
-              <option value={false}>재입고 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value="">재입고 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
             <select
-              value={isSoldOut}
-              onChange={(e) => setIsSoldOut(e.target.value)}
+              value={isSoldOut ? "true" : "false"}
+              onChange={(e) => setIsSoldOut(e.target.value === "true")}
             >
-              <option value={false}>품절 상품으로 등록 할까요?</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              <option value="">품절 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
             <button onClick={handleInventoryUpdate}>Update Inventory</button>
           </div>
