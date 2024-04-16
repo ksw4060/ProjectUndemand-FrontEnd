@@ -11,110 +11,108 @@ function CategoryPage() {
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
   const [isFilterClicked, setIsFilterClicked] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
-  const [selectedSubcategoryOption, setSelectedSubcategoryOption] =
+  const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
     useState(null);
-  const [currentCategory, setCurrentCategory] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState(() => {
+    return localStorage.getItem("currentCategory") || category.split("-")[0];
+  });
   const [prevCategory, setPrevCategory] = useState(null);
   const { category } = useParams();
-  const categoryTitle = category.toUpperCase().replace(/-/g, " ");
+  const [optionName, setOptionName] = useState("");
+  const [subOptionName, setSubOptionName] = useState("");
+  const categoryTitle = `${currentCategory.toUpperCase()} ${
+    optionName ? `< ${optionName.toUpperCase()}` : ""
+  } ${subOptionName ? `< ${subOptionName}` : ""}`;
   const navigate = useNavigate();
   const [filterOptionData, setFilterOptionData] = useState([]);
-  // const [productsData, setProductsData] = useState([]);
-  const [bestProducts, setBestProducts] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
-  const [unisexProducts, setUnisexProducts] = useState([]);
-  const [manProducts, setManProducts] = useState([]);
-  const [womanProducts, setWomanProducts] = useState([]);
-  const [saleProducts, setSaleProducts] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [allProducts, setAllProducts] = useState([]);
+  const [visiblePages, setVisiblePages] = useState([]);
+  const pageSize = 10;
 
   useEffect(() => {
-    const fetchFilterAndProductsData = async () => {
+    setCurrentCategory(category.split("-")[0]);
+    localStorage.setItem("currentCategory", category.split("-")[0]);
+  }, [category, currentCategory]);
+
+  const fetchFilterData = async () => {
+    try {
+      const categoryResponse = await axios.get(
+        "http://localhost:8080/api/v1/categorys"
+      );
+      setFilterOptionData(categoryResponse.data);
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilterData();
+  }, []);
+
+  const handleConditionChange = () => {
+    setCurrentPage(0);
+  };
+
+  const handlePageChange = (direction) => {
+    setCurrentPage(currentPage + direction);
+  };
+
+  const pageButtons = () => {
+    const totalPageCount = pageSize;
+    const pages = [];
+    for (let i = 0; i < totalPageCount; i++) {
+      pages.push(i);
+    }
+    setVisiblePages(pages);
+  };
+
+  useEffect(() => {
+    const fetchProductsData = async () => {
       try {
-        const categoryResponse = await axios.get(
-          "http://localhost:8080/api/v1/categorys"
-        );
-        setFilterOptionData(categoryResponse.data);
-
-        const productsResponse = await axios.get(
-          "http://localhost:8080/api/v1/products"
-        );
-        // setProductsData(productsResponse.data)
-
-        const bestProductsFiltered = productsResponse.data.sort(
-          (a, b) => b.likeCnt - a.likeCnt
-        );
-        setBestProducts(bestProductsFiltered);
-
-        const createDateFromCreatedAt = (createdAtArray) => {
-          const [year, month, day] = createdAtArray;
-          return new Date(year, month - 1, day);
+        const conditionMap = {
+          best: "best",
+          new: "new",
+          unisex: "unisex",
+          men: "man",
+          women: "women",
+          sale: "discount",
         };
 
-        const newProductsFiltered = productsResponse.data.sort(
-          (productA, productB) => {
-            const dateA = createDateFromCreatedAt(productA.createdAt);
-            const dateB = createDateFromCreatedAt(productB.createdAt);
-            return dateA - dateB;
+        const conditionForFetch = conditionMap[currentCategory];
+
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/products`,
+          {
+            params: {
+              size: pageSize,
+              page: currentPage,
+              condition: conditionForFetch,
+            },
           }
         );
-        setNewProducts(newProductsFiltered);
-
-        const unisexProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "UNISEX"
-        );
-        setUnisexProducts(unisexProductsFiltered);
-
-        const manProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "MAN"
-        );
-        setManProducts(manProductsFiltered);
-
-        const womanProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "WOMAN"
-        );
-        setWomanProducts(womanProductsFiltered);
-
-        const saleProductsFiltered = productsResponse.data.filter(
-          (product) => product.sale === true
-        );
-        setSaleProducts(saleProductsFiltered);
+        setAllProducts(response.data);
       } catch (error) {
-        console.error("Error fetching category data:", error);
+        console.error("상품을 불러오는 도중 에러가 발생했습니다:", error);
       }
     };
 
-    fetchFilterAndProductsData();
-  }, []);
+    fetchProductsData();
+    handleConditionChange();
+  }, [currentPage, currentCategory]);
 
-  const sectionProducts = {
-    best: bestProducts,
-    new: newProducts,
-    unisex: unisexProducts,
-    men: manProducts,
-    women: womanProducts,
-    sale: saleProducts,
-  };
+  useEffect(() => {
+    pageButtons();
+  }, [allProducts]);
 
-  const renderProductCards = () => {
-    const products = sectionProducts[currentCategory] || [];
-
-    return products.map((product, index) => (
-      <li
-        key={index}
-        className={`product-card ${isFilterClicked && "filter-active-margin"}`}
-      >
-        <div
-          className={`img-section img${index + 1} ${
-            isFilterClicked && "filter-active-img"
-          }`}
-        ></div>
-        <div className="product-info">
-          <Link to={`/product/${product.id}`}>{product.productName}</Link>
-          <Link to={`/product/${product.id}`}>{product.price}</Link>
-        </div>
-      </li>
-    ));
-  };
+  useEffect(() => {
+    if (prevCategory && prevCategory !== currentCategory) {
+      setSelectedCategoryOption(null);
+      setSelectedSubCategoryOption(null);
+    }
+    setPrevCategory(currentCategory);
+  }, [currentCategory, prevCategory]);
 
   const filterUrlMap = {
     상의: "tops",
@@ -187,17 +185,6 @@ function CategoryPage() {
     }
   });
 
-  useEffect(() => {
-    setCurrentCategory(category.split("-")[0]);
-  }, [category]);
-
-  useEffect(() => {
-    if (prevCategory && prevCategory !== currentCategory) {
-      window.location.reload();
-    }
-    setPrevCategory(currentCategory);
-  }, [currentCategory, prevCategory]);
-
   const priceOptions = [
     { id: "price0", range: "0 ~ 50,000 원" },
     { id: "price1", range: "50,000 ~ 100,000 원" },
@@ -255,22 +242,57 @@ function CategoryPage() {
   };
 
   const handleCategoryOptionSelect = (id) => {
+    localStorage.setItem("selectedCategoryOption", id);
+    localStorage.removeItem("selectedSubCategoryOption");
     if (selectedCategoryOption === id) {
-      return;
+      setSelectedSubCategoryOption(null);
     }
     setSelectedCategoryOption(id);
+    setSelectedSubCategoryOption(null);
     const newCategoryUrl = `/${currentCategory}-${id}`;
     navigate(newCategoryUrl, { replace: true });
   };
 
   const handleSubcategoryOptionSelect = (subOptionId) => {
-    if (selectedSubcategoryOption === subOptionId) {
+    localStorage.setItem("selectedSubCategoryOption", subOptionId);
+    if (selectedSubCategoryOption === subOptionId) {
       return;
     }
-    setSelectedSubcategoryOption(subOptionId);
+    setSelectedSubCategoryOption(subOptionId);
     const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}-${subOptionId}`;
     navigate(newSubcategoryUrl, { replace: true });
   };
+
+  useEffect(() => {
+    const storedCategoryOption = localStorage.getItem("selectedCategoryOption");
+    const storedSubCategoryOption = localStorage.getItem(
+      "selectedSubCategoryOption"
+    );
+    const storedOptionName = localStorage.getItem("optionName");
+    const storedSubOptionName = localStorage.getItem("subOptionName");
+
+    if (storedCategoryOption) {
+      setSelectedCategoryOption(storedCategoryOption);
+    }
+    if (storedSubCategoryOption) {
+      setSelectedSubCategoryOption(storedSubCategoryOption);
+    }
+    if (storedOptionName) {
+      setOptionName(storedOptionName);
+    }
+    if (storedSubOptionName) {
+      setSubOptionName(storedSubOptionName);
+    }
+  }, [category]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("selectedCategoryOption");
+      localStorage.removeItem("selectedSubCategoryOption");
+      localStorage.removeItem("optionName");
+      localStorage.removeItem("subOptionName");
+    };
+  }, []);
 
   return (
     <div className="category-page">
@@ -308,7 +330,13 @@ function CategoryPage() {
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
-                    onClick={() => handleCategoryOptionSelect(option.id)}
+                    onClick={() => {
+                      handleCategoryOptionSelect(option.id);
+                      setOptionName(option.name);
+                      setSubOptionName("");
+                      localStorage.setItem("optionName", option.name);
+                      localStorage.removeItem("subOptionName");
+                    }}
                   >
                     {option.name}
                   </li>
@@ -319,7 +347,13 @@ function CategoryPage() {
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
-                    onClick={() => handleCategoryOptionSelect(option.id)}
+                    onClick={() => {
+                      handleCategoryOptionSelect(option.id);
+                      setOptionName(option.name);
+                      setSubOptionName("");
+                      localStorage.setItem("optionName", option.name);
+                      localStorage.removeItem("subOptionName");
+                    }}
                   >
                     {option.name}
                   </li>
@@ -338,13 +372,18 @@ function CategoryPage() {
                         <li
                           key={subOption.id}
                           className={`filter-option ${
-                            selectedSubcategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.id
                               ? "selected"
                               : ""
                           }`}
-                          onClick={() =>
-                            handleSubcategoryOptionSelect(subOption.id)
-                          }
+                          onClick={() => {
+                            handleSubcategoryOptionSelect(subOption.id);
+                            setSubOptionName(subOption.name);
+                            localStorage.setItem(
+                              "subOptionName",
+                              subOption.name
+                            );
+                          }}
                         >
                           {subOption.name}
                         </li>
@@ -361,13 +400,18 @@ function CategoryPage() {
                         <li
                           key={subOption.id}
                           className={`filter-option ${
-                            selectedSubcategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.id
                               ? "selected"
                               : ""
                           }`}
-                          onClick={() =>
-                            handleSubcategoryOptionSelect(subOption.id)
-                          }
+                          onClick={() => {
+                            handleSubcategoryOptionSelect(subOption.id);
+                            setSubOptionName(subOption.name);
+                            localStorage.setItem(
+                              "subOptionName",
+                              subOption.name
+                            );
+                          }}
                         >
                           {subOption.name}
                         </li>
@@ -413,8 +457,70 @@ function CategoryPage() {
           />
         </div>
         <div className="products-section">
-          <ul className="product-card-box">{renderProductCards()}</ul>
+          <div>
+            <div className="product-card-box">
+              {allProducts.length > 0 ? (
+                allProducts.map((product, index) => (
+                  <div
+                    key={product.productId}
+                    className={`product-card ${
+                      isFilterClicked && "filter-active-margin"
+                    }`}
+                  >
+                    <img
+                      src={`http://localhost:8080/${product.productThumbnails[0]}`}
+                      alt={product.productName}
+                      className={`img-section img${index + 1} ${
+                        isFilterClicked && "filter-active-img"
+                      }`}
+                    />
+                    <div className="product-info">
+                      <Link to={`/product/${product.productId}`}>
+                        {product.productName}
+                      </Link>
+                      {product.isDiscount && (
+                        <Link
+                          to={`/product/${product.productId}`}
+                        >{`${product.discountRate}% 할인 중`}</Link>
+                      )}
+                      {product.isRecommend && (
+                        <Link to={`/product/${product.productId}`}>
+                          추천상품
+                        </Link>
+                      )}
+                      <Link
+                        to={`/product/${product.productId}`}
+                        className="product-price"
+                      >
+                        {`${product.price} 원`}
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <span>{`${category} 상품이 없습니다.`}</span>
+              )}
+            </div>
+          </div>
         </div>
+      </div>
+      <div>
+        <button
+          onClick={() => handlePageChange(-1)}
+          disabled={currentPage === 0}
+        >
+          이전 페이지
+        </button>
+        {visiblePages.map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={currentPage === page ? "current-page" : ""}
+          >
+            {page + 1}
+          </button>
+        ))}
+        <button onClick={() => handlePageChange(1)}>다음 페이지</button>
       </div>
     </div>
   );
