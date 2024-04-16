@@ -7,6 +7,8 @@ import {
   MdOutlineKeyboardArrowDown,
 } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
+import { MdOutlineShoppingBag } from "react-icons/md";
+import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 
@@ -38,6 +40,7 @@ function ProductDetailPage() {
   const [firstClick, setFirstClick] = useState(true);
   const [thumbnailImage, setThumbnailImage] = useState(null);
   // const [reviewImage, setReviewImage] = useState(null);
+  const [isWishlist, setIsWishlist] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -68,7 +71,6 @@ function ProductDetailPage() {
           `http://localhost:8080/api/v1/thumbnail/${productId}`
         );
         setThumbnailImage(response.data[0]);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching thumbnail:", error);
       }
@@ -76,6 +78,7 @@ function ProductDetailPage() {
 
     fetchProduct();
     fetchThumbnail();
+    fetchWishlist();
   }, [productId]);
 
   useEffect(() => {
@@ -315,6 +318,44 @@ function ProductDetailPage() {
     handleSearchInvenId();
   }, [selectedColor, selectedSize, productInventory]);
 
+  const fetchWishlist = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/wishlist/${memberId}`
+      );
+      const memberWishlist = response.data;
+      memberWishlist.forEach((wishProduct) => {
+        if (parseInt(wishProduct.productId) === parseInt(productId)) {
+          setIsWishlist(true);
+        }
+      });
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const handleWishSubmit = async () => {
+    try {
+      if (!isWishlist) {
+        // 찜하기
+        const response = await axios.post(
+          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+        );
+        console.log(response.data);
+        setIsWishlist(true);
+      } else {
+        // 찜 취소하기
+        const response = await axios.delete(
+          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+        );
+        console.log(response.data);
+        setIsWishlist(false);
+      }
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
   return (
     <div className="detail-page">
       {loading ? (
@@ -344,7 +385,7 @@ function ProductDetailPage() {
               <div className="option-container">
                 <ul className="option-txt-box">
                   {product.isDiscount && (
-                    <li className="is-discount">30% 할인 중!</li>
+                    <li className="is-discount">{product.dicountRate}</li>
                   )}
                   <li className="product-name">{product.productName}</li>
                   <li className="product-type">{product.productType}</li>
@@ -416,9 +457,16 @@ function ProductDetailPage() {
                       className="option-btn"
                       onClick={() => handleCartSubmit()}
                     >
-                      장바구니
+                      <MdOutlineShoppingBag />
+                      <span>장바구니</span>
                     </li>
-                    <li className="option-btn">찜하기</li>
+                    <li
+                      className="option-btn"
+                      onClick={() => handleWishSubmit()}
+                    >
+                      {!isWishlist ? <FaRegHeart /> : <FaHeart />}
+                      <span>찜하기</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -545,7 +593,6 @@ function ProductDetailPage() {
                           </div>
                         </li>
                       ))}
-                      {/* <li>상품에 대한 문의 글들을 볼 수 있습니다.</li> */}
                       <li className="article-link">
                         <Link onClick={() => openArticleViewModal("inquiry")}>
                           문의 글 더 보기

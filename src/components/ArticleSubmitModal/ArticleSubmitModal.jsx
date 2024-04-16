@@ -26,15 +26,25 @@ function ArticleSubmitModal({
   const { productId } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const reviewId = 1;
+
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
 
   const handleReviewSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append("reviewContent", reviewContent);
+      formData.append("rating", rating);
+      formData.append("images", imageFile);
+
       const response = await axios.post(
         `http://localhost:8080/api/v1/review/new/${paymentId}`,
+        formData,
         {
-          reviewContent: reviewContent,
-          rating: rating,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       setModalMessage(`${response.data.writer}님의 문의 글을 등록하였습니다.`);
@@ -48,34 +58,8 @@ function ArticleSubmitModal({
   const handleReviewSubmitBtn = async () => {
     if (paymentId && reviewContent && rating) {
       await handleReviewSubmit();
-      await handleImageUpload();
     } else {
       alert("모든 입력란을 작성해 주세요.");
-    }
-  };
-
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
-  };
-
-  const handleImageUpload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("reviewId", reviewId);
-      formData.append("image", imageFile);
-
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/review/img/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("이미지 업로드 에러:", error);
     }
   };
 
