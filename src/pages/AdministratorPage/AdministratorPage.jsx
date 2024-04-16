@@ -3,6 +3,7 @@ import "./AdministratorPage.css";
 import axios from "axios";
 
 function AdministratorPage() {
+  // 카테고리 생성
   const [parentCategoryName, setParentCategoryName] = useState("");
   const [childCategoryName, setChildCategoryName] = useState("");
   const [parentId, setParentId] = useState("");
@@ -20,19 +21,41 @@ function AdministratorPage() {
   const [accessoriesId, setAccessoriesId] = useState(
     localStorage.getItem("accessoriesId") || ""
   );
+
+  // 상품 등록
   const [productName, setProductName] = useState("");
   const [productType, setProductType] = useState("WOMAN");
   const [price, setPrice] = useState("");
   const [productInfo, setProductInfo] = useState("");
   const [manufacturer, setManufacturer] = useState("");
+  const [isDiscount, setIsDiscount] = useState(false);
+  const [discountRate, setDiscountRate] = useState(0);
+  const [isRecommend, setIsRecommend] = useState(false);
+
+  //상품 이미지 등록
+  const [imageFile, setImageFile] = useState(null);
+
+  //상품 이미지 삭제
+  const [thumbnailId, setThumbnailId] = useState(null);
+
+  // 상품 수정
+
+  // 상품 인벤토리 생성
   const [activeMenu, setActiveMenu] = useState(null);
   const [productId, setProductId] = useState("");
   const [colorId, setColorId] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [size, setSize] = useState("FREE");
   const [initialStock, setInitialStock] = useState("");
+  const [isRestockAvailable, setIsRestockAvailable] = useState(false);
+  const [isRestocked, setIsRestocked] = useState(false);
+  const [isSoldOut, setIsSoldOut] = useState(false);
+
+  // 상품 인벤토리 수정
+  const [inventoryId, setInventoryId] = useState("");
   const [additionalStock, setAdditionalStock] = useState("");
-  const [productStock, setProductStock] = useState("");
+
+  // 색상 등록
   const [color, setColor] = useState("");
 
   const handleParentCategorySubmit = async () => {
@@ -84,16 +107,30 @@ function AdministratorPage() {
     }
   };
 
+  const handleImageChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
   const handleProductSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append("productName", productName);
+      formData.append("productType", productType);
+      formData.append("price", parseInt(price));
+      formData.append("productInfo", productInfo);
+      formData.append("manufacturer", manufacturer);
+      formData.append("isDiscount", isDiscount);
+      formData.append("discountRate", parseInt(discountRate));
+      formData.append("isRecommend", isRecommend);
+      formData.append("images", imageFile);
+
       const response = await axios.post(
         "http://localhost:8080/api/v1/products/new",
+        formData,
         {
-          productName,
-          productType,
-          price,
-          productInfo,
-          manufacturer,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       console.log(response.data);
@@ -102,18 +139,50 @@ function AdministratorPage() {
     }
   };
 
+  const handleImageDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("이미지 삭제 에러:", error);
+    }
+  };
+
+  const handleProductUpdate = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/products/${productId}`,
+        {
+          productName: productName,
+          productType: productType,
+          price: price,
+          productInfo: productInfo,
+          manufacturer: manufacturer,
+          isDiscount: isDiscount,
+          isRecommend: isRecommend,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   const handleInventorySubmit = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/v1/inventory/new`,
         {
-          productId,
-          colorId,
-          categoryId,
-          size,
-          initialStock,
-          additionalStock,
-          productStock,
+          productId: productId,
+          colorId: colorId,
+          categoryId: categoryId,
+          size: size,
+          initialStock: initialStock,
+          isRestockAvailable: isRestockAvailable,
+          isRestocked: isRestocked,
+          isSoldOut: isSoldOut,
         }
       );
       console.log(response.data);
@@ -122,12 +191,32 @@ function AdministratorPage() {
     }
   };
 
+  const handleInventoryUpdate = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/inventory/${inventoryId}`,
+        {
+          colorId: colorId,
+          categoryId: categoryId,
+          size: size,
+          additionalStock: additionalStock,
+          isRestockAvailable: isRestockAvailable,
+          isRestocked: isRestocked,
+          isSoldOut: isSoldOut,
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(`Error updating inventory:`, error);
+    }
+  };
+
   const handleColorSubmit = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/v1/color/new`,
         {
-          color,
+          color: color,
         }
       );
       console.log(response.data);
@@ -241,8 +330,95 @@ function AdministratorPage() {
         );
       case "productCreate":
         return (
+          <>
+            <div className="input-section">
+              <h2>Product</h2>
+              <input
+                type="text"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Enter product name"
+              />
+              <select
+                value={productType}
+                onChange={(e) => setProductType(e.target.value)}
+              >
+                <option value="WOMAN">Woman</option>
+                <option value="MAN">Man</option>
+                <option value="UNISEX">Unisex</option>
+              </select>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Enter price"
+              />
+              <input
+                type="text"
+                value={productInfo}
+                onChange={(e) => setProductInfo(e.target.value)}
+                placeholder="Enter product info"
+              />
+              <input
+                type="text"
+                value={manufacturer}
+                onChange={(e) => setManufacturer(e.target.value)}
+                placeholder="Enter manufacturer"
+              />
+              <select
+                value={isDiscount ? "true" : "false"}
+                onChange={(e) => setIsDiscount(e.target.value === "true")}
+              >
+                <option value="">세일 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              {isDiscount && (
+                <input
+                  type="number"
+                  value={discountRate}
+                  onChange={(e) => setDiscountRate(e.target.value)}
+                  placeholder="Enter discount rate"
+                />
+              )}
+              <select
+                value={isRecommend ? "true" : "false"}
+                onChange={(e) => setIsRecommend(e.target.value === "true")}
+              >
+                <option value="">추천 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              <button onClick={handleProductSubmit}>Create Product</button>
+            </div>
+
+            <div className="input-section">
+              <h2>Delete product image</h2>
+              <input
+                type="text"
+                value={thumbnailId}
+                onChange={(e) => setThumbnailId(e.target.value)}
+                placeholder="Enter the thumbnail ID you want to delete"
+              />
+              <button onClick={handleImageDelete}>이미지 삭제</button>
+            </div>
+          </>
+        );
+      case "productUpdate":
+        return (
           <div className="input-section">
             <h2>Product</h2>
+            <input
+              type="number"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              placeholder="Enter product ID"
+            />
             <input
               type="text"
               value={productName}
@@ -275,7 +451,23 @@ function AdministratorPage() {
               onChange={(e) => setManufacturer(e.target.value)}
               placeholder="Enter manufacturer"
             />
-            <button onClick={handleProductSubmit}>Create Product</button>
+            <select
+              value={isDiscount ? "true" : "false"}
+              onChange={(e) => setIsDiscount(e.target.value === "true")}
+            >
+              <option value="">세일 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <select
+              value={isRecommend ? "true" : "false"}
+              onChange={(e) => setIsRecommend(e.target.value === "true")}
+            >
+              <option value="">추천 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <button onClick={handleProductUpdate}>Update Product</button>
           </div>
         );
       case "inventoryCreate":
@@ -326,21 +518,98 @@ function AdministratorPage() {
                 onChange={(e) => setInitialStock(e.target.value)}
                 placeholder="Enter initial stock"
               />
-              <input
-                type="number"
-                value={additionalStock}
-                onChange={(e) => setAdditionalStock(e.target.value)}
-                placeholder="Enter additional stock"
-              />
-              <input
-                type="number"
-                value={productStock}
-                onChange={(e) => setProductStock(e.target.value)}
-                placeholder="Enter product stock"
-              />
+              <select
+                value={isRestockAvailable ? "true" : "false"}
+                onChange={(e) =>
+                  setIsRestockAvailable(e.target.value === "true")
+                }
+              >
+                <option value="">재입고 가능 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              <select
+                value={isRestocked ? "true" : "false"}
+                onChange={(e) => setIsRestocked(e.target.value === "true")}
+              >
+                <option value="">재입고 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+              <select
+                value={isSoldOut ? "true" : "false"}
+                onChange={(e) => setIsSoldOut(e.target.value === "true")}
+              >
+                <option value="">품절 상품으로 등록 할까요?</option>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
               <button onClick={handleInventorySubmit}>Create Inventory</button>
             </div>
           </>
+        );
+      case "inventoryUpdate":
+        return (
+          <div className="input-section">
+            <h2>Inventory</h2>
+            <input
+              type="number"
+              value={inventoryId}
+              onChange={(e) => setInventoryId(e.target.value)}
+              placeholder="Enter inventory ID"
+            />
+            <input
+              type="number"
+              value={colorId}
+              onChange={(e) => setColorId(e.target.value)}
+              placeholder="Enter color ID"
+            />
+            <input
+              type="number"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              placeholder="Enter category ID"
+            />
+            <select value={size} onChange={(e) => setSize(e.target.value)}>
+              <option value="FREE">FREE</option>
+              <option value="XSMALL">XSMALL</option>
+              <option value="SMALL">SMALL</option>
+              <option value="MEDIUM">MEDIUM</option>
+              <option value="LARGE">LARGE</option>
+              <option value="XLARGE">XLARGE</option>
+            </select>
+            <input
+              type="number"
+              value={additionalStock}
+              onChange={(e) => setAdditionalStock(e.target.value)}
+              placeholder="Enter additional stock"
+            />
+            <select
+              value={isRestockAvailable ? "true" : "false"}
+              onChange={(e) => setIsRestockAvailable(e.target.value === "true")}
+            >
+              <option value="">재입고 가능 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <select
+              value={isRestocked ? "true" : "false"}
+              onChange={(e) => setIsRestocked(e.target.value === "true")}
+            >
+              <option value="">재입고 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <select
+              value={isSoldOut ? "true" : "false"}
+              onChange={(e) => setIsSoldOut(e.target.value === "true")}
+            >
+              <option value="">품절 상품으로 등록 할까요?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <button onClick={handleInventoryUpdate}>Update Inventory</button>
+          </div>
         );
       default:
         return null;
@@ -354,10 +623,16 @@ function AdministratorPage() {
           카테고리 생성
         </button>
         <button onClick={() => setActiveMenu("productCreate")}>
-          상품 생성
+          상품 등록
+        </button>
+        <button onClick={() => setActiveMenu("productUpdate")}>
+          상품 수정
         </button>
         <button onClick={() => setActiveMenu("inventoryCreate")}>
           인벤토리 생성
+        </button>
+        <button onClick={() => setActiveMenu("inventoryUpdate")}>
+          인벤토리 수정
         </button>
       </div>
       <div className="input-section">{renderMenu()}</div>

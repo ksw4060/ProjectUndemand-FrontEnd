@@ -13,6 +13,7 @@ import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.j
 import { CartPage } from "./pages/CartPage/CartPage.jsx";
 import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
+import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
@@ -91,6 +92,7 @@ function App() {
           <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/cart/order" element={<PaymentPage />}></Route>
           <Route path="/cart/order/done" element={<ReceiptPage />}></Route>
+          <Route path="/user/review" element={<MyReviewPage />}></Route>
           <Route path="/admin" element={<AdministratorPage />}></Route>
         </Routes>
       </div>

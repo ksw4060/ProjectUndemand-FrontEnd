@@ -6,6 +6,9 @@ import {
   MdOutlineKeyboardArrowUp,
   MdOutlineKeyboardArrowDown,
 } from "react-icons/md";
+import { FaRegStar, FaStar } from "react-icons/fa6";
+import { MdOutlineShoppingBag } from "react-icons/md";
+import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 
@@ -13,14 +16,13 @@ function ProductDetailPage() {
   let { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
+  const [pHistories, setPHistories] = useState([]);
+  const [fPHistories, setFPHistories] = useState([]);
+  const [productReviewData, setProductReviewData] = useState([]);
+  const [productInquiryData, setProductInquiryData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(0);
-  const [dropdownStates, setDropdownStates] = useState([
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [quantity, setQuantity] = useState(1);
+  const [dropdownStates, setDropdownStates] = useState([false, false, false]);
   const [reviewAndInquiryModalOpen, setReviewAndInquiryModalOpen] =
     useState(false);
   const [
@@ -36,6 +38,9 @@ function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  // const [reviewImage, setReviewImage] = useState(null);
+  const [isWishlist, setIsWishlist] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,8 +64,116 @@ function ProductDetailPage() {
         setLoading(false);
       }
     };
+
+    const fetchThumbnail = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/thumbnail/${productId}`
+        );
+        setThumbnailImage(response.data[0]);
+      } catch (error) {
+        console.error("Error fetching thumbnail:", error);
+      }
+    };
+
     fetchProduct();
+    fetchThumbnail();
+    fetchWishlist();
   }, [productId]);
+
+  useEffect(() => {
+    const fetchPaymentHistory = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+        );
+        const paymentHistories = response.data.filter(
+          (paymentHistory) => paymentHistory.product === product.productName
+        );
+        setPHistories(paymentHistories);
+        const filteredPaymentHistories = response.data.filter(
+          (paymentHistory) =>
+            paymentHistory.product === product.productName &&
+            !paymentHistory.review
+        );
+        setFPHistories(filteredPaymentHistories);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchPaymentHistory();
+  }, [product.productName]);
+
+  useEffect(() => {
+    fetchProductReviewData();
+    fetchProductInquiryData();
+  }, [productId]);
+
+  const fetchProductReviewData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/review/product/${productId}`
+      );
+      setProductReviewData(response.data);
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  // const fetchReviewImg = async (reviewId) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:8080/api/v1/review/img/${reviewId}`
+  //     );
+  //     console.log(response.data);
+  //     return response.data[0];
+  //     // setReviewImage(response.data[0]);
+  //   } catch (error) {
+  //     console.error("Error fetching review image:", error);
+  //     return null;
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const fetchReviewImages = async () => {
+  //     const reviewImages = await Promise.all(
+  //       productReviewData.map(async (review) => {
+  //         const imgUrl = await fetchReviewImg(review.reviewId);
+  //         return imgUrl;
+  //       })
+  //     );
+  //     setReviewImage(reviewImages);
+  //   };
+  //   fetchReviewImages();
+  // }, [productReviewData]);
+
+  const fetchProductInquiryData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/inquiry/list/${productId}`
+      );
+      setProductInquiryData(response.data);
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  const renderStars = (rating) => {
+    const filledStars = Math.floor(rating);
+    const remainingStars = 5 - filledStars;
+
+    return (
+      <>
+        {[...Array(filledStars)].map((_, index) => (
+          <FaStar key={index} />
+        ))}
+        {[...Array(remainingStars)].map((_, index) => (
+          <FaRegStar key={filledStars + index} />
+        ))}
+      </>
+    );
+  };
 
   useEffect(() => {
     const colors = productInventory.map((item) => item.color);
@@ -78,11 +191,11 @@ function ProductDetailPage() {
 
   useEffect(() => {
     setSelectedSize(null);
-    setQuantity(0);
+    setQuantity(1);
   }, [selectedColor]);
 
   useEffect(() => {
-    setQuantity(0);
+    setQuantity(1);
   }, [selectedSize]);
 
   const handleSizeClick = (size) => {
@@ -122,7 +235,6 @@ function ProductDetailPage() {
     if (quantity < 100) {
       setQuantity((prevQuantity) => prevQuantity + 1);
       if (firstClick) {
-        handleSearchInvenId();
         setFirstClick(false);
       }
     }
@@ -156,19 +268,92 @@ function ProductDetailPage() {
   };
 
   const openArticleSubmitModal = (type) => {
-    setModalType(type);
-    setReviewWritingAndInquiryPostingModalOpen(true);
+    if (type === "review") {
+      if (pHistories.length === 0) {
+        alert(
+          "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!"
+        );
+        setReviewWritingAndInquiryPostingModalOpen(false);
+      } else {
+        const allReviewsTrue = pHistories.every(
+          (paymentHistory) => paymentHistory.review === true
+        );
+
+        if (allReviewsTrue) {
+          if (
+            window.confirm(
+              "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요. 리뷰 수정 페이지로 이동할까요?"
+            )
+          ) {
+            setReviewWritingAndInquiryPostingModalOpen(false);
+            navigate("/user/review");
+          }
+        } else {
+          setModalType(type);
+          setReviewWritingAndInquiryPostingModalOpen(true);
+        }
+      }
+    } else {
+      setModalType(type);
+      setReviewWritingAndInquiryPostingModalOpen(true);
+    }
   };
 
   const closeArticleSubmitModal = () => {
     setReviewWritingAndInquiryPostingModalOpen(false);
   };
 
-  const handleSearchInvenId = () => {
-    const searchInventory = productInventory.find(
-      (item) => item.color === selectedColor && item.size === selectedSize
-    );
-    setSelectedInvenId(searchInventory.inventoryId);
+  useEffect(() => {
+    const handleSearchInvenId = () => {
+      if (selectedColor && selectedSize) {
+        const searchInventory = productInventory.find(
+          (item) => item.color === selectedColor && item.size === selectedSize
+        );
+        if (searchInventory) {
+          setSelectedInvenId(searchInventory.inventoryId);
+        }
+      }
+    };
+
+    handleSearchInvenId();
+  }, [selectedColor, selectedSize, productInventory]);
+
+  const fetchWishlist = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/wishlist/${memberId}`
+      );
+      const memberWishlist = response.data;
+      memberWishlist.forEach((wishProduct) => {
+        if (parseInt(wishProduct.productId) === parseInt(productId)) {
+          setIsWishlist(true);
+        }
+      });
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  const handleWishSubmit = async () => {
+    try {
+      if (!isWishlist) {
+        // 찜하기
+        const response = await axios.post(
+          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+        );
+        console.log(response.data);
+        setIsWishlist(true);
+      } else {
+        // 찜 취소하기
+        const response = await axios.delete(
+          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+        );
+        console.log(response.data);
+        setIsWishlist(false);
+      }
+    } catch (error) {
+      console.error(error.response.data);
+    }
   };
 
   return (
@@ -187,17 +372,21 @@ function ProductDetailPage() {
                 <li className="thumbnail-img"></li>
               </ul>
               <div className="hero-img-container">
-                <img
-                  src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt=""
-                  className="hero-img"
-                />
+                {thumbnailImage && (
+                  <img
+                    src={`http://localhost:8080${thumbnailImage}`}
+                    alt="Thumbnail"
+                    className="hero-img"
+                  />
+                )}
               </div>
             </div>
             <div className="option-and-info-box">
               <div className="option-container">
                 <ul className="option-txt-box">
-                  {product.sale && <li className="is-sale">30% 할인 중!</li>}
+                  {product.isDiscount && (
+                    <li className="is-discount">{product.dicountRate}</li>
+                  )}
                   <li className="product-name">{product.productName}</li>
                   <li className="product-type">{product.productType}</li>
                   <li className="product-price">{product.price} 원</li>
@@ -268,9 +457,16 @@ function ProductDetailPage() {
                       className="option-btn"
                       onClick={() => handleCartSubmit()}
                     >
-                      장바구니
+                      <MdOutlineShoppingBag />
+                      <span>장바구니</span>
                     </li>
-                    <li className="option-btn">찜하기</li>
+                    <li
+                      className="option-btn"
+                      onClick={() => handleWishSubmit()}
+                    >
+                      {!isWishlist ? <FaRegHeart /> : <FaHeart />}
+                      <span>찜하기</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -314,13 +510,40 @@ function ProductDetailPage() {
                         dropdownStates[1] ? "open" : ""
                       }`}
                     >
-                      <li>
+                      <li className="article-link">
                         <Link onClick={() => openArticleSubmitModal("review")}>
                           리뷰 작성하기
                         </Link>
                       </li>
-                      <li>상품에 대한 리뷰들을 볼 수 있습니다.</li>
-                      <li>
+                      {productReviewData.map((tableRow) => (
+                        <li
+                          key={tableRow.reviewId}
+                          className="detail-page-review-container"
+                        >
+                          <div className="rating-and-write-info">
+                            <span>{renderStars(tableRow.rating)}</span>
+                            <div>
+                              <span>
+                                {`${tableRow.writer.slice(0, 1)}${"*"
+                                  .repeat(
+                                    Math.max(0, tableRow.writer.length - 1)
+                                  )
+                                  .slice(0, 2)}`}
+                              </span>
+                              <span>{tableRow.updatedAt.substring(0, 10)}</span>
+                            </div>
+                          </div>
+                          {/* <img
+                            src={`http://localhost:8080${reviewImage}`}
+                            alt={`${index}번 리뷰`}
+                            className="detail-page-review-img"
+                          /> */}
+                          <div className="detail-page-review-content">
+                            {tableRow.reviewContent}
+                          </div>
+                        </li>
+                      ))}
+                      <li className="article-link">
                         <Link onClick={() => openArticleViewModal("review")}>
                           리뷰 더 보기
                         </Link>
@@ -332,28 +555,8 @@ function ProductDetailPage() {
                       className="option-info-title"
                       onClick={() => toggleDropdown(2)}
                     >
-                      <p>상품 재고</p>
-                      {dropdownStates[2] ? (
-                        <MdOutlineKeyboardArrowUp />
-                      ) : (
-                        <MdOutlineKeyboardArrowDown />
-                      )}
-                    </div>
-                    <div
-                      className={`option-info-script ${
-                        dropdownStates[2] ? "open" : ""
-                      }`}
-                    >
-                      <p>상품에 대한 설명이 들어갑니다.</p>
-                    </div>
-                  </li>
-                  <li className="option-info">
-                    <div
-                      className="option-info-title"
-                      onClick={() => toggleDropdown(3)}
-                    >
                       <p>Q&A</p>
-                      {dropdownStates[3] ? (
+                      {dropdownStates[2] ? (
                         <MdOutlineKeyboardArrowUp />
                       ) : (
                         <MdOutlineKeyboardArrowDown />
@@ -361,16 +564,36 @@ function ProductDetailPage() {
                     </div>
                     <ul
                       className={`option-info-script ${
-                        dropdownStates[3] ? "open" : ""
+                        dropdownStates[2] ? "open" : ""
                       }`}
                     >
-                      <li>
+                      <li className="article-link">
                         <Link onClick={() => openArticleSubmitModal("inquiry")}>
                           상품 문의하기
                         </Link>
                       </li>
-                      <li>상품에 대한 문의 글들을 볼 수 있습니다.</li>
-                      <li>
+                      {productInquiryData.map((tableRow) => (
+                        <li
+                          key={tableRow.inquiryId}
+                          className="detail-page-inquiry-container"
+                        >
+                          <div className="detail-page-inquiry-title">
+                            <span>{tableRow.inquiryTitle}</span>
+                          </div>
+                          <div className="category-and-write-info">
+                            <span>{tableRow.inquiryType}</span>
+                            <div>
+                              <span>
+                                {`${tableRow.name.slice(0, 1)}${"*"
+                                  .repeat(Math.max(0, tableRow.name.length - 1))
+                                  .slice(0, 2)}`}
+                              </span>
+                              <span>{tableRow.createdAt.substring(0, 10)}</span>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                      <li className="article-link">
                         <Link onClick={() => openArticleViewModal("inquiry")}>
                           문의 글 더 보기
                         </Link>
@@ -382,12 +605,18 @@ function ProductDetailPage() {
                   <ArticleViewModal
                     modalType={modalType}
                     modalClose={closeArticleViewModal}
+                    productReviewData={productReviewData}
+                    productInquiryData={productInquiryData}
                   ></ArticleViewModal>
                 )}
                 {reviewWritingAndInquiryPostingModalOpen && (
                   <ArticleSubmitModal
                     modalType={modalType}
                     modalClose={closeArticleSubmitModal}
+                    paymentHistories={fPHistories}
+                    product={product}
+                    updateReviewData={fetchProductReviewData}
+                    updateinquiryData={fetchProductInquiryData}
                   ></ArticleSubmitModal>
                 )}
               </div>
