@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
 import { KakaoLogin } from "../../components/SocialLogins/KakaoLogin.jsx";
+import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
+import { type } from "@testing-library/user-event/dist/type/index.js";
 
 const Login = () => {
-  // 로그인 시 주소창 접근 제한
+  // 로그인 시 주소창 접근 제한 http://localhost:8080/oauth2/authorization/kakao
   const navigate = useNavigate();
   const token = localStorage.getItem("Authorization");
   const [email, setEmail] = useState("");
@@ -105,6 +107,7 @@ const Login = () => {
           로그인
         </button>
         <KakaoLogin />
+        <SnsLogins />
         {/* <GoogleLogin /> */}
         {/* <NaverLogin /> */}
       </div>
