@@ -29,7 +29,7 @@ function AdministratorPage() {
   const [productInfo, setProductInfo] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [isDiscount, setIsDiscount] = useState(false);
-  const [discountRate, setDiscountRate] = useState("");
+  const [discountRate, setDiscountRate] = useState(0);
   const [isRecommend, setIsRecommend] = useState(false);
 
   //상품 이미지 등록
@@ -107,39 +107,25 @@ function AdministratorPage() {
     }
   };
 
-  const handleProductSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/products/new",
-        {
-          productName: productName,
-          productType: productType,
-          price: parseInt(price),
-          productInfo: productInfo,
-          manufacturer: manufacturer,
-          isDiscount: isDiscount,
-          discountRate: parseInt(discountRate),
-          isRecommend: isRecommend,
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error creating product:", error);
-    }
-  };
-
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
 
-  const handleImageUpload = async () => {
+  const handleProductSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append("productId", productId);
-      formData.append("image", imageFile);
+      formData.append("productName", productName);
+      formData.append("productType", productType);
+      formData.append("price", parseInt(price));
+      formData.append("productInfo", productInfo);
+      formData.append("manufacturer", manufacturer);
+      formData.append("isDiscount", isDiscount);
+      formData.append("discountRate", parseInt(discountRate));
+      formData.append("isRecommend", isRecommend);
+      formData.append("images", imageFile);
 
       const response = await axios.post(
-        "http://localhost:8080/api/v1/thumbnail/upload",
+        "http://localhost:8080/api/v1/products/new",
         formData,
         {
           headers: {
@@ -149,7 +135,7 @@ function AdministratorPage() {
       );
       console.log(response.data);
     } catch (error) {
-      console.error("이미지 업로드 에러:", error);
+      console.error("Error creating product:", error);
     }
   };
 
@@ -403,23 +389,12 @@ function AdministratorPage() {
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
-              <button onClick={handleProductSubmit}>Create Product</button>
-            </div>
-
-            <div className="input-section">
-              <h2>Submit product image</h2>
-              <input
-                type="text"
-                value={productId}
-                onChange={(e) => setProductId(e.target.value)}
-                placeholder="Enter product Id"
-              />
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
               />
-              <button onClick={handleImageUpload}>이미지 업로드</button>
+              <button onClick={handleProductSubmit}>Create Product</button>
             </div>
 
             <div className="input-section">
