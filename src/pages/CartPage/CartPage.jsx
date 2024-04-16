@@ -6,7 +6,8 @@ import {
   MdOutlineKeyboardArrowUp,
   MdOutlineKeyboardArrowDown,
 } from "react-icons/md";
-import { FaRegHeart, FaRegTrashCan } from "react-icons/fa6";
+import { FaRegTrashCan } from "react-icons/fa6";
+import WishBtn from "../../components/WishBtn/WishBtn";
 
 function CartPage() {
   const location = useLocation();
@@ -15,6 +16,7 @@ function CartPage() {
   const queryParams = new URLSearchParams(location.search);
   const memberId = parseInt(queryParams.get("memberId"));
   const [cartProducts, setCartProducts] = useState([]);
+  // const [isWishlist, setIsWishlist] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -43,7 +45,7 @@ function CartPage() {
   const handleDecrement = (index) => {
     const updatedCartProducts = [...cartProducts];
     const updatedProduct = { ...updatedCartProducts[index] };
-    if (updatedProduct.quantity > 0) {
+    if (updatedProduct.quantity > 1) {
       updatedProduct.quantity--;
       updatedCartProducts[index] = updatedProduct;
       setCartProducts(updatedCartProducts);
@@ -65,8 +67,6 @@ function CartPage() {
       console.error(`수량 및 가격 수정 실패 - cartId: ${cartId}`, error);
     }
   };
-
-  const handleWishBtn = () => {};
 
   const handleRemoveBtn = async (cartId) => {
     try {
@@ -146,7 +146,10 @@ function CartPage() {
                   </div>
                 </div>
                 <div className="cart-btn-container">
-                  <FaRegHeart onClick={() => handleWishBtn()} />
+                  <WishBtn
+                    memberId={memberId}
+                    productId={cartProduct.productId}
+                  />
                   <FaRegTrashCan
                     onClick={() => handleRemoveBtn(cartProduct.cartId)}
                   />
