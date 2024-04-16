@@ -39,76 +39,60 @@ function ProductDetailPage() {
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
   const [thumbnailImage, setThumbnailImage] = useState(null);
-  // const [reviewImage, setReviewImage] = useState(null);
   const [isWishlist, setIsWishlist] = useState(false);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/products/${productId}`
-        );
-        if (response.status === 200) {
-          setProduct(response.data);
-          setLoading(false);
-        }
-        const invenResponse = await axios.get(
-          `http://localhost:8080/api/v1/inventory`
-        );
-        const invenResData = invenResponse.data;
-        const filteredInventory = invenResData.filter(
-          (inven) => parseInt(inven.productId) === parseInt(productId)
-        );
-        setProductInventory(filteredInventory);
-      } catch (error) {
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/products/${productId}`
+      );
+      if (response.status === 200) {
+        setProduct(response.data);
         setLoading(false);
       }
-    };
+      const invenResponse = await axios.get(
+        `http://localhost:8080/api/v1/inventory`
+      );
+      const invenResData = invenResponse.data;
+      const filteredInventory = invenResData.filter(
+        (inven) => parseInt(inven.productId) === parseInt(productId)
+      );
+      setProductInventory(filteredInventory);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
 
-    const fetchThumbnail = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/thumbnail/${productId}`
-        );
-        setThumbnailImage(response.data[0]);
-      } catch (error) {
-        console.error("Error fetching thumbnail:", error);
-      }
-    };
+  const fetchThumbnail = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/thumbnail/${productId}`
+      );
+      setThumbnailImage(response.data[0]);
+    } catch (error) {
+      console.error("Error fetching thumbnail:", error);
+    }
+  };
 
-    fetchProduct();
-    fetchThumbnail();
-    fetchWishlist();
-  }, [productId]);
-
-  useEffect(() => {
-    const fetchPaymentHistory = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
-        );
-        const paymentHistories = response.data.filter(
-          (paymentHistory) => paymentHistory.product === product.productName
-        );
-        setPHistories(paymentHistories);
-        const filteredPaymentHistories = response.data.filter(
-          (paymentHistory) =>
-            paymentHistory.product === product.productName &&
-            !paymentHistory.review
-        );
-        setFPHistories(filteredPaymentHistories);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchPaymentHistory();
-  }, [product.productName]);
-
-  useEffect(() => {
-    fetchProductReviewData();
-    fetchProductInquiryData();
-  }, [productId]);
+  const fetchPaymentHistory = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+      );
+      const paymentHistories = response.data.filter(
+        (paymentHistory) => paymentHistory.product === product.productName
+      );
+      setPHistories(paymentHistories);
+      const filteredPaymentHistories = response.data.filter(
+        (paymentHistory) =>
+          paymentHistory.product === product.productName &&
+          !paymentHistory.review
+      );
+      setFPHistories(filteredPaymentHistories);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchProductReviewData = async () => {
     try {
@@ -120,33 +104,6 @@ function ProductDetailPage() {
       console.error(error.response.data);
     }
   };
-
-  // const fetchReviewImg = async (reviewId) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8080/api/v1/review/img/${reviewId}`
-  //     );
-  //     console.log(response.data);
-  //     return response.data[0];
-  //     // setReviewImage(response.data[0]);
-  //   } catch (error) {
-  //     console.error("Error fetching review image:", error);
-  //     return null;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchReviewImages = async () => {
-  //     const reviewImages = await Promise.all(
-  //       productReviewData.map(async (review) => {
-  //         const imgUrl = await fetchReviewImg(review.reviewId);
-  //         return imgUrl;
-  //       })
-  //     );
-  //     setReviewImage(reviewImages);
-  //   };
-  //   fetchReviewImages();
-  // }, [productReviewData]);
 
   const fetchProductInquiryData = async () => {
     try {
@@ -188,15 +145,6 @@ function ProductDetailPage() {
       .map((item) => item.size);
     setSizes(filteredSizes);
   };
-
-  useEffect(() => {
-    setSelectedSize(null);
-    setQuantity(1);
-  }, [selectedColor]);
-
-  useEffect(() => {
-    setQuantity(1);
-  }, [selectedSize]);
 
   const handleSizeClick = (size) => {
     if (!checkSizeAvailability(size)) {
@@ -245,10 +193,6 @@ function ProductDetailPage() {
       setQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
-
-  useEffect(() => {
-    setFirstClick(true);
-  }, [selectedSize, productColor]);
 
   const toggleDropdown = (index) => {
     setDropdownStates((prevStates) => {
@@ -303,20 +247,16 @@ function ProductDetailPage() {
     setReviewWritingAndInquiryPostingModalOpen(false);
   };
 
-  useEffect(() => {
-    const handleSearchInvenId = () => {
-      if (selectedColor && selectedSize) {
-        const searchInventory = productInventory.find(
-          (item) => item.color === selectedColor && item.size === selectedSize
-        );
-        if (searchInventory) {
-          setSelectedInvenId(searchInventory.inventoryId);
-        }
+  const handleSearchInvenId = () => {
+    if (selectedColor && selectedSize) {
+      const searchInventory = productInventory.find(
+        (item) => item.color === selectedColor && item.size === selectedSize
+      );
+      if (searchInventory) {
+        setSelectedInvenId(searchInventory.inventoryId);
       }
-    };
-
-    handleSearchInvenId();
-  }, [selectedColor, selectedSize, productInventory]);
+    }
+  };
 
   const fetchWishlist = async () => {
     try {
@@ -337,14 +277,12 @@ function ProductDetailPage() {
   const handleWishSubmit = async () => {
     try {
       if (!isWishlist) {
-        // 찜하기
         const response = await axios.post(
           `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
         );
         console.log(response.data);
         setIsWishlist(true);
       } else {
-        // 찜 취소하기
         const response = await axios.delete(
           `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
         );
@@ -355,6 +293,35 @@ function ProductDetailPage() {
       console.error(error.response.data);
     }
   };
+
+  useEffect(() => {
+    fetchProduct();
+    fetchThumbnail();
+    fetchWishlist();
+    fetchProductReviewData();
+    fetchProductInquiryData();
+  }, [productId]);
+
+  useEffect(() => {
+    fetchPaymentHistory();
+  }, [product.productName]);
+
+  useEffect(() => {
+    setSelectedSize(null);
+    setQuantity(1);
+  }, [selectedColor]);
+
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedSize]);
+
+  useEffect(() => {
+    setFirstClick(true);
+  }, [selectedSize, productColor]);
+
+  useEffect(() => {
+    handleSearchInvenId();
+  }, [selectedColor, selectedSize, productInventory]);
 
   return (
     <div className="detail-page">
@@ -385,7 +352,7 @@ function ProductDetailPage() {
               <div className="option-container">
                 <ul className="option-txt-box">
                   {product.isDiscount && (
-                    <li className="is-discount">{product.dicountRate}</li>
+                    <li className="is-discount">{`${product.discountRate}% 할인 중!`}</li>
                   )}
                   <li className="product-name">{product.productName}</li>
                   <li className="product-type">{product.productType}</li>
@@ -515,7 +482,7 @@ function ProductDetailPage() {
                           리뷰 작성하기
                         </Link>
                       </li>
-                      {productReviewData.map((tableRow) => (
+                      {productReviewData.map((tableRow, index) => (
                         <li
                           key={tableRow.reviewId}
                           className="detail-page-review-container"
@@ -533,14 +500,16 @@ function ProductDetailPage() {
                               <span>{tableRow.updatedAt.substring(0, 10)}</span>
                             </div>
                           </div>
-                          {/* <img
-                            src={`http://localhost:8080${reviewImage}`}
-                            alt={`${index}번 리뷰`}
-                            className="detail-page-review-img"
-                          /> */}
                           <div className="detail-page-review-content">
                             {tableRow.reviewContent}
                           </div>
+                          {tableRow.reviewImgPaths.length > 0 && (
+                            <img
+                              src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                              alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
+                              className="detail-page-review-img"
+                            />
+                          )}
                         </li>
                       ))}
                       <li className="article-link">

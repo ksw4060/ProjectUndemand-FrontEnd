@@ -161,6 +161,7 @@ function AdministratorPage() {
           productInfo: productInfo,
           manufacturer: manufacturer,
           isDiscount: isDiscount,
+          discountRate: discountRate,
           isRecommend: isRecommend,
         }
       );
@@ -459,6 +460,14 @@ function AdministratorPage() {
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
+            {isDiscount && (
+              <input
+                type="number"
+                value={discountRate}
+                onChange={(e) => setDiscountRate(e.target.value)}
+                placeholder="Enter discount rate"
+              />
+            )}
             <select
               value={isRecommend ? "true" : "false"}
               onChange={(e) => setIsRecommend(e.target.value === "true")}
