@@ -5,6 +5,7 @@ import Topbar from "./components/Topbar/Topbar.jsx";
 import { Main } from "./pages/Main/Main.jsx";
 import { Signup } from "./pages/AuthPages/Signup.jsx";
 import { Login } from "./pages/AuthPages/Login.jsx";
+import { KakaoLoginHandeler } from "./components/SocialLogins/KakaoLoginHandeler.jsx";
 import { CategoryPage } from "./pages/Category/CategoryPage.jsx";
 import { ProductDetailPage } from "./pages/ProductDetailPage/ProductDetailPage.jsx";
 import { InquiryPage } from "./pages/InquiryPage/InquiryPage.jsx";
@@ -73,6 +74,10 @@ function App() {
           <Route path="/" element={<Main />}></Route>
           <Route path="/signup" element={<Signup />}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route
+            path="/login/oauth2/code/kakao" //redirect_url
+            element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
+          />
           <Route path="/:category" element={<CategoryPage />}></Route>
           <Route
             path="/product/:productId"

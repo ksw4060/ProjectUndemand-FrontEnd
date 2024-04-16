@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import React from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -52,8 +51,10 @@ const Signup = () => {
     const newNickname = e.target.value;
     setNickname(newNickname);
     const isNicknameValid = newNickname.trim().length > 0;
-    setNicknameValid(isNicknameValid);
+    // 닉네임이 유효하지 않거나 비어있을 때 회원가입 버튼 비활성화
+    setNotAllow(!isNicknameValid || newNickname.trim().length === 0);
   };
+
   const handlePassword = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
@@ -61,6 +62,7 @@ const Signup = () => {
       /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
     setPasswordValid(passwordRegex.test(newPassword));
   };
+
   const handlePasswordCheck = (e) => {
     const newPasswordCheck = e.target.value;
     setPasswordCheck(newPasswordCheck);
@@ -96,6 +98,9 @@ const Signup = () => {
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
     } catch (error) {
       console.error("회원 가입 실패 : ", error.response.data);
+      // 클라이언트에게 경고 메세지를 띄워주는 자바스크립트 코드
+      var message = " 은 이미 가입된 이메일입니다. \n 로그인 해주세요. ";
+      window.alert(email + message);
     }
   };
 
@@ -122,7 +127,6 @@ const Signup = () => {
             <div>올바른 이메일을 입력해주세요.</div>
           )}
         </div>
-
         <label htmlFor="nickname" className="inputTitle">
           닉네임
         </label>
@@ -135,7 +139,11 @@ const Signup = () => {
             onChange={handleNickname}
           />
         </div>
-
+        <div className="errorMessageWrap">
+          {!nicknameValid && nickname.length <= 0 && (
+            <div>닉네임을 입력해주세요.</div>
+          )}
+        </div>
         <label htmlFor="password" className="inputTitle">
           비밀번호
         </label>
@@ -148,7 +156,6 @@ const Signup = () => {
             onChange={handlePassword}
           />
         </div>
-
         <label htmlFor="password_certify" className="inputTitle">
           비밀번호 확인
         </label>
@@ -161,13 +168,11 @@ const Signup = () => {
             onChange={handlePasswordCheck}
           />
         </div>
-
         <div className="errorMessageWrap">
           {!passwordCheckValid && passwordCheck.length > 0 && (
             <div>비밀번호가 일치하지 않습니다.</div>
           )}
         </div>
-
         <div className="errorMessageWrap">
           {!passwordValid && (
             <div>

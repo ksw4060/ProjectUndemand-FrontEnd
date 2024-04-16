@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
-// import { KakaoLogin } from "../../components/SocialLogins/KakaoLogin.jsx";
+import { KakaoLogin } from "../../components/SocialLogins/KakaoLogin.jsx";
 
 const Login = () => {
   // 로그인 시 주소창 접근 제한
   const navigate = useNavigate();
-  const token = localStorage.getItem("access");
+  const token = localStorage.getItem("Authorization");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,6 +26,11 @@ const Login = () => {
     const newPassword = e.target.value;
     setPassword(newPassword);
   };
+
+  //쿠키삭제
+  function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -49,16 +54,17 @@ const Login = () => {
       if (parseInt(response.status) === 200) {
         // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
         localStorage.removeItem("Authorization");
-        document.cookie =
-          "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // 새로운 값으로 갱신하여 다시 저장합니다.
+        deleteCookie("refreshToken");
+        // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
         document.cookie = `refreshToken=${refreshToken};`;
         navigate("/"); // 로그인 성공시 홈으로 이동합니다.
       }
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
     } catch (error) {
-      console.error("로그인 가입 실패 : ", error.response.data);
+      alert("가입되지 않은 이메일 이거나, 이메일 인증이 되지 않았습니다.");
+      //   console.error("로그인 실패 : ", error.response);
+      console.error("로그인 실패 : ", error.response);
     }
   };
 
@@ -98,7 +104,7 @@ const Login = () => {
         <button onClick={handleLogin} className="loginButton">
           로그인
         </button>
-        {/* <KakaoLogin /> */}
+        <KakaoLogin />
         {/* <GoogleLogin /> */}
         {/* <NaverLogin /> */}
       </div>
