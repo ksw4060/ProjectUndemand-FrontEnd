@@ -119,8 +119,8 @@ function TopbarData() {
       contents: categoryOptions,
     },
     {
-      to: "/sale",
-      label: "Sale",
+      to: "/discount",
+      label: "Discount",
       contents: categoryOptions,
     },
   ];
