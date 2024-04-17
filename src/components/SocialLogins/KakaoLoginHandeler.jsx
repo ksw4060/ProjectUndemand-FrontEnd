@@ -4,7 +4,10 @@ import axios from "axios";
 
 const KakaoLoginHandeler = (props) => {
   const navigate = useNavigate();
-
+  //쿠키삭제
+  function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  }
   useEffect(() => {
     // Url Parameter 로부터 code 를 받아옵니다.
     const getCodeFromUrl = () => {
@@ -19,48 +22,35 @@ const KakaoLoginHandeler = (props) => {
         return;
       }
 
-      // 쿠키에서 Authorization과 refreshToken 가져오기
-      const authorization = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("Authorization="))
-        ?.split("=")[1];
-
-      const refreshToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("refreshToken="))
-        ?.split("=")[1];
-
-      // 가져온 값 콘솔에 출력
-      console.log("Authorization:", authorization);
-      console.log("refreshToken:", refreshToken);
+      axios
+        .get(`http://localhost:8080/login/oauth2/code/kakao?code=${code}`)
+        .then((response) => {
+          console.log(response.data);
+          const accessToken = response.data.accessToken;
+          const refreshToken = response.data.refreshToken;
+          if (parseInt(response.status) === 200) {
+            // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
+            localStorage.removeItem("Authorization");
+            deleteCookie("refreshToken");
+            // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
+            localStorage.setItem("Authorization", "Bearer " + accessToken);
+            document.cookie = `refreshToken=${refreshToken};`;
+            // Delay of 1 second before navigating to home page
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+            setTimeout(() => {
+              alert(response.data.email + "님, 반갑습니다.");
+            }, 1500);
+          }
+        })
+        .catch((error) => {
+          console.error("로그인 실패 : ", error.response);
+        });
     };
 
     kakaoLogin();
-  }, [navigate]);
-
-  useEffect(() => {
-    const kakaoLogin = async () => {
-      const code = new URL(window.location.href).searchParams.get("code");
-      console.log(code);
-      navigate("/");
-      //   await axios({
-      //     method: "GET",
-      //     url: `${process.env.REACT_APP_REDIRECT_URL}/?code=${code}`,
-      //     headers: {
-      //       "Content-Type": "application/json;charset=utf-8", //json형태로 데이터를 보내겠다는뜻
-      //       "Access-Control-Allow-Origin": "*", //이건 cors 에러때문에 넣어둔것. 당신의 프로젝트에 맞게 지워도됨
-      //     },
-      //   }).then((res) => {
-      //     //백에서 완료후 우리사이트 전용 토큰 넘겨주는게 성공했다면
-      //     console.log(res);
-      //     //계속 쓸 정보들( ex: 이름) 등은 localStorage에 저장해두자
-      //     localStorage.setItem("name", res.data.account.kakaoName);
-      //     //로그인이 성공하면 이동할 페이지
-      //     navigate("/");
-      //   });
-    };
-    kakaoLogin();
-  }, [navigate, props.history]);
+  }, [navigate, props]);
 
   return (
     <div className="LoginHandler">

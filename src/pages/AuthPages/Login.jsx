@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
-import { KakaoLogin } from "../../components/SocialLogins/KakaoLogin.jsx";
 import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
 import { type } from "@testing-library/user-event/dist/type/index.js";
 
@@ -52,6 +51,7 @@ const Login = () => {
       // 응답에서 JSON 형식의 데이터를 추출
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
+      const email = response.data.email;
 
       if (parseInt(response.status) === 200) {
         // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
@@ -60,7 +60,13 @@ const Login = () => {
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
         document.cookie = `refreshToken=${refreshToken};`;
-        navigate("/"); // 로그인 성공시 홈으로 이동합니다.
+        // Delay of 1 second before navigating to home page
+        setTimeout(() => {
+          navigate("/");
+        }, 300);
+        setTimeout(() => {
+          alert(response.data.email + "님, 반갑습니다.");
+        }, 1000);
       }
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
     } catch (error) {
@@ -106,7 +112,6 @@ const Login = () => {
         <button onClick={handleLogin} className="loginButton">
           로그인
         </button>
-        <KakaoLogin />
         <SnsLogins />
         {/* <GoogleLogin /> */}
         {/* <NaverLogin /> */}
