@@ -8,6 +8,8 @@ function ArticleViewModal({
   modalClose,
   productReviewData,
   productInquiryData,
+  product,
+  thumbnailImage,
 }) {
   const [selectedReviewSortOption, setSelectedReviewSortOption] =
     useState("최신순");
@@ -21,7 +23,6 @@ function ArticleViewModal({
   const [filterOptionClick, setFilterOptionClick] = useState(false);
 
   const calculateAverageRating = () => {
-    // productReviewData 배열의 모든 리뷰의 rating 값을 합산
     const totalRating = productReviewData.reduce(
       (total, review) => total + review.rating,
       0
@@ -58,13 +59,13 @@ function ArticleViewModal({
     <div className="article-view-modal">
       <div className="product-info-section">
         <img
-          src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          alt=""
+          src={`http://localhost:8080${thumbnailImage}`}
+          alt={product.productName}
           className="img-info"
         />
         <div className="txt-info">
-          <span>상품 이름</span>
-          <span>상품 가격</span>
+          <span>{product.productName}</span>
+          <span>{`${product.price} 원`}</span>
         </div>
         <MdClose onClick={modalClose} className="close-modal" />
       </div>
@@ -74,9 +75,9 @@ function ArticleViewModal({
             <div className="star-rate">
               {averageRating && renderStars(averageRating)}
             </div>
-            <div className="review-count">{`10개의 리뷰`}</div>
+            <div className="review-count">{`${productReviewData.length}개의 리뷰`}</div>
           </div>
-          <div className="pagination-info-section">{`1-10/10개의 리뷰`}</div>
+          <div className="pagination-info-section">{`1-10/${productReviewData.length}개의 리뷰`}</div>
           <div className="review-filter-section">
             <div className="review-sort-box">
               <div
@@ -113,21 +114,25 @@ function ArticleViewModal({
               </ul>
             </div>
           </div>
-          {productReviewData.map((tableRow) => (
+          {productReviewData.map((tableRow, index) => (
             <div key={tableRow.reviewId} className="review-section">
-              <div className="rating-and-recommendations-box">
+              <img
+                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
+              />
+              <div className="modal-review-box">
                 <div className="star-rate">{renderStars(tableRow.rating)}</div>
-              </div>
-              <div className="review-box">
-                <div className="review-content">{tableRow.reviewContent}</div>
-              </div>
-              <div className="writer-info-box">
-                <div className="review-writer">
-                  {`${tableRow.writer.slice(0, 1)}${"*"
-                    .repeat(Math.max(0, tableRow.writer.length - 1))
-                    .slice(0, 2)}`}
+                <div className="modal-review-content">
+                  {tableRow.reviewContent}
                 </div>
-                <div className="review-date">{tableRow.updatedAt}</div>
+                <div className="writer-date-info-box">
+                  <div className="review-writer">
+                    {`${tableRow.writer.slice(0, 1)}${"*"
+                      .repeat(Math.max(0, tableRow.writer.length - 1))
+                      .slice(0, 2)}`}
+                  </div>
+                  <div className="review-date">{tableRow.updatedAt}</div>
+                </div>
               </div>
             </div>
           ))}

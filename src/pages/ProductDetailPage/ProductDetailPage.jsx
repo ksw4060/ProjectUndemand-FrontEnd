@@ -576,6 +576,8 @@ function ProductDetailPage() {
                     modalClose={closeArticleViewModal}
                     productReviewData={productReviewData}
                     productInquiryData={productInquiryData}
+                    product={product}
+                    thumbnailImage={thumbnailImage}
                   ></ArticleViewModal>
                 )}
                 {reviewWritingAndInquiryPostingModalOpen && (
