@@ -8,6 +8,7 @@ import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
 function CategoryPage() {
+  const { category } = useParams();
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
   const [isFilterClicked, setIsFilterClicked] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
@@ -17,7 +18,6 @@ function CategoryPage() {
     return localStorage.getItem("currentCategory") || category.split("-")[0];
   });
   const [prevCategory, setPrevCategory] = useState(null);
-  const { category } = useParams();
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
@@ -77,7 +77,7 @@ function CategoryPage() {
           unisex: "unisex",
           men: "man",
           women: "women",
-          sale: "discount",
+          discount: "discount",
         };
 
         const conditionForFetch = conditionMap[currentCategory];
@@ -323,7 +323,7 @@ function CategoryPage() {
             {currentCategory === "best" ||
             currentCategory === "new" ||
             currentCategory === "women" ||
-            currentCategory === "sale"
+            currentCategory === "discount"
               ? filterOptions.map((option) => (
                   <li
                     key={option.id}
@@ -362,7 +362,7 @@ function CategoryPage() {
           {currentCategory === "best" ||
           currentCategory === "new" ||
           currentCategory === "women" ||
-          currentCategory === "sale"
+          currentCategory === "discount"
             ? filterOptions.map(
                 (option) =>
                   selectedCategoryOption === option.id &&
