@@ -42,7 +42,7 @@ function ReviewUpdateModal({
 
   const closeModal = () => {
     setShowModal(false);
-    modalClose(); // 모달을 닫고 modalClose 함수 호출
+    modalClose();
   };
 
   return (
