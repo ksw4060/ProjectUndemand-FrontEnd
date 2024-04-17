@@ -18,9 +18,8 @@ function MyReviewPage() {
   const [productReviewData, setProductReviewData] = useState([]);
   const [rUModalOpen, setRUModalOpen] = useState(false);
   const [selectedRId, setSelectedRId] = useState(null);
+  const [thumbnailImages, setThumbnailImages] = useState([]);
   const memberId = 1;
-  // const [reviewImage, setReviewImage] = useState(null);
-  // const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     fetchProductReviewData();
@@ -36,6 +35,25 @@ function MyReviewPage() {
       console.error(error.response.data);
     }
   };
+
+  useEffect(() => {
+    const fetchThumbnail = async () => {
+      try {
+        const thumbnailPromises = productReviewData.map(async (userReview) => {
+          const response = await axios.get(
+            `http://localhost:8080/api/v1/thumbnail/${userReview.productId}`
+          );
+          return response.data[0];
+        });
+        const thumbnailData = await Promise.all(thumbnailPromises);
+        setThumbnailImages(thumbnailData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchThumbnail();
+  }, [productReviewData]);
 
   const handleRUModalOpen = async (reviewId) => {
     setRUModalOpen(true);
@@ -59,58 +77,6 @@ function MyReviewPage() {
     }
   };
 
-  // const handleImageChange = (e) => {
-  //   setImageFile(e.target.files[0]);
-  // };
-
-  // const handleImageUpload = async () => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("reviewId", reviewId);
-  //     formData.append("image", imageFile);
-
-  //     const response = await axios.post(
-  //       "http://localhost:8080/api/v1/review/img/upload",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error("이미지 업로드 에러:", error);
-  //   }
-  // };
-
-  // const fetchReviewImg = async (reviewId) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8080/api/v1/review/img/${reviewId}`
-  //     );
-  //     console.log(response.data);
-  //     return response.data[0];
-  //     // setReviewImage(response.data[0]);
-  //   } catch (error) {
-  //     console.error("Error fetching review image:", error);
-  //     return null;
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const fetchReviewImages = async () => {
-  //     const reviewImages = await Promise.all(
-  //       productReviewData.map(async (review) => {
-  //         const imgUrl = await fetchReviewImg(review.reviewId);
-  //         return imgUrl;
-  //       })
-  //     );
-  //     setReviewImage(reviewImages);
-  //   };
-  //   fetchReviewImages();
-  // }, [productReviewData]);
-
   const renderStars = (rating) => {
     const filledStars = Math.floor(rating);
     const remainingStars = 5 - filledStars;
@@ -131,9 +97,9 @@ function MyReviewPage() {
     <div className="review-page">
       <div className="review-page-title-container">
         <div className="review-page-title">내 리뷰</div>
-        <div className="total-review-count">{`10개의 리뷰`}</div>
+        <div className="total-review-count">{`${productReviewData.length}개의 리뷰`}</div>
       </div>
-      <div className="pagination-cnt">{`1-10/10개의 리뷰`}</div>
+      <div className="pagination-cnt">{`1-10/${productReviewData.length}개의 리뷰`}</div>
       <div className="review-page-filter">
         <div className="review-sort-box">
           <div
@@ -168,42 +134,53 @@ function MyReviewPage() {
           </ul>
         </div>
       </div>
-      {productReviewData.map((tableRow) => (
-        <div key={tableRow.reviewId} className="review-container">
-          <div className="review-product">
-            <img
-              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt=""
-            />
-            <div className="txt-info">
-              <span>{tableRow.productName}</span>
+      {productReviewData.map((tableRow, index) => {
+        return (
+          <div key={tableRow.reviewId} className="review-container">
+            <div className="review-product">
+              {thumbnailImages[index] ? (
+                <img
+                  src={`http://localhost:8080${thumbnailImages[index]}`}
+                  alt={`상품명: ${tableRow.productName}`}
+                />
+              ) : (
+                <div>로딩 중...</div>
+              )}
+              <div className="txt-info">
+                <span>{tableRow.productName}</span>
+              </div>
+            </div>
+            <div className="review-main-content-container">
+              <div className="rating-box">
+                <div className="star-rate">{renderStars(tableRow.rating)}</div>
+              </div>
+              <div className="review-box">
+                <div className="my-review-content">
+                  {tableRow.reviewContent}
+                </div>
+              </div>
+              <img
+                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                alt={`상품명 ${tableRow.productName}의 ${index}번 리뷰`}
+              />
+            </div>
+            <div className="review-edit-del-container">
+              <div className="review-date">
+                <span>마지막 수정일:</span>
+                {tableRow.updatedAt.substring(0, 10)}
+              </div>
+              <div className="review-edit-del">
+                <button onClick={() => handleRUModalOpen(tableRow.reviewId)}>
+                  리뷰 수정
+                </button>
+                <button onClick={() => handleReviewDelete(tableRow.reviewId)}>
+                  리뷰 삭제
+                </button>
+              </div>
             </div>
           </div>
-          <div className="review-main-content-container">
-            <div className="rating-box">
-              <div className="star-rate">{renderStars(tableRow.rating)}</div>
-            </div>
-            <div className="review-box">
-              <div className="review-content">{tableRow.reviewContent}</div>
-            </div>
-            {/* 사용자가 등록한 리뷰 썸네일 들어갈 위치 */}
-          </div>
-          <div className="review-edit-del-container">
-            <div className="review-date">
-              <span>마지막 수정일:</span>
-              {tableRow.updatedAt.substring(0, 10)}
-            </div>
-            <div className="review-edit-del">
-              <button onClick={() => handleRUModalOpen(tableRow.reviewId)}>
-                리뷰 수정
-              </button>
-              <button onClick={() => handleReviewDelete(tableRow.reviewId)}>
-                리뷰 삭제
-              </button>
-            </div>
-          </div>
-        </div>
-      ))}
+        );
+      })}
       {rUModalOpen && (
         <ReviewUpdateModal
           reviewId={selectedRId}
