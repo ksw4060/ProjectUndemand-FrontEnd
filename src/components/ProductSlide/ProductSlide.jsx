@@ -22,7 +22,7 @@ function ProductSlide({ products, sectionTitle }) {
           }
         }
       }, 0);
-    }, 10000);
+    }, 120000);
     return () => clearInterval(interval);
   }, []);
 
@@ -69,8 +69,8 @@ function ProductSlide({ products, sectionTitle }) {
           {products.map((product, index) => (
             <li key={product.productId} className="product-card">
               <img
-                className={`product-img${index + 1} product-card-img`}
-                src={`http://localhost:8080/${product.productThumbnails[0]}`}
+                className={`product-card-img`}
+                src={`http://localhost:8080${product.productThumbnails[index]}`}
                 alt={product.productName}
               />
               <div className="product-small-info">

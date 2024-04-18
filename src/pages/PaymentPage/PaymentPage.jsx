@@ -7,7 +7,7 @@ function PaymentPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { memberId } = location.state;
-  const orderMemberId = memberId;
+  // const orderMemberId = memberId;
   const [familyName, setFamilyName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [fullName, setFullName] = useState("");
@@ -50,7 +50,7 @@ function PaymentPage() {
     const handleFetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${orderMemberId}`
+          `http://localhost:8080/api/v1/cart/${memberId}`
         );
         setCartProducts(response.data);
       } catch (error) {
@@ -59,7 +59,7 @@ function PaymentPage() {
     };
 
     handleFetchProduct();
-  }, [orderMemberId]);
+  }, [memberId]);
 
   useEffect(() => {
     let totalPriceSum = 0;
