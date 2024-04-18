@@ -35,9 +35,28 @@ const KakaoLoginHandeler = (props) => {
             // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
             localStorage.setItem("Authorization", "Bearer " + accessToken);
             document.cookie = `refreshToken=${refreshToken};`;
+
+            const base64Url = accessToken.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+
+            localStorage.setItem("payload", jsonPayload);
+
+            const payload = localStorage.getItem("payload");
+            const payloadObject = JSON.parse(payload);
+            localStorage.setItem("memberId", payloadObject.memberId);
+
             // Delay of 1 second before navigating to home page
             setTimeout(() => {
-              navigate("/");
+              // navigate("/");
+              window.location.replace("/");
             }, 1000);
             setTimeout(() => {
               alert(response.data.email + "님, 반갑습니다.");

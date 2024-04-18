@@ -15,15 +15,29 @@ import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
+// import { PrivateRoutes } from "./PrivateRoutes.js";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
 
 function App() {
+  const [isLoggedin, setIsLoggedin] = useState(false);
+  const [memberId, setMemberId] = useState("");
   const [isScroll, setIscroll] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [isReceiptPage, setIsReceiptPage] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("Authorization");
+    if (accessToken) {
+      setIsLoggedin(true);
+      setMemberId(localStorage.getItem("memberId"));
+    } else {
+      setIsLoggedin(false);
+      setMemberId("");
+    }
+  }, []);
 
   useEffect(() => {
     if (location.pathname === "/cart/order/done") {
@@ -72,28 +86,44 @@ function App() {
         } ${isMenuVisible ? "blur" : ""}`}
       >
         <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/signup" element={<Signup />}></Route>
-          <Route path="/login" element={<Login />}></Route>
+          <Route path="/" element={<Main />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/login/oauth2/code/kakao" //redirect_url
             element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
-          <Route path="/:category" element={<CategoryPage />}></Route>
+          <Route path="/:category" element={<CategoryPage />} />
           <Route
             path="/product/:productId"
-            element={<ProductDetailPage />}
-          ></Route>
-          <Route path="/inquiry" element={<InquiryPage />}></Route>
+            element={
+              <ProductDetailPage isLoggedin={isLoggedin} memberId={memberId} />
+            }
+          />
+          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
+          {/* <Route element={<PrivateRoutes isLoggedin={isLoggedin} />}>
+            <Route path="/cart" element={<CartPage memberId={memberId} />} />
+            <Route path="/cart/order" element={<PaymentPage />} />
+            <Route path="/cart/order/done" element={<ReceiptPage />} />
+            <Route
+              path="/user/review"
+              element={<MyReviewPage memberId={memberId} />}
+            />
+            <Route
+              path="/admin"
+              element={<AdministratorPage />}
+              memberId={memberId}
+            />
+          </Route> */}
           <Route
-            path="/inquiry/:inquiryId"
-            element={<InquiryDetailPage />}
-          ></Route>
-          <Route path="/cart" element={<CartPage />}></Route>
-          <Route path="/cart/order" element={<PaymentPage />}></Route>
-          <Route path="/cart/order/done" element={<ReceiptPage />}></Route>
-          <Route path="/user/review" element={<MyReviewPage />}></Route>
-          <Route path="/admin" element={<AdministratorPage />}></Route>
+            path="/cart"
+            element={<CartPage memberId={memberId} isLoggedin={isLoggedin} />}
+          />
+          <Route path="/cart/order" element={<PaymentPage />} />
+          <Route path="/cart/order/done" element={<ReceiptPage />} />
+          <Route path="/user/review" element={<MyReviewPage />} />
+          <Route path="/admin" element={<AdministratorPage />} />
         </Routes>
       </div>
 
