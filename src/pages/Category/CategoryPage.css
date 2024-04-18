@@ -32,6 +32,11 @@
     align-items: center;
 }
 
+.category-path {
+    font-size: 23px;
+    font-weight: bold;
+}
+
 .filter-box {
     width: 240px;
     display: flex;
@@ -101,23 +106,26 @@
 }
 
 .filter-option-title {
-    margin-bottom: 30px;
     font-size: 17px;
     font-weight: bold;
+    margin-bottom: 30px;
 }
 
 .filter-option {
-    margin-bottom: 15px;
     font-size: 17px;
+    color: rgb(150, 150, 150);
+    margin-bottom: 15px;
 }
 
 .filter-option:hover {
-    cursor: pointer;
     font-weight: bold;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
 }
 
 .selected {
     font-weight: bold;
+    color: rgb(0, 0, 0);
 }
 
 .filter-option-more>p:hover {
@@ -220,4 +228,58 @@
     color: rgb(0, 0, 0);
     font-weight: bold;
     margin: 15px 0px 5px 0px;
+}
+
+.paging-btn-container {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.prev-next-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+}
+
+.prev-next-btn:first-child {
+    margin-right: 20px;
+}
+
+.prev-next-btn:last-child {
+    margin-left: 20px;
+}
+
+.prev-next-btn>svg {
+    font-size: 25px;
+}
+
+.page-num-btn {
+    width: 20px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    margin: 0px 5px;
+}
+
+.page-num-btn:hover {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.page-num-btn.current-page {
+    font-size: 17px;
+    font-weight: bold;
 }

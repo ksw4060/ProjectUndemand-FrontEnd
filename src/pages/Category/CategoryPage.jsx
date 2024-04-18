@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
@@ -17,12 +18,12 @@ function CategoryPage() {
   const [currentCategory, setCurrentCategory] = useState(() => {
     return localStorage.getItem("currentCategory") || category.split("-")[0];
   });
-  const [prevCategory, setPrevCategory] = useState(null);
+  // const [prevCategory, setPrevCategory] = useState(null);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
-    optionName ? `< ${optionName.toUpperCase()}` : ""
-  } ${subOptionName ? `< ${subOptionName}` : ""}`;
+    optionName ? `/ ${optionName.toUpperCase()}` : ""
+  } ${subOptionName ? `/ ${subOptionName}` : ""}`;
   const navigate = useNavigate();
   const [filterOptionData, setFilterOptionData] = useState([]);
 
@@ -74,13 +75,17 @@ function CategoryPage() {
         const conditionMap = {
           best: "best",
           new: "new",
-          unisex: "unisex",
-          men: "man",
-          women: "women",
           discount: "discount",
         };
 
-        const conditionForFetch = conditionMap[currentCategory];
+        const productTypeMap = {
+          unisex: "UNISEX",
+          men: "MAN",
+          women: "WOMAN",
+        };
+
+        const condition = conditionMap[currentCategory] || "";
+        const productType = productTypeMap[currentCategory] || "";
 
         const response = await axios.get(
           `http://localhost:8080/api/v1/products`,
@@ -88,7 +93,8 @@ function CategoryPage() {
             params: {
               size: pageSize,
               page: currentPage,
-              condition: conditionForFetch,
+              condition: condition,
+              productType: productType,
             },
           }
         );
@@ -106,13 +112,26 @@ function CategoryPage() {
     pageButtons();
   }, [allProducts]);
 
+  // useEffect(() => {
+  //   if (prevCategory && prevCategory !== currentCategory) {
+  //     setSelectedCategoryOption(null);
+  //     setSelectedSubCategoryOption(null);
+  //     setOptionName("");
+  //     setSubOptionName("");
+  //   }
+  //   setPrevCategory(currentCategory);
+  // }, [currentCategory, prevCategory]);
+
   useEffect(() => {
-    if (prevCategory && prevCategory !== currentCategory) {
+    const isTopMenuClicked = localStorage.getItem("topMenuClicked");
+
+    if (isTopMenuClicked) {
       setSelectedCategoryOption(null);
       setSelectedSubCategoryOption(null);
+      setOptionName("");
+      setSubOptionName("");
     }
-    setPrevCategory(currentCategory);
-  }, [currentCategory, prevCategory]);
+  }, [category]);
 
   const filterUrlMap = {
     상의: "tops",
@@ -300,7 +319,7 @@ function CategoryPage() {
         className={`title-section ${isCategoryScroll ? "scroll-category" : ""}`}
       >
         <div className="wrapper">
-          <h2>{categoryTitle}</h2>
+          <span className="category-path">{categoryTitle}</span>
           <div className="filter-box">
             <div className="filter" onClick={() => hanldeFilterClick()}>
               <p>필터 표시</p>
@@ -504,23 +523,28 @@ function CategoryPage() {
           </div>
         </div>
       </div>
-      <div>
+      <div className="paging-btn-container">
         <button
           onClick={() => handlePageChange(-1)}
           disabled={currentPage === 0}
+          className="prev-next-btn"
         >
-          이전 페이지
+          <GrFormPrevious />
         </button>
         {visiblePages.map((page) => (
           <button
             key={page}
             onClick={() => setCurrentPage(page)}
-            className={currentPage === page ? "current-page" : ""}
+            className={`page-num-btn ${
+              currentPage === page ? "current-page" : ""
+            }`}
           >
             {page + 1}
           </button>
         ))}
-        <button onClick={() => handlePageChange(1)}>다음 페이지</button>
+        <button onClick={() => handlePageChange(1)} className="prev-next-btn">
+          <GrFormNext />
+        </button>
       </div>
     </div>
   );

@@ -153,10 +153,11 @@
 
 .option>a {
     font-size: 17px;
-    color: rgb(0, 0, 0);
+    color: rgb(150, 150, 150);
 }
 
-.option:hover {
-    cursor: pointer;
+.option>a:hover {
     font-weight: bold;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
 }
