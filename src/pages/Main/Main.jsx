@@ -6,14 +6,16 @@ import "./Main.css";
 
 const Main = () => {
   const [allProducts, setAllProducts] = useState([]);
+  const [mainBest, setMainBest] = useState([]);
+  const [mainNew, setMainNew] = useState([]);
+  const [mainDiscount, setMainDiscount] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/products"
+          "http://localhost:8080/api/v1/products/all"
         );
-        console.log(response.data);
         setAllProducts(response.data);
       } catch (error) {
         console.error("Error fetching product data:", error);
@@ -23,30 +25,46 @@ const Main = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    getBestProducts();
+    getNewProducts();
+    getDiscountProducts();
+  }, [allProducts]);
+
   const getBestProducts = () => {
-    return allProducts
-      .slice()
-      .sort((a, b) => b.product_like_cnt - a.product_like_cnt)
-      .slice(0, 7);
+    return setMainBest(
+      allProducts
+        .slice()
+        .sort((a, b) => b.wishListCount - a.wishListCount)
+        .slice(0, 7)
+    );
   };
 
   const getNewProducts = () => {
-    return allProducts
-      .slice()
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      .slice(0, 7);
+    return setMainNew(
+      allProducts
+        .slice()
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 7)
+    );
   };
 
-  const getSaleProducts = () => {
-    return allProducts.filter((product) => product.sale).slice(0, 7);
+  const getDiscountProducts = () => {
+    return setMainDiscount(
+      allProducts.filter((product) => product.isDiscount).slice(0, 7)
+    );
   };
+
+  useEffect(() => {
+    console.log(allProducts);
+  }, [allProducts]);
 
   return (
     <div className="contents-body">
       <Carousels />
-      <ProductSlide products={getBestProducts()} sectionTitle="Best Products" />
-      <ProductSlide products={getNewProducts()} sectionTitle="New Products" />
-      <ProductSlide products={getSaleProducts()} sectionTitle="Sale Products" />
+      <ProductSlide products={mainBest} sectionTitle="Best Products" />
+      <ProductSlide products={mainNew} sectionTitle="New Products" />
+      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />
     </div>
   );
 };

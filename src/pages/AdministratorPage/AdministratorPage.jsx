@@ -70,7 +70,7 @@ function AdministratorPage() {
         setTopsId(response.data);
       } else if (parentCategoryName === "하의") {
         setBottomsId(response.data);
-      } else if (parentCategoryName === "dress&set") {
+      } else if (parentCategoryName === "드레스 & 세트") {
         setDressAndSetId(response.data);
       } else if (parentCategoryName === "아우터") {
         setOuterwearId(response.data);
@@ -161,6 +161,7 @@ function AdministratorPage() {
           productInfo: productInfo,
           manufacturer: manufacturer,
           isDiscount: isDiscount,
+          discountRate: discountRate,
           isRecommend: isRecommend,
         }
       );
@@ -239,7 +240,7 @@ function AdministratorPage() {
                 <option value="">상위 카테고리를 선택해 주세요.</option>
                 <option value="상의">상의</option>
                 <option value="하의">하의</option>
-                <option value="dress&set">드레스&세트</option>
+                <option value="드레스 & 세트">드레스&세트</option>
                 <option value="아우터">아우터</option>
                 <option value="신발">신발</option>
                 <option value="악세서리">악세서리</option>
@@ -277,7 +278,7 @@ function AdministratorPage() {
                     <option value="긴팔 셔츠">긴팔 셔츠</option>
                     <option value="반팔티">반팔티</option>
                     <option value="긴팔티">긴팔티</option>
-                    <option value="니트/스웨터">니트/스웨터</option>
+                    <option value="니트 & 스웨터">니트 & 스웨터</option>
                     <option value="블라우스">블라우스</option>
                   </>
                 )}
@@ -310,7 +311,7 @@ function AdministratorPage() {
                 {parseInt(parentId) === parseInt(shoesId) && (
                   <>
                     <option value="스니커즈">스니커즈</option>
-                    <option value="샌들/슬리퍼">샌들/슬리퍼</option>
+                    <option value="샌들 & 슬리퍼">샌들 & 슬리퍼</option>
                     <option value="부츠">부츠</option>
                   </>
                 )}
@@ -459,6 +460,14 @@ function AdministratorPage() {
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
+            {isDiscount && (
+              <input
+                type="number"
+                value={discountRate}
+                onChange={(e) => setDiscountRate(e.target.value)}
+                placeholder="Enter discount rate"
+              />
+            )}
             <select
               value={isRecommend ? "true" : "false"}
               onChange={(e) => setIsRecommend(e.target.value === "true")}

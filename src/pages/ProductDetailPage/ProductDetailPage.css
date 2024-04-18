@@ -394,6 +394,14 @@
     align-items: center;
 }
 
+.detail-page-review-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    object-position: center;
+    margin-top: 10px;
+}
+
 .detail-page-inquiry-container {
     width: 100%;
     display: flex;

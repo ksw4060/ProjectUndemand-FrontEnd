@@ -4,122 +4,139 @@ import { Link } from "react-router-dom";
 import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
 function CategoryPage() {
+  const { category } = useParams();
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
   const [isFilterClicked, setIsFilterClicked] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
-  const [selectedSubcategoryOption, setSelectedSubcategoryOption] =
+  const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
     useState(null);
-  const [currentCategory, setCurrentCategory] = useState(null);
-  const [prevCategory, setPrevCategory] = useState(null);
-  const { category } = useParams();
-  const categoryTitle = category.toUpperCase().replace(/-/g, " ");
+  const [currentCategory, setCurrentCategory] = useState(() => {
+    return localStorage.getItem("currentCategory") || category.split("-")[0];
+  });
+  // const [prevCategory, setPrevCategory] = useState(null);
+  const [optionName, setOptionName] = useState("");
+  const [subOptionName, setSubOptionName] = useState("");
+  const categoryTitle = `${currentCategory.toUpperCase()} ${
+    optionName ? `/ ${optionName.toUpperCase()}` : ""
+  } ${subOptionName ? `/ ${subOptionName}` : ""}`;
   const navigate = useNavigate();
   const [filterOptionData, setFilterOptionData] = useState([]);
-  // const [productsData, setProductsData] = useState([]);
-  const [bestProducts, setBestProducts] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
-  const [unisexProducts, setUnisexProducts] = useState([]);
-  const [manProducts, setManProducts] = useState([]);
-  const [womanProducts, setWomanProducts] = useState([]);
-  const [saleProducts, setSaleProducts] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [allProducts, setAllProducts] = useState([]);
+  const [visiblePages, setVisiblePages] = useState([]);
+  const pageSize = 10;
 
   useEffect(() => {
-    const fetchFilterAndProductsData = async () => {
+    setCurrentCategory(category.split("-")[0]);
+    localStorage.setItem("currentCategory", category.split("-")[0]);
+  }, [category, currentCategory]);
+
+  const fetchFilterData = async () => {
+    try {
+      const categoryResponse = await axios.get(
+        "http://localhost:8080/api/v1/categorys"
+      );
+      setFilterOptionData(categoryResponse.data);
+    } catch (error) {
+      console.error("Error fetching category data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilterData();
+  }, []);
+
+  const handleConditionChange = () => {
+    setCurrentPage(0);
+  };
+
+  const handlePageChange = (direction) => {
+    setCurrentPage(currentPage + direction);
+  };
+
+  const pageButtons = () => {
+    const totalPageCount = pageSize;
+    const pages = [];
+    for (let i = 0; i < totalPageCount; i++) {
+      pages.push(i);
+    }
+    setVisiblePages(pages);
+  };
+
+  useEffect(() => {
+    const fetchProductsData = async () => {
       try {
-        const categoryResponse = await axios.get(
-          "http://localhost:8080/api/v1/categorys"
-        );
-        setFilterOptionData(categoryResponse.data);
-
-        const productsResponse = await axios.get(
-          "http://localhost:8080/api/v1/products"
-        );
-        // setProductsData(productsResponse.data)
-
-        const bestProductsFiltered = productsResponse.data.sort(
-          (a, b) => b.likeCnt - a.likeCnt
-        );
-        setBestProducts(bestProductsFiltered);
-
-        const createDateFromCreatedAt = (createdAtArray) => {
-          const [year, month, day] = createdAtArray;
-          return new Date(year, month - 1, day);
+        const conditionMap = {
+          best: "best",
+          new: "new",
+          discount: "discount",
         };
 
-        const newProductsFiltered = productsResponse.data.sort(
-          (productA, productB) => {
-            const dateA = createDateFromCreatedAt(productA.createdAt);
-            const dateB = createDateFromCreatedAt(productB.createdAt);
-            return dateA - dateB;
+        const productTypeMap = {
+          unisex: "UNISEX",
+          men: "MAN",
+          women: "WOMAN",
+        };
+
+        const condition = conditionMap[currentCategory] || "";
+        const productType = productTypeMap[currentCategory] || "";
+
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/products`,
+          {
+            params: {
+              size: pageSize,
+              page: currentPage,
+              condition: condition,
+              productType: productType,
+            },
           }
         );
-        setNewProducts(newProductsFiltered);
-
-        const unisexProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "UNISEX"
-        );
-        setUnisexProducts(unisexProductsFiltered);
-
-        const manProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "MAN"
-        );
-        setManProducts(manProductsFiltered);
-
-        const womanProductsFiltered = productsResponse.data.filter(
-          (product) => product.productType === "WOMAN"
-        );
-        setWomanProducts(womanProductsFiltered);
-
-        const saleProductsFiltered = productsResponse.data.filter(
-          (product) => product.sale === true
-        );
-        setSaleProducts(saleProductsFiltered);
+        setAllProducts(response.data);
       } catch (error) {
-        console.error("Error fetching category data:", error);
+        console.error("상품을 불러오는 도중 에러가 발생했습니다:", error);
       }
     };
 
-    fetchFilterAndProductsData();
-  }, []);
+    fetchProductsData();
+    handleConditionChange();
+  }, [currentPage, currentCategory]);
 
-  const sectionProducts = {
-    best: bestProducts,
-    new: newProducts,
-    unisex: unisexProducts,
-    men: manProducts,
-    women: womanProducts,
-    sale: saleProducts,
-  };
+  useEffect(() => {
+    pageButtons();
+  }, [allProducts]);
 
-  const renderProductCards = () => {
-    const products = sectionProducts[currentCategory] || [];
+  // useEffect(() => {
+  //   if (prevCategory && prevCategory !== currentCategory) {
+  //     setSelectedCategoryOption(null);
+  //     setSelectedSubCategoryOption(null);
+  //     setOptionName("");
+  //     setSubOptionName("");
+  //   }
+  //   setPrevCategory(currentCategory);
+  // }, [currentCategory, prevCategory]);
 
-    return products.map((product, index) => (
-      <li
-        key={index}
-        className={`product-card ${isFilterClicked && "filter-active-margin"}`}
-      >
-        <div
-          className={`img-section img${index + 1} ${
-            isFilterClicked && "filter-active-img"
-          }`}
-        ></div>
-        <div className="product-info">
-          <Link to={`/product/${product.id}`}>{product.productName}</Link>
-          <Link to={`/product/${product.id}`}>{product.price}</Link>
-        </div>
-      </li>
-    ));
-  };
+  useEffect(() => {
+    const isTopMenuClicked = localStorage.getItem("topMenuClicked");
+
+    if (isTopMenuClicked) {
+      setSelectedCategoryOption(null);
+      setSelectedSubCategoryOption(null);
+      setOptionName("");
+      setSubOptionName("");
+    }
+  }, [category]);
 
   const filterUrlMap = {
     상의: "tops",
     하의: "bottoms",
-    "dress&set": "dressandset",
+    "드레스 & 세트": "dressandset",
     아우터: "outerwear",
     신발: "shoes",
     악세서리: "accessories",
@@ -132,7 +149,7 @@ function CategoryPage() {
     "긴팔 셔츠": "longsleeveshirt",
     반팔티: "shortsleevetee",
     긴팔티: "longsleevetee",
-    "니트/스웨터": "knitsweater",
+    "니트 & 스웨터": "knitsweater",
     블라우스: "blouse",
     긴바지: "trousers",
     반바지: "shorts",
@@ -149,7 +166,7 @@ function CategoryPage() {
     조끼: "vest",
     경량패딩: "lightweightpadding",
     스니커즈: "sneakers",
-    "샌들/슬리퍼": "sandalslippers",
+    "샌들 & 슬리퍼": "sandalslippers",
     부츠: "boots",
     모자: "hat",
     양말: "socks",
@@ -170,7 +187,7 @@ function CategoryPage() {
   });
 
   const genderOptions = filterOptions.filter(
-    (category) => category.name !== "dress&set"
+    (category) => category.name !== "드레스 & 세트"
   );
 
   const menUnisexFilterOptions = genderOptions.map((filterOptions) => {
@@ -186,17 +203,6 @@ function CategoryPage() {
       return filterOptions;
     }
   });
-
-  useEffect(() => {
-    setCurrentCategory(category.split("-")[0]);
-  }, [category]);
-
-  useEffect(() => {
-    if (prevCategory && prevCategory !== currentCategory) {
-      window.location.reload();
-    }
-    setPrevCategory(currentCategory);
-  }, [currentCategory, prevCategory]);
 
   const priceOptions = [
     { id: "price0", range: "0 ~ 50,000 원" },
@@ -255,22 +261,57 @@ function CategoryPage() {
   };
 
   const handleCategoryOptionSelect = (id) => {
+    localStorage.setItem("selectedCategoryOption", id);
+    localStorage.removeItem("selectedSubCategoryOption");
     if (selectedCategoryOption === id) {
-      return;
+      setSelectedSubCategoryOption(null);
     }
     setSelectedCategoryOption(id);
+    setSelectedSubCategoryOption(null);
     const newCategoryUrl = `/${currentCategory}-${id}`;
     navigate(newCategoryUrl, { replace: true });
   };
 
   const handleSubcategoryOptionSelect = (subOptionId) => {
-    if (selectedSubcategoryOption === subOptionId) {
+    localStorage.setItem("selectedSubCategoryOption", subOptionId);
+    if (selectedSubCategoryOption === subOptionId) {
       return;
     }
-    setSelectedSubcategoryOption(subOptionId);
+    setSelectedSubCategoryOption(subOptionId);
     const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}-${subOptionId}`;
     navigate(newSubcategoryUrl, { replace: true });
   };
+
+  useEffect(() => {
+    const storedCategoryOption = localStorage.getItem("selectedCategoryOption");
+    const storedSubCategoryOption = localStorage.getItem(
+      "selectedSubCategoryOption"
+    );
+    const storedOptionName = localStorage.getItem("optionName");
+    const storedSubOptionName = localStorage.getItem("subOptionName");
+
+    if (storedCategoryOption) {
+      setSelectedCategoryOption(storedCategoryOption);
+    }
+    if (storedSubCategoryOption) {
+      setSelectedSubCategoryOption(storedSubCategoryOption);
+    }
+    if (storedOptionName) {
+      setOptionName(storedOptionName);
+    }
+    if (storedSubOptionName) {
+      setSubOptionName(storedSubOptionName);
+    }
+  }, [category]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("selectedCategoryOption");
+      localStorage.removeItem("selectedSubCategoryOption");
+      localStorage.removeItem("optionName");
+      localStorage.removeItem("subOptionName");
+    };
+  }, []);
 
   return (
     <div className="category-page">
@@ -278,7 +319,7 @@ function CategoryPage() {
         className={`title-section ${isCategoryScroll ? "scroll-category" : ""}`}
       >
         <div className="wrapper">
-          <h2>{categoryTitle}</h2>
+          <span className="category-path">{categoryTitle}</span>
           <div className="filter-box">
             <div className="filter" onClick={() => hanldeFilterClick()}>
               <p>필터 표시</p>
@@ -301,14 +342,20 @@ function CategoryPage() {
             {currentCategory === "best" ||
             currentCategory === "new" ||
             currentCategory === "women" ||
-            currentCategory === "sale"
+            currentCategory === "discount"
               ? filterOptions.map((option) => (
                   <li
                     key={option.id}
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
-                    onClick={() => handleCategoryOptionSelect(option.id)}
+                    onClick={() => {
+                      handleCategoryOptionSelect(option.id);
+                      setOptionName(option.name);
+                      setSubOptionName("");
+                      localStorage.setItem("optionName", option.name);
+                      localStorage.removeItem("subOptionName");
+                    }}
                   >
                     {option.name}
                   </li>
@@ -319,7 +366,13 @@ function CategoryPage() {
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
-                    onClick={() => handleCategoryOptionSelect(option.id)}
+                    onClick={() => {
+                      handleCategoryOptionSelect(option.id);
+                      setOptionName(option.name);
+                      setSubOptionName("");
+                      localStorage.setItem("optionName", option.name);
+                      localStorage.removeItem("subOptionName");
+                    }}
                   >
                     {option.name}
                   </li>
@@ -328,7 +381,7 @@ function CategoryPage() {
           {currentCategory === "best" ||
           currentCategory === "new" ||
           currentCategory === "women" ||
-          currentCategory === "sale"
+          currentCategory === "discount"
             ? filterOptions.map(
                 (option) =>
                   selectedCategoryOption === option.id &&
@@ -338,13 +391,18 @@ function CategoryPage() {
                         <li
                           key={subOption.id}
                           className={`filter-option ${
-                            selectedSubcategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.id
                               ? "selected"
                               : ""
                           }`}
-                          onClick={() =>
-                            handleSubcategoryOptionSelect(subOption.id)
-                          }
+                          onClick={() => {
+                            handleSubcategoryOptionSelect(subOption.id);
+                            setSubOptionName(subOption.name);
+                            localStorage.setItem(
+                              "subOptionName",
+                              subOption.name
+                            );
+                          }}
                         >
                           {subOption.name}
                         </li>
@@ -361,13 +419,18 @@ function CategoryPage() {
                         <li
                           key={subOption.id}
                           className={`filter-option ${
-                            selectedSubcategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.id
                               ? "selected"
                               : ""
                           }`}
-                          onClick={() =>
-                            handleSubcategoryOptionSelect(subOption.id)
-                          }
+                          onClick={() => {
+                            handleSubcategoryOptionSelect(subOption.id);
+                            setSubOptionName(subOption.name);
+                            localStorage.setItem(
+                              "subOptionName",
+                              subOption.name
+                            );
+                          }}
                         >
                           {subOption.name}
                         </li>
@@ -413,8 +476,75 @@ function CategoryPage() {
           />
         </div>
         <div className="products-section">
-          <ul className="product-card-box">{renderProductCards()}</ul>
+          <div>
+            <div className="product-card-box">
+              {allProducts.length > 0 ? (
+                allProducts.map((product, index) => (
+                  <div
+                    key={product.productId}
+                    className={`product-card ${
+                      isFilterClicked && "filter-active-margin"
+                    }`}
+                  >
+                    <img
+                      src={`http://localhost:8080/${product.productThumbnails[0]}`}
+                      alt={product.productName}
+                      className={`img-section img${index + 1} ${
+                        isFilterClicked && "filter-active-img"
+                      }`}
+                    />
+                    <div className="product-info">
+                      <Link to={`/product/${product.productId}`}>
+                        {product.productName}
+                      </Link>
+                      {product.isDiscount && (
+                        <Link
+                          to={`/product/${product.productId}`}
+                        >{`${product.discountRate}% 할인 중`}</Link>
+                      )}
+                      {product.isRecommend && (
+                        <Link to={`/product/${product.productId}`}>
+                          추천상품
+                        </Link>
+                      )}
+                      <Link
+                        to={`/product/${product.productId}`}
+                        className="product-price"
+                      >
+                        {`${product.price} 원`}
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <span>{`${category} 상품이 없습니다.`}</span>
+              )}
+            </div>
+          </div>
         </div>
+      </div>
+      <div className="paging-btn-container">
+        <button
+          onClick={() => handlePageChange(-1)}
+          disabled={currentPage === 0}
+          className="prev-next-btn"
+        >
+          <GrFormPrevious />
+        </button>
+        {visiblePages.map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            className={`page-num-btn ${
+              currentPage === page ? "current-page" : ""
+            }`}
+          >
+            {page + 1}
+          </button>
+        ))}
+        <button onClick={() => handlePageChange(1)} className="prev-next-btn">
+          <GrFormNext />
+        </button>
       </div>
     </div>
   );

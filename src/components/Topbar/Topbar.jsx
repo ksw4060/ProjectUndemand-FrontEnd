@@ -76,7 +76,17 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                 onMouseOver={() => setIsMenuVisible(true)}
                 className={hoveredLinkIndex === index ? "hovered" : ""}
               >
-                <Link to={link.to} onMouseOver={() => handleMouseOver(index)}>
+                <Link
+                  to={link.to}
+                  onMouseOver={() => handleMouseOver(index)}
+                  onClick={() => {
+                    localStorage.removeItem("selectedCategoryOption");
+                    localStorage.removeItem("selectedSubCategoryOption");
+                    localStorage.removeItem("optionName");
+                    localStorage.removeItem("subOptionName");
+                    localStorage.setItem("topMenuClicked", true);
+                  }}
+                >
                   {link.label}
                 </Link>
                 <div className={`accordion-menu ${isMenuVisible && "active"}`}>
@@ -88,6 +98,17 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                             <li className="option-title">
                               <Link
                                 to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}`}
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    "selectedCategoryOption",
+                                    content.id
+                                  );
+                                  localStorage.setItem(
+                                    "optionName",
+                                    content.name
+                                  );
+                                  localStorage.removeItem("topMenuClicked");
+                                }}
                               >
                                 {content.name}
                               </Link>
@@ -96,6 +117,25 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                               <li key={j} className="option">
                                 <Link
                                   to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}-${subOption.id}`}
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "selectedCategoryOption",
+                                      content.id
+                                    );
+                                    localStorage.setItem(
+                                      "optionName",
+                                      content.name
+                                    );
+                                    localStorage.setItem(
+                                      "selectedSubCategoryOption",
+                                      subOption.id
+                                    );
+                                    localStorage.setItem(
+                                      "subOptionName",
+                                      subOption.name
+                                    );
+                                    localStorage.removeItem("topMenuClicked");
+                                  }}
                                 >
                                   {subOption.name}
                                 </Link>
