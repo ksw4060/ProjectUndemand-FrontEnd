@@ -1,5 +1,5 @@
 .signup-box {
-    width: 45%;
+    width: 35%;
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -37,6 +37,12 @@
     height: 50px;
     outline-style: none;
     border: 1.5px solid rgb(170, 170, 170);
+    margin-bottom: 10px;
+}
+
+.login-link {
+    margin: 10px;
+    text-align: center;
 }
 
 .errorMessageWrap > div {
@@ -46,7 +52,7 @@
 
 .signup-box-bottom {
     width: 100%;
-    margin-top: 100px;
+    margin-top: 20px;
 }
 
 .signup-box-bottom > .loginButton {
@@ -60,7 +66,7 @@
 }
 
 .signup-box-bottom > .loginButton:hover {
-    background-color: gray;
+    background-color: rgb(173, 173, 173);
     color: black;
     cursor: pointer;
 }
