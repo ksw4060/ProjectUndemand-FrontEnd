@@ -24,7 +24,7 @@ function TopbarData() {
   const categoryUrlMap = {
     상의: "tops",
     하의: "bottoms",
-    "dress&set": "dressandset",
+    "드레스 & 세트": "dressandset",
     아우터: "outerwear",
     신발: "shoes",
     악세서리: "accessories",
@@ -37,7 +37,7 @@ function TopbarData() {
     "긴팔 셔츠": "longsleeveshirt",
     반팔티: "shortsleevetee",
     긴팔티: "longsleevetee",
-    "니트/스웨터": "knitsweater",
+    "니트 & 스웨터": "knitsweater",
     블라우스: "blouse",
     긴바지: "trousers",
     반바지: "shorts",
@@ -54,7 +54,7 @@ function TopbarData() {
     조끼: "vest",
     경량패딩: "lightweightpadding",
     스니커즈: "sneakers",
-    "샌들/슬리퍼": "sandalslippers",
+    "샌들 & 슬리퍼": "sandalslippers",
     부츠: "boots",
     모자: "hat",
     양말: "socks",
@@ -75,7 +75,7 @@ function TopbarData() {
   });
 
   const genderOptions = categoryOptions.filter(
-    (category) => category.name !== "dress&set"
+    (category) => category.name !== "드레스 & 세트"
   );
 
   const menUnisexCategoryOptions = genderOptions.map((categoryOptions) => {
