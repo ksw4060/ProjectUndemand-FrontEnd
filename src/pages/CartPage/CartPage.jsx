@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
 import axios from "axios";
 import {
@@ -7,16 +7,12 @@ import {
   MdOutlineKeyboardArrowDown,
 } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
-import WishBtn from "../../components/WishBtn/WishBtn";
+import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
-function CartPage() {
-  const location = useLocation();
+function CartPage({ memberId, isLoggedin }) {
   const navigate = useNavigate();
   const axiosInstance = axios.create({ withCredentials: true });
-  const queryParams = new URLSearchParams(location.search);
-  const memberId = parseInt(queryParams.get("memberId"));
   const [cartProducts, setCartProducts] = useState([]);
-  // const [isWishlist, setIsWishlist] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -149,6 +145,8 @@ function CartPage() {
                   <WishBtn
                     memberId={memberId}
                     productId={cartProduct.productId}
+                    isLoggedin={isLoggedin}
+                    pageType={"cart"}
                   />
                   <FaRegTrashCan
                     onClick={() => handleRemoveBtn(cartProduct.cartId)}
