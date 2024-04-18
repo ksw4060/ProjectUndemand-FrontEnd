@@ -41,6 +41,9 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
 
     // 로컬 스토리지에서 Authorization 값 제거
     localStorage.removeItem("Authorization");
+
+    localStorage.removeItem("payload");
+    localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
 
@@ -49,6 +52,8 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
     setIsLoggedin(accessToken ? true : false);
 
     console.log("로그아웃 완료.");
+
+    window.location.replace("/login");
   };
 
   //쿠키삭제
@@ -151,8 +156,8 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
             ))}
           </ul>
           <ul className="userbox">
-            {!isLoggedin && (
-              <>
+            {!isLoggedin ? (
+              <div className="logged-in-false">
                 <li>
                   <Link to="/signup">회원가입</Link>
                 </li>
@@ -161,25 +166,28 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
                     로그인
                   </Link>
                 </li>
-              </>
-            )}
-            {isLoggedin && (
-              <>
                 <li>
-                  <Link to="/login" onClick={handleLogoutClick}>
+                  <Link to="/inquiry">Q&A</Link>
+                </li>
+              </div>
+            ) : (
+              <div className="logged-in-true">
+                <li>
+                  {/* <Link to="/login" onClick={handleLogoutClick}>
                     로그아웃
+                  </Link> */}
+                  <Link onClick={handleLogoutClick}>로그아웃</Link>
+                </li>
+                <li>
+                  <Link to="/inquiry">Q&A</Link>
+                </li>
+                <li>
+                  <Link to="/cart">
+                    <MdOutlineShoppingBag />
                   </Link>
                 </li>
-              </>
+              </div>
             )}
-            <li>
-              <Link to="/inquiry">Q&A</Link>
-            </li>
-            <li>
-              <Link to="/cart?memberId=1">
-                <MdOutlineShoppingBag />
-              </Link>
-            </li>
           </ul>
         </div>
       </div>

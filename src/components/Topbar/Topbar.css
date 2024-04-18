@@ -87,14 +87,38 @@
     width: 17%;
     height: 60px;
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logged-in-false {
+    width: 100%;
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.userbox>li>a {
-    color: black;
+.logged-in-false>li>a {
     font-size: 17px;
+    color: black;
     padding: 10px 15px;
+}
+
+.logged-in-true {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logged-in-true>li>a {
+    font-size: 17px;
+    color: black;
+    padding: 10px 15px;
+}
+
+.logged-in-true>li:last-child>a {
+    font-size: 21px;
 }
 
 .accordion-menu {
