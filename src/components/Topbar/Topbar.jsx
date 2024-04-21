@@ -137,40 +137,35 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
               </li>
             ))}
           </ul>
-          <ul className="userbox">
-            {!isLoggedin ? (
-              <div className="logged-in-false">
-                <li>
-                  <Link to="/signup">회원가입</Link>
-                </li>
-                <li>
-                  <Link to="/login" onClick={handleLoginClick}>
-                    로그인
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/inquiry">Q&A</Link>
-                </li>
-              </div>
-            ) : (
-              <div className="logged-in-true">
-                <li>
-                  {/* <Link to="/login" onClick={handleLogoutClick}>
-                    로그아웃
-                  </Link> */}
-                  <Link onClick={handleLogoutClick}>로그아웃</Link>
-                </li>
-                <li>
-                  <Link to="/inquiry">Q&A</Link>
-                </li>
-                <li>
-                  <Link to="/cart">
-                    <MdOutlineShoppingBag />
-                  </Link>
-                </li>
-              </div>
-            )}
-          </ul>
+          {!isLoggedin ? (
+            <ul className="userbox logged-in-false">
+              <li>
+                <Link to="/signup">회원가입</Link>
+              </li>
+              <li>
+                <Link to="/login" onClick={handleLoginClick}>
+                  로그인
+                </Link>
+              </li>
+              <li>
+                <Link to="/inquiry">Q&A</Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="userbox logged-in-true">
+              <li>
+                <Link onClick={handleLogoutClick}>로그아웃</Link>
+              </li>
+              <li>
+                <Link to="/inquiry">Q&A</Link>
+              </li>
+              <li>
+                <Link to="/cart">
+                  <MdOutlineShoppingBag />
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </div>

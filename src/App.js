@@ -115,7 +115,6 @@ function App() {
 
       <div className="Bottom-section">
         <Footer />
-        <div className="nothing"></div>
       </div>
     </div>
   );

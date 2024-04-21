@@ -60,10 +60,10 @@
     flex-shrink: 0;
     object-fit: cover;
     object-position: center;
-    padding: 0% 1%;
 }
 
 .carousel-img-card.side-img {
-    height: 95%;
-    opacity: 0.5;
+    height: 90%;
+    opacity: 0.3;
+    padding: 0% 5%;
 }
