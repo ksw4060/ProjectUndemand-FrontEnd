@@ -18,7 +18,6 @@ function CategoryPage() {
   const [currentCategory, setCurrentCategory] = useState(() => {
     return localStorage.getItem("currentCategory") || category.split("-")[0];
   });
-  // const [prevCategory, setPrevCategory] = useState(null);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${

@@ -8,15 +8,12 @@ import {
 } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { MdOutlineShoppingBag } from "react-icons/md";
-// import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
 function ProductDetailPage({ isLoggedin, memberId }) {
   let { productId } = useParams();
-  // const [isLoggedin, setIsLoggedin] = useState(false);
-  // const [memberId, setMemberId] = useState("");
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
   const [pHistories, setPHistories] = useState([]);
@@ -41,25 +38,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
   const [thumbnailImage, setThumbnailImage] = useState(null);
-  // const [isWishlist, setIsWishlist] = useState(false);
-
-  // useEffect(() => {
-  //   // const accessToken = localStorage.getItem("Authorization");
-  //   // // 로컬 스토리지에서 Authorization 값이 존재하고, 만료되지 않은 경우 로그인 상태로 설정
-  //   // if (accessToken) {
-  //   //   setIsLoggedin(true);
-  //   //   setMemberId(localStorage.getItem("memberId"));
-  //   // } else {
-  //   //   setIsLoggedin(false);
-  //   //   setMemberId("");
-  //   // }
-  //   const wishlist = localStorage.getItem("isWishlist");
-  //   if (wishlist) {
-  //     setIsWishlist(wishlist);
-  //   } else {
-  //     return;
-  //   }
-  // }, []);
 
   const fetchProduct = async () => {
     try {
@@ -193,10 +171,8 @@ function ProductDetailPage({ isLoggedin, memberId }) {
         })
         .then((response) => {
           alert(`장바구니에 상품을 담았습니다!`);
-          // navigate(`/cart?memberId=${memberId}`);
         })
         .catch((error) => {
-          // console.error("요청을 보내는 중 오류가 발생했습니다:", error);
           alert(error.response.data);
         });
     } else {
@@ -286,45 +262,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
       }
     }
   };
-
-  // const fetchWishlist = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8080/api/v1/wishlist/${memberId}`
-  //     );
-  //     const memberWishlist = response.data;
-  //     memberWishlist.forEach((wishProduct) => {
-  //       if (parseInt(wishProduct.productId) === parseInt(productId)) {
-  //         setIsWishlist(true);
-  //         localStorage.setItem("isWishlist", true);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error(error.response.data);
-  //   }
-  // };
-
-  // const handleWishSubmit = async () => {
-  //   try {
-  //     if (!isWishlist) {
-  //       const response = await axios.post(
-  //         `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
-  //       );
-  //       console.log(response.data);
-  //       setIsWishlist(true);
-  //       localStorage.setItem("isWishlist", true);
-  //     } else {
-  //       const response = await axios.delete(
-  //         `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
-  //       );
-  //       console.log(response.data);
-  //       setIsWishlist(false);
-  //       localStorage.removeItem("isWishlist");
-  //     }
-  //   } catch (error) {
-  //     console.error(error.response.data);
-  //   }
-  // };
 
   useEffect(() => {
     fetchProduct();
@@ -474,13 +411,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                       isLoggedin={isLoggedin}
                       pageType={"productDetail"}
                     />
-                    {/* <li
-                      className="option-btn"
-                      onClick={() => handleWishSubmit()}
-                    >
-                      {!isWishlist ? <FaRegHeart /> : <FaHeart />}
-                      <span>찜하기</span>
-                    </li> */}
                   </ul>
                 </div>
               </div>
