@@ -1,58 +1,54 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./ProductSlide.css";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 function ProductSlide({ products, sectionTitle }) {
-  const [marginLeft, setMarginLeft] = useState(0);
-  const slideUlRef = useRef(null);
   const sectionType = sectionTitle.split(" ")[0];
   const sectionTypeLowercase = sectionType.toLowerCase();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMarginLeft(-10);
-      setTimeout(() => {
-        setMarginLeft(0);
-        if (slideUlRef.current) {
-          const firstChild = slideUlRef.current.firstChild;
-          if (firstChild) {
-            slideUlRef.current.appendChild(firstChild.cloneNode(true));
-            slideUlRef.current.removeChild(firstChild);
-          }
-        }
-      }, 0);
-    }, 120000);
-    return () => clearInterval(interval);
-  }, []);
+  const [imgListLength, setImgListLength] = useState(0);
+  const [currentIdx, setCurrentIdx] = useState(1);
+  const [carouselTransition, setCarouselTransition] = useState(
+    "all 300ms ease-in-out"
+  );
 
-  const moveLeft = () => {
-    if (slideUlRef.current) {
-      const lastChild = slideUlRef.current.lastChild;
-      if (lastChild) {
-        slideUlRef.current.insertBefore(
-          lastChild.cloneNode(true),
-          slideUlRef.current.firstChild
-        );
-        slideUlRef.current.removeChild(lastChild);
-        setMarginLeft(-10);
-        setTimeout(() => setMarginLeft(0), 0);
-      }
-    }
+  useEffect(() => {
+    calcImgListLength(products);
+  }, [products]);
+
+  const calcImgListLength = (arr) => {
+    const listLength = arr.length;
+    setImgListLength(listLength);
   };
 
-  const moveRight = () => {
-    setMarginLeft(-10);
+  const slidePrev = () => {
+    const prevIdx = currentIdx - 1;
+    setCurrentIdx(prevIdx);
+
+    if (prevIdx === 0) {
+      moveToNthSlide(imgListLength);
+    }
+
+    setCarouselTransition("all 300ms ease-in-out");
+  };
+
+  const slideNext = () => {
+    const nextIdx = currentIdx + 1;
+    setCurrentIdx(nextIdx);
+
+    if (nextIdx === imgListLength + 1) {
+      moveToNthSlide(1);
+    }
+
+    setCarouselTransition("all 300ms ease-in-out");
+  };
+
+  const moveToNthSlide = (n) => {
     setTimeout(() => {
-      setMarginLeft(0);
-      if (slideUlRef.current) {
-        const firstChild = slideUlRef.current.firstChild;
-        if (firstChild) {
-          slideUlRef.current.appendChild(firstChild.cloneNode(true));
-          slideUlRef.current.removeChild(firstChild);
-        }
-      }
-    }, 0);
+      setCarouselTransition("");
+      setCurrentIdx(n);
+    }, 250);
   };
 
   return (
@@ -61,17 +57,20 @@ function ProductSlide({ products, sectionTitle }) {
         <h1>{sectionTitle}</h1>
       </div>
       <div className="products-box">
-        <ul
-          ref={slideUlRef}
-          className="product-slide-ul"
-          style={{ marginLeft: marginLeft + "px" }}
-        >
-          {products.map((product, index) => (
-            <li key={product.productId} className="product-card">
+        <div className="product-slide-ul">
+          {products.map((product) => (
+            <div
+              className="product-card"
+              key={product.productId}
+              style={{
+                transform: `translateX(-${currentIdx * 100 - 100}%)`,
+                transition: `${carouselTransition}`,
+              }}
+            >
               <img
-                className={`product-card-img`}
-                src={`http://localhost:8080${product.productThumbnails[index]}`}
+                src={`http://localhost:8080${product.productThumbnails[0]}`}
                 alt={product.productName}
+                className={`product-card-img`}
               />
               <div className="product-small-info">
                 <Link to={`/product/${product.productId}`}>
@@ -92,15 +91,18 @@ function ProductSlide({ products, sectionTitle }) {
                   {`${product.price} 원`}
                 </Link>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
+        <FaChevronLeft
+          className="product-slide-left-arrow"
+          onClick={() => slidePrev()}
+        />
+        <FaChevronRight
+          className="product-slide-right-arrow"
+          onClick={() => slideNext()}
+        />
       </div>
-      <FaChevronLeft className="product-slide-left-arrow" onClick={moveLeft} />
-      <FaChevronRight
-        className="product-slide-right-arrow"
-        onClick={moveRight}
-      />
       <Link to={`/${sectionTypeLowercase}`} className="link-btn">
         Click Here to More View
       </Link>

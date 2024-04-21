@@ -22,12 +22,3 @@ body {
 .test-div {
     height: 300px;
 }
-
-.small-title {
-    width: 1440px;
-    height: 60px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0px auto;
-}
