@@ -23,7 +23,7 @@ function Footer() {
           <h4>TEAM. ProjectUndemand</h4>
           <h4>Back-End. 김성우 / 서채연</h4>
           <h4>DevOps. 임상빈</h4>
-          <h4>Front-End. 이주한</h4>
+          <h4>Front-End. 김성우 / 이주한 </h4>
         </div>
       </div>
       <div className="section section3">

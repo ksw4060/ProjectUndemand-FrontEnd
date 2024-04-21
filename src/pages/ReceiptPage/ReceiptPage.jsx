@@ -9,16 +9,13 @@ function ReceiptPage() {
   const {
     memberId,
     ordererName,
-    // productMgtIds,
     orderId,
     orderDay,
     address,
     detailAddress,
     totalPrice,
   } = location.state;
-  const orderMemberId = memberId;
   const orderer = ordererName;
-  // const orderedProducts = productMgtIds;
   const receiptOrderId = orderId;
   const receiptOrderDay = orderDay;
   const receiptAddress = address;
@@ -27,28 +24,11 @@ function ReceiptPage() {
   const axiosInstance = axios.create({ withCredentials: true });
   const [orderedProducts, setOrderedProducts] = useState([]);
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     orderedProducts.forEach(async (productId) => {
-  //       try {
-  //         const response = await axios.get(
-  //           `http://localhost:8080/api/v1/inventory/${productId}`
-  //         );
-  //         console.log(response.data);
-  //       } catch (error) {
-  //         console.error(`Error fetching product ${productId}:`, error);
-  //       }
-  //     });
-  //   };
-
-  //   fetchProducts();
-  // }, [orderMemberId, orderedProducts]);
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${orderMemberId}`
+          `http://localhost:8080/api/v1/cart/${memberId}`
         );
         setOrderedProducts(response.data);
       } catch (error) {
@@ -57,7 +37,7 @@ function ReceiptPage() {
     };
 
     fetchProducts();
-  }, [orderMemberId]);
+  }, [memberId]);
 
   const handleReceiptConfirm = async () => {
     try {

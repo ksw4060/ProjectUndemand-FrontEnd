@@ -18,7 +18,6 @@ function CategoryPage() {
   const [currentCategory, setCurrentCategory] = useState(() => {
     return localStorage.getItem("currentCategory") || category.split("-")[0];
   });
-  // const [prevCategory, setPrevCategory] = useState(null);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
@@ -111,16 +110,6 @@ function CategoryPage() {
   useEffect(() => {
     pageButtons();
   }, [allProducts]);
-
-  // useEffect(() => {
-  //   if (prevCategory && prevCategory !== currentCategory) {
-  //     setSelectedCategoryOption(null);
-  //     setSelectedSubCategoryOption(null);
-  //     setOptionName("");
-  //     setSubOptionName("");
-  //   }
-  //   setPrevCategory(currentCategory);
-  // }, [currentCategory, prevCategory]);
 
   useEffect(() => {
     const isTopMenuClicked = localStorage.getItem("topMenuClicked");
@@ -487,7 +476,7 @@ function CategoryPage() {
                     }`}
                   >
                     <img
-                      src={`http://localhost:8080/${product.productThumbnails[0]}`}
+                      src={`http://localhost:8080${product.productThumbnails[0]}`}
                       alt={product.productName}
                       className={`img-section img${index + 1} ${
                         isFilterClicked && "filter-active-img"

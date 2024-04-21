@@ -8,11 +8,11 @@ import {
 } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { MdOutlineShoppingBag } from "react-icons/md";
-import { FaRegHeart, FaHeart } from "react-icons/fa6";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
+import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
-function ProductDetailPage() {
+function ProductDetailPage({ isLoggedin, memberId }) {
   let { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
@@ -30,7 +30,6 @@ function ProductDetailPage() {
     setReviewWritingAndInquiryPostingModalOpen,
   ] = useState(false);
   const [modalType, setModalType] = useState(null);
-  const memberId = 1;
   const [productInventory, setProductInventory] = useState([]);
   const [productColor, setProductColor] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
@@ -39,7 +38,6 @@ function ProductDetailPage() {
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
   const [thumbnailImage, setThumbnailImage] = useState(null);
-  const [isWishlist, setIsWishlist] = useState(false);
 
   const fetchProduct = async () => {
     try {
@@ -165,18 +163,21 @@ function ProductDetailPage() {
   };
 
   const handleCartSubmit = async () => {
-    await axios
-      .post(`http://localhost:8080/api/v1/cart/add/${selectedInvenId}`, {
-        memberId: memberId,
-        quantity: quantity,
-      })
-      .then((response) => {
-        alert(`장바구니에 상품을 담았습니다!`);
-        navigate(`/cart?memberId=${memberId}`);
-      })
-      .catch((error) => {
-        console.error("요청을 보내는 중 오류가 발생했습니다:", error);
-      });
+    if (isLoggedin) {
+      await axios
+        .post(`http://localhost:8080/api/v1/cart/add/${selectedInvenId}`, {
+          memberId: memberId,
+          quantity: quantity,
+        })
+        .then((response) => {
+          alert(`장바구니에 상품을 담았습니다!`);
+        })
+        .catch((error) => {
+          alert(error.response.data);
+        });
+    } else {
+      alert("로그인 후 이용 가능해요!");
+    }
   };
 
   const handleIncrement = () => {
@@ -213,29 +214,33 @@ function ProductDetailPage() {
 
   const openArticleSubmitModal = (type) => {
     if (type === "review") {
-      if (pHistories.length === 0) {
-        alert(
-          "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!"
-        );
-        setReviewWritingAndInquiryPostingModalOpen(false);
-      } else {
-        const allReviewsTrue = pHistories.every(
-          (paymentHistory) => paymentHistory.review === true
-        );
-
-        if (allReviewsTrue) {
-          if (
-            window.confirm(
-              "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요. 리뷰 수정 페이지로 이동할까요?"
-            )
-          ) {
-            setReviewWritingAndInquiryPostingModalOpen(false);
-            navigate("/user/review");
-          }
+      if (isLoggedin) {
+        if (pHistories.length === 0) {
+          alert(
+            "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!"
+          );
+          setReviewWritingAndInquiryPostingModalOpen(false);
         } else {
-          setModalType(type);
-          setReviewWritingAndInquiryPostingModalOpen(true);
+          const allReviewsTrue = pHistories.every(
+            (paymentHistory) => paymentHistory.review === true
+          );
+
+          if (allReviewsTrue) {
+            if (
+              window.confirm(
+                "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요. 리뷰 수정 페이지로 이동할까요?"
+              )
+            ) {
+              setReviewWritingAndInquiryPostingModalOpen(false);
+              navigate("/user/review");
+            }
+          } else {
+            setModalType(type);
+            setReviewWritingAndInquiryPostingModalOpen(true);
+          }
         }
+      } else {
+        alert("로그인 후 이용 가능해요!");
       }
     } else {
       setModalType(type);
@@ -258,48 +263,17 @@ function ProductDetailPage() {
     }
   };
 
-  const fetchWishlist = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/wishlist/${memberId}`
-      );
-      const memberWishlist = response.data;
-      memberWishlist.forEach((wishProduct) => {
-        if (parseInt(wishProduct.productId) === parseInt(productId)) {
-          setIsWishlist(true);
-        }
-      });
-    } catch (error) {
-      console.error(error.response.data);
-    }
-  };
-
-  const handleWishSubmit = async () => {
-    try {
-      if (!isWishlist) {
-        const response = await axios.post(
-          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
-        );
-        console.log(response.data);
-        setIsWishlist(true);
-      } else {
-        const response = await axios.delete(
-          `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
-        );
-        console.log(response.data);
-        setIsWishlist(false);
-      }
-    } catch (error) {
-      console.error(error.response.data);
-    }
-  };
-
   useEffect(() => {
     fetchProduct();
     fetchThumbnail();
-    fetchWishlist();
+    // fetchWishlist();
     fetchProductReviewData();
     fetchProductInquiryData();
+
+    return () => {
+      // isWishlist 값을 삭제합니다.
+      localStorage.removeItem("isWishlist");
+    };
   }, [productId]);
 
   useEffect(() => {
@@ -322,6 +296,10 @@ function ProductDetailPage() {
   useEffect(() => {
     handleSearchInvenId();
   }, [selectedColor, selectedSize, productInventory]);
+
+  useEffect(() => {
+    console.log(productReviewData);
+  }, [productReviewData]);
 
   return (
     <div className="detail-page">
@@ -427,13 +405,12 @@ function ProductDetailPage() {
                       <MdOutlineShoppingBag />
                       <span>장바구니</span>
                     </li>
-                    <li
-                      className="option-btn"
-                      onClick={() => handleWishSubmit()}
-                    >
-                      {!isWishlist ? <FaRegHeart /> : <FaHeart />}
-                      <span>찜하기</span>
-                    </li>
+                    <WishBtn
+                      memberId={memberId}
+                      productId={productId}
+                      isLoggedin={isLoggedin}
+                      pageType={"productDetail"}
+                    />
                   </ul>
                 </div>
               </div>
@@ -490,13 +467,17 @@ function ProductDetailPage() {
                           <div className="rating-and-write-info">
                             <span>{renderStars(tableRow.rating)}</span>
                             <div>
-                              <span>
-                                {`${tableRow.writer.slice(0, 1)}${"*"
-                                  .repeat(
-                                    Math.max(0, tableRow.writer.length - 1)
-                                  )
-                                  .slice(0, 2)}`}
-                              </span>
+                              {tableRow.writer !== null ? (
+                                <span>
+                                  {`${tableRow.writer.slice(0, 1)}${"*"
+                                    .repeat(
+                                      Math.max(0, tableRow.writer.length - 1)
+                                    )
+                                    .slice(0, 2)}`}
+                                </span>
+                              ) : (
+                                <span></span>
+                              )}
                               <span>{tableRow.updatedAt.substring(0, 10)}</span>
                             </div>
                           </div>
@@ -588,6 +569,8 @@ function ProductDetailPage() {
                     product={product}
                     updateReviewData={fetchProductReviewData}
                     updateinquiryData={fetchProductInquiryData}
+                    isLoggedin={isLoggedin}
+                    memberId={memberId}
                   ></ArticleSubmitModal>
                 )}
               </div>
@@ -597,40 +580,22 @@ function ProductDetailPage() {
             <div className="detail-img-box">
               <ul className="detail-img-container">
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
                 <li className="detail-img">
-                  <img
-                    src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt=""
-                  />
+                  <img src="" alt="" />
                 </li>
               </ul>
             </div>

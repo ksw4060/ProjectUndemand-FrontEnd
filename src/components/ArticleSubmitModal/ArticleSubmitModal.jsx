@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
 import "./ArticleSubmitModal.css";
 import { MdClose } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
@@ -12,7 +12,11 @@ function ArticleSubmitModal({
   product,
   updateReviewData,
   updateinquiryData,
+  isLoggedin,
+  memberId,
 }) {
+  const [nickName, setNickName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [writer, setWriter] = useState("");
   const [email, setEmail] = useState("");
   const [inquiryContent, setInquiryContent] = useState("");
@@ -63,17 +67,58 @@ function ArticleSubmitModal({
     }
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/members/${memberId}`
+        );
+        setNickName(response.data.nickname);
+        setUserEmail(response.data.email);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    };
+
+    fetchUserData();
+  }, [memberId]);
+
   const handleInquirySubmit = async () => {
-    await axios
-      .post(`http://localhost:8080/api/v1/inquiry/new/${productId}`, {
-        memberId: "1",
+    let requestData = {
+      inquiryContent: inquiryContent,
+      inquiryTitle: inquiryTitle,
+      password: inquiryPassword,
+      inquiryType: inquiryCategory,
+    };
+
+    if (isLoggedin) {
+      requestData = {
+        ...requestData,
+        name: nickName,
+        email: userEmail,
+      };
+    } else {
+      requestData = {
+        ...requestData,
         name: writer,
         email: email,
-        inquiryContent: inquiryContent,
-        inquiryTitle: inquiryTitle,
-        password: inquiryPassword,
-        inquiryType: inquiryCategory,
-      })
+      };
+    }
+
+    await axios
+      // .post(`http://localhost:8080/api/v1/inquiry/new/${productId}`, {
+      //   memberId: "1",
+      //   name: writer,
+      //   email: email,
+      //   inquiryContent: inquiryContent,
+      //   inquiryTitle: inquiryTitle,
+      //   password: inquiryPassword,
+      //   inquiryType: inquiryCategory,
+      // })
+      .post(
+        `http://localhost:8080/api/v1/inquiry/new/${productId}`,
+        requestData
+      )
       .then((response) => {
         setModalMessage(`${writer}님의 문의 글을 등록하였습니다.`);
         setShowModal(true);
@@ -89,10 +134,30 @@ function ArticleSubmitModal({
   };
 
   const handleInquirySubmitBtn = async () => {
-    if (writer && email && inquiryContent && inquiryTitle && inquiryPassword) {
-      await handleInquirySubmit();
-    } else {
-      alert("모든 입력란을 작성해 주세요.");
+    if (isLoggedin) {
+      if (
+        inquiryContent &&
+        inquiryTitle &&
+        inquiryCategory &&
+        inquiryPassword
+      ) {
+        await handleInquirySubmit();
+      } else {
+        alert("모든 입력란을 작성해 주세요.");
+      }
+    } else if (!isLoggedin) {
+      if (
+        writer &&
+        email &&
+        inquiryContent &&
+        inquiryTitle &&
+        inquiryCategory &&
+        inquiryPassword
+      ) {
+        await handleInquirySubmit();
+      } else {
+        alert("모든 입력란을 작성해 주세요.");
+      }
     }
   };
 
@@ -196,12 +261,9 @@ function ArticleSubmitModal({
             <h2>문의 글 작성</h2>
             <h3>제품에 대한 문의 사항을 작성해 주세요</h3>
             <div className="review-writing-modal-product-info">
-              <img
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt=""
-                className="review-writing-modal-img-info"
-              />
-              <span>상품 이름</span>
+              <Link to={`/product/${product.productId}`}>
+                {`상품 이름: ${product.productName}`}
+              </Link>
             </div>
             <MdClose
               onClick={modalClose}
@@ -209,26 +271,28 @@ function ArticleSubmitModal({
             />
           </div>
           <div className="modal-content-section">
-            <div className="writer-info">
-              <span className="first-label">작성자</span>
-              <div className="input-cover">
-                <input
-                  type="text"
-                  value={writer}
-                  onChange={(e) => setWriter(e.target.value)}
-                  placeholder="ex) 홍길동"
-                />
+            {isLoggedin === false && (
+              <div className="writer-info">
+                <span className="first-label">작성자</span>
+                <div className="input-cover">
+                  <input
+                    type="text"
+                    value={writer}
+                    onChange={(e) => setWriter(e.target.value)}
+                    placeholder="ex) 홍길동"
+                  />
+                </div>
+                <span className="last-label">이메일</span>
+                <div className="input-cover">
+                  <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="ex) gildong@gmail.com"
+                  />
+                </div>
               </div>
-              <span className="last-label">이메일</span>
-              <div className="input-cover">
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ex) gildong@gmail.com"
-                />
-              </div>
-            </div>
+            )}
             <div className="inquiry-writing">
               <span className="first-label">내 문의 글</span>
               <div className="content-input-cover">
