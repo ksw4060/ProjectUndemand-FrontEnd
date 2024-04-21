@@ -15,7 +15,6 @@ import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
-// import { PrivateRoutes } from "./PrivateRoutes.js";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
 
@@ -74,6 +73,7 @@ function App() {
           <Topbar
             isMenuVisible={isMenuVisible}
             setIsMenuVisible={setIsMenuVisible}
+            isLoggedin={isLoggedin}
           />
         </div>
       ) : (
@@ -102,20 +102,6 @@ function App() {
           />
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
-          {/* <Route element={<PrivateRoutes isLoggedin={isLoggedin} />}>
-            <Route path="/cart" element={<CartPage memberId={memberId} />} />
-            <Route path="/cart/order" element={<PaymentPage />} />
-            <Route path="/cart/order/done" element={<ReceiptPage />} />
-            <Route
-              path="/user/review"
-              element={<MyReviewPage memberId={memberId} />}
-            />
-            <Route
-              path="/admin"
-              element={<AdministratorPage />}
-              memberId={memberId}
-            />
-          </Route> */}
           <Route
             path="/cart"
             element={<CartPage memberId={memberId} isLoggedin={isLoggedin} />}
