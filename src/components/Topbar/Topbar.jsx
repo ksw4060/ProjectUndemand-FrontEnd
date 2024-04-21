@@ -1,24 +1,10 @@
-import { React, useState, useEffect } from "react";
+import { React } from "react";
 import { Link } from "react-router-dom";
 import TopbarData from "./TopbarData.jsx";
-import { useNavigate } from "react-router-dom";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import "./Topbar.css";
 
-function Topbar({ isMenuVisible, setIsMenuVisible }) {
-  const [isLoggedin, setIsLoggedin] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const accessToken = localStorage.getItem("Authorization");
-    // 로컬 스토리지에서 Authorization 값이 존재하고, 만료되지 않은 경우 로그인 상태로 설정
-    if (accessToken) {
-      setIsLoggedin(true);
-    } else {
-      setIsLoggedin(false);
-    }
-  }, [navigate]);
-
+function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
   const {
     handleLoginClick,
     hoveredLinkIndex,
@@ -46,10 +32,6 @@ function Topbar({ isMenuVisible, setIsMenuVisible }) {
     localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
-
-    // 로그아웃 후에 로그인 상태를 다시 확인하여 업데이트
-    const accessToken = localStorage.getItem("Authorization");
-    setIsLoggedin(accessToken ? true : false);
 
     console.log("로그아웃 완료.");
 

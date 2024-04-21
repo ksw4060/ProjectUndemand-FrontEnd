@@ -55,7 +55,6 @@ const KakaoLoginHandeler = (props) => {
 
             // Delay of 1 second before navigating to home page
             setTimeout(() => {
-              // navigate("/");
               window.location.replace("/");
             }, 1000);
             setTimeout(() => {
