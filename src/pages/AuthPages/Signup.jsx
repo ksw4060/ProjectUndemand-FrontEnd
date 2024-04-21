@@ -52,6 +52,7 @@ const Signup = () => {
     setNickname(newNickname);
     const isNicknameValid = newNickname.trim().length > 0;
     // 닉네임이 유효하지 않거나 비어있을 때 회원가입 버튼 비활성화
+    setNicknameValid(isNicknameValid);
     setNotAllow(!isNicknameValid || newNickname.trim().length === 0);
   };
 
@@ -94,6 +95,9 @@ const Signup = () => {
         // Redirect to login.html
         // console.log("성공! 회원 id: " + data.id);
         navigate("/login"); // 로그인 성공시 홈으로 이동합니다.
+        setTimeout(() => {
+          alert("회원가입을 환영합니다 ^^ 가입하신 이메일로 인증해주시고, 로그인 해주세요.");
+        }, 1000);
       }
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
     } catch (error) {
@@ -140,7 +144,7 @@ const Signup = () => {
           />
         </div>
         <div className="errorMessageWrap">
-          {!nicknameValid && nickname.length <= 0 && (
+          {!nicknameValid && nickname.length === 0 && (
             <div>닉네임을 입력해주세요.</div>
           )}
         </div>

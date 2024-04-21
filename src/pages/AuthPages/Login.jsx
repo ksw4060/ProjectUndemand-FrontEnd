@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
 import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
+// import { type } from "@testing-library/user-event/dist/type/index.js";
 
 const Login = () => {
   // 로그인 시 주소창 접근 제한 http://localhost:8080/oauth2/authorization/kakao
@@ -130,8 +131,6 @@ const Login = () => {
           로그인
         </button>
         <SnsLogins />
-        {/* <GoogleLogin /> */}
-        {/* <NaverLogin /> */}
       </div>
     </div>
   );
