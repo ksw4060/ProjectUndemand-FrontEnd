@@ -153,16 +153,39 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
             </ul>
           ) : (
             <ul className="userbox logged-in-true">
-              <li>
+              {/* <li>
                 <Link onClick={handleLogoutClick}>로그아웃</Link>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <Link to="/inquiry">Q&A</Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
                 </Link>
+              </li>
+              <li className="hello-user">
+                <Link to="/user/mypage">
+                  <span>회원님, 반가워요!</span>
+                  <img src="" alt="" />
+                </Link>
+                <ul className="user-dropdown-menu">
+                  <li className="mypage-btn">
+                    <Link to="/user/mypage">마이페이지</Link>
+                  </li>
+                  <li className="wishlist-btn">
+                    <Link to="/wishlist">위시리스트</Link>
+                  </li>
+                  {/* <li className="user-info-btn">
+                    <Link to="/user/:userId/information">회원정보</Link>
+                  </li> */}
+                  <li>
+                    <Link to="/inquiry">Q&A</Link>
+                  </li>
+                  <li className="logout-btn">
+                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                  </li>
+                </ul>
               </li>
             </ul>
           )}

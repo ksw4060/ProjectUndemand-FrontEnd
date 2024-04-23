@@ -1,0 +1,103 @@
+.my-payment-history-page {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.payhis-page-title {
+    width: 70%;
+    display: flex;
+    /* flex-flow: column; */
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.payhis-page-title>span {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.total-payhis-count {
+    font-size: 20px;
+}
+
+.payhis-page-filter {
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+}
+
+.payhis-sort-box {
+    width: 20%;
+    position: relative;
+}
+
+.payhis-filter-box {
+    width: 20%;
+    position: relative;
+}
+
+.payhis-container {
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+    margin-top: 30px;
+    padding-bottom: 30px;
+}
+
+.payhis-product-img-container {
+    width: 164px;
+    height: 164px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(210, 210, 210);
+}
+
+.payhis-product-img-container>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.payhis-product-info-container {
+    width: 65%;
+    height: 164px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.payhis-product-info {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.payhis-product-info>span:first-child {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.payhis-product-info>span {
+    margin-bottom: 8px;
+}
+
+.payhis-info-container {
+    width: 13%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}

@@ -97,9 +97,8 @@ function MyReviewPage() {
     <div className="review-page">
       <div className="review-page-title-container">
         <div className="review-page-title">내 리뷰</div>
-        <div className="total-review-count">{`${productReviewData.length}개의 리뷰`}</div>
+        <div className="total-review-count">{`(${productReviewData.length}개의 리뷰)`}</div>
       </div>
-      <div className="pagination-cnt">{`1-10/${productReviewData.length}개의 리뷰`}</div>
       <div className="review-page-filter">
         <div className="review-sort-box">
           <div
