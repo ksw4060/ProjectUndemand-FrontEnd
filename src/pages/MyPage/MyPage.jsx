@@ -4,6 +4,7 @@ import { MyProfilePage } from "../MyProfilePage/MyProfilePage.jsx";
 import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPage.jsx";
 import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
 import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
+import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
 import "./MyPage.css";
 
 function MyPage() {
@@ -31,27 +32,13 @@ function MyPage() {
           </span>
         </div>
       </div>
-      {/* <Routes>
-        {selectedPage === "my profile" && (
-          <Route
-            path="/profile"
-            element={<MyProfilePage setSelectedPage={setSelectedPage} />}
-          />
-        )}
-        {selectedPage === "my payment history" && (
-          <Route path="/payment-history" element={<MyPaymentHistoryPage />} />
-        )}
-        {selectedPage === "wish list" && (<WishList />)}
-        {selectedPage === "my review" && (
-          <Route path="/my-review" element={<MyReviewPage />} />
-        )}
-      </Routes> */}
       <Routes>
         <Route path="/" element={<Navigate to="profile" replace />} />
         <Route path="/profile" element={<MyProfilePage />} />
         <Route path="/payment-history" element={<MyPaymentHistoryPage />} />
         <Route path="/my-wish-list" element={<MyWishListPage />} />
         <Route path="/my-review" element={<MyReviewPage />} />
+        <Route path="/update-info" element={<UpdateUserInfoPage />}></Route>
       </Routes>
     </div>
   );
