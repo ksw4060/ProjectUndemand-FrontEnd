@@ -13,8 +13,9 @@ import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.j
 import { CartPage } from "./pages/CartPage/CartPage.jsx";
 import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
-import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
+// import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
+import { MyPage } from "./pages/MyPage/MyPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
 
@@ -93,6 +94,10 @@ function App() {
             path="/login/oauth2/code/kakao" //redirect_url
             element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
+          <Route path="/user/mypage/*" element={<MyPage />} />
+          {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
+          <Route path="/inquiry" element={<InquiryPage />} />
+          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route path="/:category" element={<CategoryPage />} />
           <Route
             path="/product/:productId"
@@ -100,15 +105,12 @@ function App() {
               <ProductDetailPage isLoggedin={isLoggedin} memberId={memberId} />
             }
           />
-          <Route path="/inquiry" element={<InquiryPage />} />
-          <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route
             path="/cart"
             element={<CartPage memberId={memberId} isLoggedin={isLoggedin} />}
           />
           <Route path="/cart/order" element={<PaymentPage />} />
           <Route path="/cart/order/done" element={<ReceiptPage />} />
-          <Route path="/user/review" element={<MyReviewPage />} />
           <Route path="/admin" element={<AdministratorPage />} />
         </Routes>
       </div>
