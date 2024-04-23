@@ -20,7 +20,7 @@ const Main = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/products/all"
+          "http://localhost:8080/api/v1/products"
         );
         setAllProducts(response.data);
       } catch (error) {
