@@ -32,7 +32,7 @@ function MyProfilePage({ setSelectedPage }) {
           <div className="name-joined-container">
             <span className="user-name-info">{`회원 이름`}</span>
             <span className="user-joined-date-info">{`PU멤버 가입: 가입 일자`}</span>
-            <Link to="/user/mypage/update-user-info">{`회원정보 수정`}</Link>
+            <Link to="/user/mypage/update-info">{`회원정보 수정`}</Link>
           </div>
         </div>
       </div>
