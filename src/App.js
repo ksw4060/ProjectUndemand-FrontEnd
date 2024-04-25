@@ -111,7 +111,7 @@ function App() {
           />
           <Route path="/cart/order" element={<PaymentPage />} />
           <Route path="/cart/order/done" element={<ReceiptPage />} />
-          <Route path="/admin" element={<AdministratorPage />} />
+          <Route path="/admin/*" element={<AdministratorPage />} />
         </Routes>
       </div>
 

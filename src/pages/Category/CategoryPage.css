@@ -38,15 +38,18 @@
 }
 
 .filter-box {
-    width: 240px;
+    width: 260px;
+    height: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
 
 .filter-box>div {
+    width: 110px;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
 }
 
@@ -67,6 +70,47 @@
     font-size: 20px;
 }
 
+.sort-by {
+    position: relative;
+    cursor: pointer;
+}
+
+.category-page-dropdown-menu {
+    width: 130px;
+    height: 200px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    position: absolute;
+    top: 100%;
+    left: 20px;
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19);
+    transition: opacity 0.2s ease, visibility 0.3s ease;
+    border-radius: 0px 0px 8px 8px;
+    z-index: 50;
+    padding: 10px 0px;
+}
+
+.category-page-dropdown-menu.sort-dropdown-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.category-page-dropdown-menu>li {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    padding-left: 25px;
+}
+
 .contents-section {
     width: 70%;
     display: flex;
@@ -80,22 +124,23 @@
 }
 
 .filter-section {
-    position: sticky;
     width: 0;
+    height: 100%;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;
     align-items: flex-start;
-    height: 100%;
-    overflow: hidden;
-    transition: width 0.3s ease;
+    position: sticky;
+    top: 120px;
+    visibility: hidden;
+    opacity: 0;
     margin-top: 15px;
 }
 
 .filter-active {
     width: 240px;
-    overflow: visible;
-    transition: width 0.3s ease;
+    visibility: visible;
+    opacity: 1;
 }
 
 .filter-section>ul {
@@ -140,29 +185,24 @@
 .product-card-box {
     width: 100%;
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
     flex-wrap: wrap;
-    /* transition: flex-wrap 0.3s ease; */
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .product-card {
     width: 340px;
-    height: 600px;
-    margin: 30px 10px;
+    height: 615px;
     display: flex;
     flex-flow: column;
     justify-content: flex-start;    
     align-items: center;
-    transition: width 0.5s ease;
-    /* transition: height 0.5s ease; */
+    margin: 30px 7.5px 60px 7.5px;
 }
 
 .filter-active-margin {
     width: 280px;
-    height: 540px;
-    transition: width 0.5s ease;
-    /* transition: height 0.5s ease; */
+    height: 565px;
 }
 
 .img-section {
@@ -170,6 +210,7 @@
     height: 480px;
     background-position: center;
     background-size: cover;
+    background-color: rgb(210, 210, 210);
 }
 
 .filter-active-img {
@@ -177,40 +218,33 @@
     height: 400px;
 }
 
-.img1 {
-    background-image: url('https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img2 {
-    background-image: url('https://images.unsplash.com/photo-1538329972958-465d6d2144ed?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img3 {
-    background-image: url('https://images.unsplash.com/photo-1517938889432-a2ac9241a486?q=80&w=2668&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img4 {
-    background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img5 {
-    background-image: url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img6 {
-    background-image: url('https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=2595&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
-.img7 {
-    background-image: url('https://images.unsplash.com/photo-1559697242-a465f2578a95?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-}
-
 .product-info {
     width: 100%;
+    height: 135px;
     display: flex;
     flex-flow: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: flex-start;
+}
+
+.product-info-top-container {
+    width: 100%;
+    height: 92px;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.product-info-top-container>a {
+    color: rgb(150, 150, 150);
+    font-size: 17px;
+}
+
+.product-info-top-container>a:first-child {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    margin: 15px 0px 7px 0px;
 }
 
 .product-info>a {
@@ -218,26 +252,20 @@
     font-size: 17px;
 }
 
-.product-info>a:first-child {
-    color: rgb(0, 0, 0);
-    font-weight: bold;
-    margin: 15px 0px 7px 0px;
-}
-
-.product-info>a:last-child {
+.product-info>a {
     color: rgb(0, 0, 0);
     font-weight: bold;
     margin: 15px 0px 5px 0px;
 }
 
-.paging-btn-container {
+.category-paging-btn-container {
     width: 70%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.prev-next-btn {
+.category-page-move-btn {
     width: 30px;
     height: 30px;
     display: flex;
@@ -249,11 +277,16 @@
     background-color: rgb(255, 255, 255);
 }
 
-.prev-next-btn:first-child {
+.category-page-move-btn.prev-btn-disable,
+.category-page-move-btn.next-btn-disable {
+    color: rgb(210, 210, 210);
+}
+
+.category-page-move-btn:first-child {
     margin-right: 20px;
 }
 
-.prev-next-btn:last-child {
+.category-page-move-btn:last-child {
     margin-left: 20px;
 }
 
@@ -261,7 +294,7 @@
     font-size: 25px;
 }
 
-.page-num-btn {
+.category-page-num-btn {
     width: 20px;
     height: 30px;
     display: flex;
@@ -274,12 +307,12 @@
     margin: 0px 5px;
 }
 
-.page-num-btn:hover {
+.category-page-num-btn:hover {
     font-size: 17px;
     font-weight: bold;
 }
 
-.page-num-btn.current-page {
+.category-page-num-btn.category-current-page {
     font-size: 17px;
     font-weight: bold;
 }
