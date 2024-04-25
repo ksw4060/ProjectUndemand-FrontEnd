@@ -44,7 +44,7 @@ function AllProducts() {
     };
 
     fetchAllProductsData();
-  }, [currentPage]);
+  }, [currentPage, managementModalOpen]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -75,7 +75,6 @@ function AllProducts() {
 
   const closeManagementModal = () => {
     setManagementModalOpen(false);
-    window.location.reload();
   };
 
   return (

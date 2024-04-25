@@ -65,10 +65,12 @@ function TopbarData() {
     const categoryUrl = categoryUrlMap[category.name];
     const subOptions = category.children.map((child) => ({
       id: subCategoryUrlMap[child.name],
+      childCategoryId: child.categoryId,
       name: child.name,
     }));
     return {
       id: categoryUrl,
+      parentCategoryId: category.categoryId,
       name: category.name,
       subOptions: subOptions,
     };

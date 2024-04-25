@@ -7,7 +7,6 @@ import ManagementModal from "./ManagementModal.jsx";
 function Inventory() {
   const location = useLocation();
   const { productName, productId } = location.state;
-  // const [allInven, setAllInven] = useState([]);
   const [productInven, setProductInven] = useState([]);
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [managementModalOpen, setManagementModalOpen] = useState(false);
@@ -29,7 +28,7 @@ function Inventory() {
     };
 
     fetchAllInvensData();
-  }, [productId]);
+  }, [productId, managementModalOpen]);
 
   const groupProductInvenBySize = (productInven) => {
     const groupedInven = {};
@@ -53,8 +52,6 @@ function Inventory() {
     setManagementModalOpen(false);
   };
 
-  console.log(productInven);
-
   return (
     <div className="inven-page-contents-container">
       <div className="inven-page-title">
@@ -63,6 +60,7 @@ function Inventory() {
           className="inven-page-inven-btn"
           onClick={() => {
             openManagementModal();
+            setSelectedProductData(productId);
             setModalType("create inventory");
           }}
         >
@@ -114,7 +112,6 @@ function Inventory() {
         <ManagementModal
           selectedProductData={selectedProductData}
           modalClose={closeManagementModal}
-          // updateProductData={fetchAllProductsData}
           type={modalType}
         ></ManagementModal>
       )}

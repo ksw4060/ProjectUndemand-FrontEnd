@@ -3,12 +3,7 @@ import "./ManagementModal.css";
 import { MdClose } from "react-icons/md";
 import axios from "axios";
 
-function ManagementModal({
-  selectedProductData,
-  modalClose,
-  updateProductData,
-  type,
-}) {
+function ManagementModal({ selectedProductData, modalClose, type }) {
   const [parentCategoryName, setParentCategoryName] = useState("");
   const [childCategoryName, setChildCategoryName] = useState("");
   const [parentId, setParentId] = useState("");
@@ -26,7 +21,6 @@ function ManagementModal({
   const [accessoriesId, setAccessoriesId] = useState(
     localStorage.getItem("accessoriesId") || ""
   );
-
   const [productName, setProductName] = useState("");
   const [productType, setProductType] = useState("WOMAN");
   const [price, setPrice] = useState("");
@@ -37,31 +31,23 @@ function ManagementModal({
   const [isRecommend, setIsRecommend] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-
-  const [productId, setProductId] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [size, setSize] = useState("FREE");
   const [initialStock, setInitialStock] = useState("");
   const [isRestockAvailable, setIsRestockAvailable] = useState(false);
   const [isRestocked, setIsRestocked] = useState(false);
   const [isSoldOut, setIsSoldOut] = useState(false);
-
   const [additionalStock, setAdditionalStock] = useState("");
-
   const [color, setColor] = useState("");
   const [colorId, setColorId] = useState("");
-
-  //상품 이미지 등록
   const [imageFile, setImageFile] = useState([]);
-
-  //상품 이미지 삭제
   const [thumbnailId, setThumbnailId] = useState("");
 
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
 
-  const handleParentCategorySubmit = async () => {
+  const parentCategoryCreate = async () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/categorys/parent",
@@ -82,8 +68,18 @@ function ManagementModal({
       } else if (parentCategoryName === "악세서리") {
         setAccessoriesId(response.data);
       }
+      setShowModal(true);
+      setModalMessage(`상위 카테고리가 생성 되었습니다.`);
     } catch (error) {
       console.error("Error creating parent category:", error);
+    }
+  };
+
+  const handleParentCategorySubmitBtn = async () => {
+    if (parentCategoryName) {
+      await parentCategoryCreate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
     }
   };
 
@@ -96,7 +92,7 @@ function ManagementModal({
     localStorage.setItem("accessoriesId", accessoriesId);
   }, [topsId, bottomsId, dressAndSetId, outerwearId, shoesId, accessoriesId]);
 
-  const handleChildCategorySubmit = async () => {
+  const childCategoryCreate = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/v1/categorys/child/${parentId}`,
@@ -105,12 +101,22 @@ function ManagementModal({
         }
       );
       console.log(response.data);
+      setShowModal(true);
+      setModalMessage(`하위 카테고리가 생성 되었습니다.`);
     } catch (error) {
       console.error("Error creating child category:", error);
     }
   };
 
-  const handleProductSubmit = async () => {
+  const handleChildCategorySubmitBtn = async () => {
+    if (parentId && childCategoryName) {
+      await childCategoryCreate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const productCreate = async () => {
     try {
       const formData = new FormData();
       formData.append("productName", productName);
@@ -123,33 +129,55 @@ function ManagementModal({
       formData.append("isRecommend", isRecommend);
       formData.append("images", imageFile);
 
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/products/new",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data);
+      await axios.post("http://localhost:8080/api/v1/products/new", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setShowModal(true);
+      setModalMessage(`상품을 등록하였습니다.`);
     } catch (error) {
       console.error("Error creating product:", error);
     }
   };
 
-  const handleImageDelete = async () => {
+  const handleProductCreateSubmitBtn = async () => {
+    if (
+      productName &&
+      productType &&
+      price &&
+      productInfo &&
+      manufacturer &&
+      imageFile
+    ) {
+      await productCreate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const imageDelete = async () => {
     try {
       const response = await axios.delete(
         `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`
       );
       console.log(response.data);
+      setShowModal(true);
+      setModalMessage(`${response.data}`);
     } catch (error) {
       console.error("이미지 삭제 에러:", error);
     }
   };
 
-  const handleProductUpdate = async () => {
+  const handleImageDelete = async () => {
+    if (thumbnailId) {
+      await imageDelete();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const productUpdate = async () => {
     try {
       const response = await axios.put(
         `http://localhost:8080/api/v1/products/${selectedProductData.productId}`,
@@ -164,15 +192,22 @@ function ManagementModal({
           isRecommend: isRecommend,
         }
       );
-      setModalMessage(`${response.data.productName} 상품을 수정하였습니다.`);
       setShowModal(true);
-      updateProductData();
+      setModalMessage(`${response.data.productName} 상품을 수정하였습니다.`);
     } catch (error) {
       console.error("Error updating product:", error);
     }
   };
 
-  const handleColorSubmit = async () => {
+  const handleProductUpdateSubmitBtn = async () => {
+    if (productName && productType && price) {
+      await productUpdate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const colorCreate = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/v1/color/new`,
@@ -181,14 +216,22 @@ function ManagementModal({
         }
       );
       console.log(response.data);
-      setModalMessage(`${response.data}`);
       setShowModal(true);
+      setModalMessage(`${response.data}`);
     } catch (error) {
       console.error(`Error creating color:`, error);
     }
   };
 
-  const handleColorDelete = async () => {
+  const handleColorCreateSubmitBtn = async () => {
+    if (color) {
+      await colorCreate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const colorDelete = async () => {
     try {
       const response = await axios.delete(
         `http://localhost:8080/api/v1/color/${colorId}`
@@ -201,12 +244,20 @@ function ManagementModal({
     }
   };
 
-  const handleInventorySubmit = async () => {
+  const handleColorDeleteSubmitBtn = async () => {
+    if (colorId) {
+      await colorDelete();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const inventoryCreate = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8080/api/v1/inventory/new`,
         {
-          productId: productId,
+          productId: selectedProductData,
           colorId: colorId,
           categoryId: categoryId,
           size: size,
@@ -217,19 +268,27 @@ function ManagementModal({
         }
       );
       console.log(response.data);
+      setShowModal(true);
+      setModalMessage(`인벤토리를 생성하였습니다.`);
     } catch (error) {
       console.error(`Error creating inventory:`, error);
     }
   };
 
-  const handleInventoryUpdate = async () => {
+  const handleInventoryCreateSubmitBtn = async () => {
+    if (colorId && categoryId && size && initialStock) {
+      await inventoryCreate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const inventoryUpdate = async () => {
     try {
       const response = await axios.put(
         `http://localhost:8080/api/v1/inventory/${selectedProductData.inventoryId}`,
         {
-          colorId: colorId,
           categoryId: categoryId,
-          size: size,
           additionalStock: additionalStock,
           isRestockAvailable: isRestockAvailable,
           isRestocked: isRestocked,
@@ -237,14 +296,32 @@ function ManagementModal({
         }
       );
       console.log(response.data);
+      setShowModal(true);
+      setModalMessage(`인벤토리를 수정하였습니다.`);
     } catch (error) {
       console.error(`Error updating inventory:`, error);
     }
   };
 
-  const closeModal = (type) => {
+  const handleInventoryUpdateSubmitBtn = async () => {
+    if (
+      colorId &&
+      categoryId &&
+      size
+      // additionalStock &&
+      // isRestockAvailable &&
+      // isRestocked &&
+      // isSoldOut
+    ) {
+      await inventoryUpdate();
+    } else {
+      alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const closeModal = () => {
     setShowModal(false);
-    window.location.reload();
+    modalClose();
   };
 
   return (
@@ -349,7 +426,9 @@ function ManagementModal({
                   <option value="false">No</option>
                 </select>
               </div>
-              <button onClick={handleProductUpdate}>Update Product</button>
+              <button onClick={handleProductUpdateSubmitBtn}>
+                Update Product
+              </button>
             </div>
           </div>
         </div>
@@ -378,7 +457,7 @@ function ManagementModal({
                 onChange={(e) => setColor(e.target.value)}
                 placeholder="Enter color name"
               />
-              <button onClick={handleColorSubmit}>색상 등록</button>
+              <button onClick={handleColorCreateSubmitBtn}>색상 등록</button>
             </div>
 
             <div className="input-section">
@@ -389,7 +468,7 @@ function ManagementModal({
                 onChange={(e) => setColorId(e.target.value)}
                 placeholder="Enter color ID"
               />
-              <button onClick={handleColorDelete}>색상 삭제</button>
+              <button onClick={handleColorDeleteSubmitBtn}>색상 삭제</button>
             </div>
           </div>
         </div>
@@ -499,7 +578,7 @@ function ManagementModal({
                   onChange={handleImageChange}
                 />
               </div>
-              <button onClick={handleProductSubmit}>상품 등록</button>
+              <button onClick={handleProductCreateSubmitBtn}>상품 등록</button>
             </div>
           </div>
         </div>
@@ -563,7 +642,7 @@ function ManagementModal({
                 <option value="신발">신발</option>
                 <option value="악세서리">악세서리</option>
               </select>
-              <button onClick={handleParentCategorySubmit}>
+              <button onClick={handleParentCategorySubmitBtn}>
                 Create Parent Category
               </button>
             </div>
@@ -641,7 +720,7 @@ function ManagementModal({
                   </>
                 )}
               </select>
-              <button onClick={handleChildCategorySubmit}>
+              <button onClick={handleChildCategorySubmitBtn}>
                 Create Child Category
               </button>
             </div>
@@ -665,12 +744,12 @@ function ManagementModal({
           </div>
           <div className="management-modal-input-container">
             <div className="input-section">
-              <input
+              {/* <input
                 type="number"
                 value={productId}
                 onChange={(e) => setProductId(e.target.value)}
                 placeholder="Enter product ID"
-              />
+              /> */}
               <input
                 type="number"
                 value={colorId}
@@ -723,7 +802,9 @@ function ManagementModal({
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
-              <button onClick={handleInventorySubmit}>Create Inventory</button>
+              <button onClick={handleInventoryCreateSubmitBtn}>
+                Create Inventory
+              </button>
             </div>
           </div>
         </div>
@@ -747,24 +828,10 @@ function ManagementModal({
             <div className="input-section">
               <input
                 type="number"
-                value={colorId}
-                onChange={(e) => setColorId(e.target.value)}
-                placeholder="Enter color ID"
-              />
-              <input
-                type="number"
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 placeholder="Enter category ID"
               />
-              <select value={size} onChange={(e) => setSize(e.target.value)}>
-                <option value="FREE">FREE</option>
-                <option value="XSMALL">XSMALL</option>
-                <option value="SMALL">SMALL</option>
-                <option value="MEDIUM">MEDIUM</option>
-                <option value="LARGE">LARGE</option>
-                <option value="XLARGE">XLARGE</option>
-              </select>
               <input
                 type="number"
                 value={additionalStock}
@@ -797,7 +864,9 @@ function ManagementModal({
                 <option value="true">Yes</option>
                 <option value="false">No</option>
               </select>
-              <button onClick={handleInventoryUpdate}>Update Inventory</button>
+              <button onClick={handleInventoryUpdateSubmitBtn}>
+                Update Inventory
+              </button>
             </div>
           </div>
         </div>
@@ -806,7 +875,7 @@ function ManagementModal({
         <div className="confirm-modal">
           <div className="confirm-modal-content">
             <p>{modalMessage}</p>
-            <button onClick={closeModal(type)}>확인</button>
+            <button onClick={() => closeModal()}>확인</button>
           </div>
         </div>
       )}
