@@ -1,0 +1,97 @@
+.inven-page-contents-container {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.inven-page-title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 30px 0px;
+}
+
+.grouped-inven-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-top: 1.5px solid rgb(210, 210, 210);
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+}
+
+.grouped-inven-title {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 30px;
+}
+
+.grouped-inven-title>span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.grouped-inven-group-container {
+    width: 85%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.inven-page-inven-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1.5px solid rgb(210, 210, 210);
+    margin-top: 30px;
+}
+
+.inven-page-inven-container:last-child {
+    border-bottom: none;
+}
+
+.inven-page-inven-info-container {
+    width: 65%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-bottom: 30px;
+}
+
+.inven-page-inven-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.inven-page-inven-info>span:first-child {
+    font-weight: bold;
+}
+
+.about-stock,
+.about-stock-status {
+    display: flex;
+    flex-flow: column;
+}
+
+.inven-page-inven-btn {
+    width: 120px;
+    height: 45px;
+    border-radius: 25px;
+    border: none;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(17, 17, 17);
+    cursor: pointer;
+}
