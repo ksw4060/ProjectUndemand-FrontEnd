@@ -26,6 +26,7 @@ function CategoryPage() {
   const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
     optionName ? `/ ${optionName.toUpperCase()}` : ""
   } ${subOptionName ? `/ ${subOptionName}` : ""}`;
@@ -87,6 +88,7 @@ function CategoryPage() {
         };
 
         const condition = conditionMap[currentCategory] || "";
+        const category = parseInt(categoryId) || "";
         const order = orderMap[selectedSortOption] || "";
         const keyword = searchString || "";
 
@@ -97,6 +99,7 @@ function CategoryPage() {
               size: pageSize,
               page: currentPage,
               condition: condition,
+              category: category,
               order: order,
               keyword: keyword,
             },
@@ -111,7 +114,13 @@ function CategoryPage() {
     };
 
     fetchProductsData();
-  }, [currentPage, currentCategory, selectedSortOption, isSearchClicked]);
+  }, [
+    currentPage,
+    currentCategory,
+    selectedSortOption,
+    isSearchClicked,
+    categoryId,
+  ]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -208,10 +217,12 @@ function CategoryPage() {
     const subOptions = category.children.map((child) => ({
       id: subFilterUrlMap[child.name],
       name: child.name,
+      childCategoryId: child.categoryId,
     }));
     return {
       id: filterUrl,
       name: category.name,
+      parentCategoryId: category.categoryId,
       subOptions: subOptions,
     };
   });
@@ -323,6 +334,7 @@ function CategoryPage() {
     );
     const storedOptionName = localStorage.getItem("optionName");
     const storedSubOptionName = localStorage.getItem("subOptionName");
+    const storedCategoryId = localStorage.getItem("categoryId");
 
     if (storedCategoryOption) {
       setSelectedCategoryOption(storedCategoryOption);
@@ -335,6 +347,9 @@ function CategoryPage() {
     }
     if (storedSubOptionName) {
       setSubOptionName(storedSubOptionName);
+    }
+    if (storedCategoryId) {
+      setCategoryId(storedCategoryId);
     }
   }, [category]);
 
@@ -442,8 +457,12 @@ function CategoryPage() {
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
-                      console.log(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -461,6 +480,11 @@ function CategoryPage() {
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -490,6 +514,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name
@@ -518,6 +547,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name
