@@ -58,9 +58,13 @@ function CategoryPage() {
     fetchFilterData();
   }, []);
 
-  // const handleConditionChange = () => {
-  //   setCurrentPage(0);
-  // };
+  useEffect(() => {
+    const handleConditionChange = () => {
+      setCurrentPage(0);
+    };
+
+    handleConditionChange();
+  }, [category, selectedSortOption, isSearchClicked]);
 
   useEffect(() => {
     const fetchProductsData = async () => {
@@ -107,7 +111,6 @@ function CategoryPage() {
     };
 
     fetchProductsData();
-    // handleConditionChange();
   }, [currentPage, currentCategory, selectedSortOption, isSearchClicked]);
 
   const handlePageChange = (direction) => {
@@ -383,7 +386,7 @@ function CategoryPage() {
                 <li
                   onClick={() => {
                     setSelectedSortOption("lowPrice");
-                    setSortOptionName("가격 낮은 순");
+                    setSortOptionName("낮은 가격순");
                   }}
                 >
                   가격 낮은 순
@@ -391,7 +394,7 @@ function CategoryPage() {
                 <li
                   onClick={() => {
                     setSelectedSortOption("highPrice");
-                    setSortOptionName("가격 높은 순");
+                    setSortOptionName("높은 가격순");
                   }}
                 >
                   가격 높은 순
@@ -439,6 +442,7 @@ function CategoryPage() {
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
+                      console.log(option.id);
                       setOptionName(option.name);
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
