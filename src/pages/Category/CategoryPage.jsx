@@ -359,6 +359,7 @@ function CategoryPage() {
       localStorage.removeItem("selectedSubCategoryOption");
       localStorage.removeItem("optionName");
       localStorage.removeItem("subOptionName");
+      localStorage.removeItem("categoryId");
     };
   }, []);
 
