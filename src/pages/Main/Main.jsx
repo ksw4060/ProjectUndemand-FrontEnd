@@ -30,8 +30,10 @@ const Main = () => {
           params: {
             size: pageSize,
             page: 0,
-            condition: "best",
+            condition: "BEST",
+            category: "",
             order: "",
+            keyword: "",
           },
         }
       );
@@ -49,8 +51,10 @@ const Main = () => {
           params: {
             size: pageSize,
             page: 0,
-            condition: "new",
+            condition: "NEW",
+            category: "",
             order: "",
+            keyword: "",
           },
         }
       );
@@ -69,7 +73,9 @@ const Main = () => {
             size: pageSize,
             page: 0,
             condition: "",
-            order: "discount",
+            category: "",
+            order: "HIGH_DISCOUNT_RATE",
+            keyword: "",
           },
         }
       );
@@ -84,7 +90,7 @@ const Main = () => {
       <Carousel imgList={CAROUSEL_IMAGES} />
       <ProductSlide products={mainBest} sectionTitle="Best Products" />
       <ProductSlide products={mainNew} sectionTitle="New Products" />
-      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />
+      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />/
     </div>
   );
 };
