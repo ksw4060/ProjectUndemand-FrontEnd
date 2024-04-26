@@ -94,7 +94,12 @@ function App() {
             path="/login/oauth2/code/kakao" //redirect_url
             element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
-          <Route path="/user/mypage/*" element={<MyPage />} />
+          <Route
+              path="/user/mypage/*"
+              element={
+                <MyPage isLoggedin={isLoggedin} memberId={memberId} />
+              }
+          />
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
