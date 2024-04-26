@@ -5,10 +5,10 @@ import ProductSlide from "../../components/ProductSlide/ProductSlide.jsx";
 import "./Main.css";
 
 const Main = () => {
-  const [allProducts, setAllProducts] = useState([]);
   const [mainBest, setMainBest] = useState([]);
   const [mainNew, setMainNew] = useState([]);
   const [mainDiscount, setMainDiscount] = useState([]);
+  const pageSize = 7;
 
   const CAROUSEL_IMAGES = [
     "https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -17,60 +17,80 @@ const Main = () => {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/api/v1/products"
-        );
-        setAllProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     getBestProducts();
     getNewProducts();
     getDiscountProducts();
-  }, [allProducts]);
+  }, []);
 
-  const getBestProducts = () => {
-    return setMainBest(
-      allProducts
-        .slice()
-        .sort((a, b) => b.wishListCount - a.wishListCount)
-        .slice(0, 7)
-    );
+  const getBestProducts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/products`,
+        {
+          params: {
+            size: pageSize,
+            page: 0,
+            condition: "BEST",
+            category: "",
+            order: "",
+            keyword: "",
+          },
+        }
+      );
+      setMainBest(response.data.content);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
   };
 
-  const getNewProducts = () => {
-    return setMainNew(
-      allProducts
-        .slice()
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 7)
-    );
+  const getNewProducts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/products`,
+        {
+          params: {
+            size: pageSize,
+            page: 0,
+            condition: "NEW",
+            category: "",
+            order: "",
+            keyword: "",
+          },
+        }
+      );
+      setMainNew(response.data.content);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
   };
 
-  const getDiscountProducts = () => {
-    return setMainDiscount(
-      allProducts.filter((product) => product.isDiscount).slice(0, 7)
-    );
+  const getDiscountProducts = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/products`,
+        {
+          params: {
+            size: pageSize,
+            page: 0,
+            condition: "",
+            category: "",
+            order: "HIGH_DISCOUNT_RATE",
+            keyword: "",
+          },
+        }
+      );
+      setMainDiscount(response.data.content);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
   };
-
-  useEffect(() => {
-    console.log(allProducts);
-  }, [allProducts]);
 
   return (
     <div className="contents-body">
       <Carousel imgList={CAROUSEL_IMAGES} />
       <ProductSlide products={mainBest} sectionTitle="Best Products" />
       <ProductSlide products={mainNew} sectionTitle="New Products" />
-      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />
+      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />/
     </div>
   );
 };

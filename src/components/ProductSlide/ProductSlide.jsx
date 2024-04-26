@@ -6,28 +6,18 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 function ProductSlide({ products, sectionTitle }) {
   const sectionType = sectionTitle.split(" ")[0];
   const sectionTypeLowercase = sectionType.toLowerCase();
-
-  const [imgListLength, setImgListLength] = useState(0);
-  const [currentIdx, setCurrentIdx] = useState(1);
+  const imgListLength = 3;
+  const [currentIdx, setCurrentIdx] = useState(0);
   const [carouselTransition, setCarouselTransition] = useState(
     "all 300ms ease-in-out"
   );
-
-  useEffect(() => {
-    calcImgListLength(products);
-  }, [products]);
-
-  const calcImgListLength = (arr) => {
-    const listLength = arr.length;
-    setImgListLength(listLength);
-  };
 
   const slidePrev = () => {
     const prevIdx = currentIdx - 1;
     setCurrentIdx(prevIdx);
 
-    if (prevIdx === 0) {
-      moveToNthSlide(imgListLength);
+    if (prevIdx === -1) {
+      moveToNthSlide(imgListLength - 1);
     }
 
     setCarouselTransition("all 300ms ease-in-out");
@@ -37,8 +27,8 @@ function ProductSlide({ products, sectionTitle }) {
     const nextIdx = currentIdx + 1;
     setCurrentIdx(nextIdx);
 
-    if (nextIdx === imgListLength + 1) {
-      moveToNthSlide(1);
+    if (nextIdx === imgListLength) {
+      moveToNthSlide(0);
     }
 
     setCarouselTransition("all 300ms ease-in-out");
@@ -60,10 +50,10 @@ function ProductSlide({ products, sectionTitle }) {
         <div className="product-slide-ul">
           {products.map((product) => (
             <div
-              className="product-card"
+              className="ps-product-card"
               key={product.productId}
               style={{
-                transform: `translateX(-${currentIdx * 100 - 100}%)`,
+                transform: `translateX(-${currentIdx * 200}%)`,
                 transition: `${carouselTransition}`,
               }}
             >
@@ -82,7 +72,7 @@ function ProductSlide({ products, sectionTitle }) {
                   >{`${product.discountRate}% 할인 중`}</Link>
                 )}
                 {product.isRecommend && (
-                  <Link to={`/product/${product.productId}`}>추천상품</Link>
+                  <Link to={`/product/${product.productId}`}>추천상품!</Link>
                 )}
                 <Link
                   to={`/product/${product.productId}`}

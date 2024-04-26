@@ -51,7 +51,7 @@ function ArticleSubmitModal({
           },
         }
       );
-      setModalMessage(`${response.data.writer}님의 문의 글을 등록하였습니다.`);
+      setModalMessage(`${response.data.writer}님의 리뷰를 등록하였습니다.`);
       setShowModal(true);
       updateReviewData();
     } catch (error) {
@@ -106,15 +106,6 @@ function ArticleSubmitModal({
     }
 
     await axios
-      // .post(`http://localhost:8080/api/v1/inquiry/new/${productId}`, {
-      //   memberId: "1",
-      //   name: writer,
-      //   email: email,
-      //   inquiryContent: inquiryContent,
-      //   inquiryTitle: inquiryTitle,
-      //   password: inquiryPassword,
-      //   inquiryType: inquiryCategory,
-      // })
       .post(
         `http://localhost:8080/api/v1/inquiry/new/${productId}`,
         requestData
@@ -164,6 +155,7 @@ function ArticleSubmitModal({
   const closeModal = () => {
     setShowModal(false);
     modalClose();
+    window.location.reload();
   };
 
   return (
@@ -360,9 +352,6 @@ function ArticleSubmitModal({
                   onChange={(e) => setInquiryPassword(e.target.value)}
                 />
               </div>
-              <span className="last-label">
-                해당 정보는 구매자의 프라이버시를 지키는데 사용됩니다.
-              </span>
             </div>
             <div className="inquiry-btn-box">
               <button
@@ -379,7 +368,7 @@ function ArticleSubmitModal({
         <div className="confirm-modal">
           <div className="confirm-modal-content">
             <p>{modalMessage}</p>
-            <button onClick={closeModal}>확인</button>
+            <button onClick={() => closeModal()}>확인</button>
           </div>
         </div>
       )}

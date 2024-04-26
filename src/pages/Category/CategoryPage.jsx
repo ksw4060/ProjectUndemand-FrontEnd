@@ -5,6 +5,7 @@ import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import { IoMdSearch } from "react-icons/io";
 import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
@@ -18,18 +19,25 @@ function CategoryPage() {
   const [currentCategory, setCurrentCategory] = useState(() => {
     return localStorage.getItem("currentCategory") || category.split("-")[0];
   });
+  const [selectedSortOption, setSelectedSortOption] = useState("new");
+  const [sortOptionName, setSortOptionName] = useState("정렬 기준");
+  const [isSortClicked, setIsSortClicked] = useState(false);
+  const [searchString, setSearchString] = useState("");
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
     optionName ? `/ ${optionName.toUpperCase()}` : ""
   } ${subOptionName ? `/ ${subOptionName}` : ""}`;
   const navigate = useNavigate();
   const [filterOptionData, setFilterOptionData] = useState([]);
 
+  const pageSize = 12;
   const [currentPage, setCurrentPage] = useState(0);
   const [allProducts, setAllProducts] = useState([]);
   const [visiblePages, setVisiblePages] = useState([]);
-  const pageSize = 10;
+  const [totalPageSize, setTotalPageSize] = useState(0);
 
   useEffect(() => {
     setCurrentCategory(category.split("-")[0]);
@@ -51,40 +59,38 @@ function CategoryPage() {
     fetchFilterData();
   }, []);
 
-  const handleConditionChange = () => {
-    setCurrentPage(0);
-  };
+  useEffect(() => {
+    const handleConditionChange = () => {
+      setCurrentPage(0);
+    };
 
-  const handlePageChange = (direction) => {
-    setCurrentPage(currentPage + direction);
-  };
-
-  const pageButtons = () => {
-    const totalPageCount = pageSize;
-    const pages = [];
-    for (let i = 0; i < totalPageCount; i++) {
-      pages.push(i);
-    }
-    setVisiblePages(pages);
-  };
+    handleConditionChange();
+  }, [category, selectedSortOption, isSearchClicked]);
 
   useEffect(() => {
     const fetchProductsData = async () => {
       try {
         const conditionMap = {
-          best: "best",
-          new: "new",
-          discount: "discount",
-        };
-
-        const productTypeMap = {
+          new: "NEW",
+          best: "BEST",
           unisex: "UNISEX",
           men: "MAN",
           women: "WOMAN",
+          recommend: "RECOMMEND",
+        };
+
+        const orderMap = {
+          new: "LATEST",
+          best: "POPULAR",
+          lowPrice: "LOW_PRICE",
+          highPrice: "HIGH_PRICE",
+          higtDiscountRate: "HIGH_DISCOUNT_RATE",
         };
 
         const condition = conditionMap[currentCategory] || "";
-        const productType = productTypeMap[currentCategory] || "";
+        const category = parseInt(categoryId) || "";
+        const order = orderMap[selectedSortOption] || "";
+        const keyword = searchString || "";
 
         const response = await axios.get(
           `http://localhost:8080/api/v1/products`,
@@ -93,23 +99,59 @@ function CategoryPage() {
               size: pageSize,
               page: currentPage,
               condition: condition,
-              productType: productType,
+              category: category,
+              order: order,
+              keyword: keyword,
             },
           }
         );
-        setAllProducts(response.data);
+        setAllProducts(response.data.content);
+        setTotalPageSize(response.data.totalPages);
+        setIsSearchClicked(false);
       } catch (error) {
         console.error("상품을 불러오는 도중 에러가 발생했습니다:", error);
       }
     };
 
     fetchProductsData();
-    handleConditionChange();
-  }, [currentPage, currentCategory]);
+  }, [
+    currentPage,
+    currentCategory,
+    selectedSortOption,
+    isSearchClicked,
+    categoryId,
+  ]);
+
+  const handlePageChange = (direction) => {
+    if (direction === -1 && currentPage === 0) {
+      alert("첫번째 페이지입니다.");
+    } else if (direction === 1 && currentPage === totalPageSize - 1) {
+      alert("마지막 페이지입니다.");
+    } else {
+      setCurrentPage(currentPage + direction);
+    }
+  };
 
   useEffect(() => {
+    const pageButtons = () => {
+      const totalPages = totalPageSize;
+      const pages = [];
+
+      const pageSize = 5;
+
+      const currentPageGroup = Math.ceil((currentPage + 1) / pageSize);
+
+      const startPage = (currentPageGroup - 1) * pageSize;
+      const endPage = Math.min(startPage + pageSize, totalPages);
+
+      for (let i = startPage; i < endPage; i++) {
+        pages.push(i);
+      }
+      setVisiblePages(pages);
+    };
+
     pageButtons();
-  }, [allProducts]);
+  }, [currentPage, totalPageSize]);
 
   useEffect(() => {
     const isTopMenuClicked = localStorage.getItem("topMenuClicked");
@@ -121,6 +163,14 @@ function CategoryPage() {
       setSubOptionName("");
     }
   }, [category]);
+
+  const handleSearchBar = () => {
+    if (searchString) {
+      setIsSearchClicked(true);
+    } else {
+      return;
+    }
+  };
 
   const filterUrlMap = {
     상의: "tops",
@@ -167,10 +217,12 @@ function CategoryPage() {
     const subOptions = category.children.map((child) => ({
       id: subFilterUrlMap[child.name],
       name: child.name,
+      childCategoryId: child.categoryId,
     }));
     return {
       id: filterUrl,
       name: category.name,
+      parentCategoryId: category.categoryId,
       subOptions: subOptions,
     };
   });
@@ -237,8 +289,12 @@ function CategoryPage() {
     };
   }, []);
 
-  const hanldeFilterClick = () => {
+  const handleFilterClick = () => {
     setIsFilterClicked((prevState) => !prevState);
+  };
+
+  const handleSortClick = () => {
+    setIsSortClicked((prevState) => !prevState);
   };
 
   const handleShowMoreOptions = (optionType) => {
@@ -278,6 +334,7 @@ function CategoryPage() {
     );
     const storedOptionName = localStorage.getItem("optionName");
     const storedSubOptionName = localStorage.getItem("subOptionName");
+    const storedCategoryId = localStorage.getItem("categoryId");
 
     if (storedCategoryOption) {
       setSelectedCategoryOption(storedCategoryOption);
@@ -291,6 +348,9 @@ function CategoryPage() {
     if (storedSubOptionName) {
       setSubOptionName(storedSubOptionName);
     }
+    if (storedCategoryId) {
+      setCategoryId(storedCategoryId);
+    }
   }, [category]);
 
   useEffect(() => {
@@ -299,6 +359,7 @@ function CategoryPage() {
       localStorage.removeItem("selectedSubCategoryOption");
       localStorage.removeItem("optionName");
       localStorage.removeItem("subOptionName");
+      localStorage.removeItem("categoryId");
     };
   }, []);
 
@@ -310,13 +371,70 @@ function CategoryPage() {
         <div className="wrapper">
           <span className="category-path">{categoryTitle}</span>
           <div className="filter-box">
-            <div className="filter" onClick={() => hanldeFilterClick()}>
+            <div className="filter" onClick={() => handleFilterClick()}>
               <p>필터 표시</p>
               <RiEqualizerLine className="icons" />
             </div>
-            <div className="sort-by">
-              <p>정렬 기준</p>
+            <div className="sort-by" onClick={() => handleSortClick()}>
+              <p>{sortOptionName}</p>
               <FaChevronDown className="icons" />
+              <ul
+                className={`category-page-dropdown-menu ${
+                  isSortClicked === true && "sort-dropdown-active"
+                }`}
+              >
+                <li
+                  onClick={() => {
+                    setSelectedSortOption("new");
+                    setSortOptionName("최신순");
+                  }}
+                >
+                  최신순
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedSortOption("best");
+                    setSortOptionName("인기순");
+                  }}
+                >
+                  인기순
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedSortOption("lowPrice");
+                    setSortOptionName("낮은 가격순");
+                  }}
+                >
+                  가격 낮은 순
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedSortOption("highPrice");
+                    setSortOptionName("높은 가격순");
+                  }}
+                >
+                  가격 높은 순
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedSortOption("higtDiscountRate");
+                    setSortOptionName("할인율순");
+                  }}
+                >
+                  할인율순
+                </li>
+              </ul>
+            </div>
+            <div className="search-bar-container">
+              <div className="search-bar">
+                <input
+                  type="text"
+                  value={searchString}
+                  onChange={(e) => setSearchString(e.target.value)}
+                  placeholder={`검색`}
+                />
+                <IoMdSearch onClick={() => handleSearchBar()} />
+              </div>
             </div>
           </div>
         </div>
@@ -332,15 +450,20 @@ function CategoryPage() {
             currentCategory === "new" ||
             currentCategory === "women" ||
             currentCategory === "discount"
-              ? filterOptions.map((option) => (
+              ? filterOptions.map((option, index) => (
                   <li
-                    key={option.id}
+                    key={index}
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -349,15 +472,20 @@ function CategoryPage() {
                     {option.name}
                   </li>
                 ))
-              : menUnisexFilterOptions.map((option) => (
+              : menUnisexFilterOptions.map((option, index) => (
                   <li
-                    key={option.id}
+                    key={index}
                     className={`filter-option ${
                       selectedCategoryOption === option.id ? "selected" : ""
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -372,13 +500,13 @@ function CategoryPage() {
           currentCategory === "women" ||
           currentCategory === "discount"
             ? filterOptions.map(
-                (option) =>
+                (option, index) =>
                   selectedCategoryOption === option.id &&
                   option.subOptions && (
-                    <ul key={option.id} className="category-sub-options">
-                      {option.subOptions.map((subOption) => (
+                    <ul key={index} className="category-sub-options">
+                      {option.subOptions.map((subOption, index) => (
                         <li
-                          key={subOption.id}
+                          key={index}
                           className={`filter-option ${
                             selectedSubCategoryOption === subOption.id
                               ? "selected"
@@ -387,6 +515,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name
@@ -400,13 +533,13 @@ function CategoryPage() {
                   )
               )
             : menUnisexFilterOptions.map(
-                (option) =>
+                (option, index) =>
                   selectedCategoryOption === option.id &&
                   option.subOptions && (
-                    <ul key={option.id} className="category-sub-options">
-                      {option.subOptions.map((subOption) => (
+                    <ul key={index} className="category-sub-options">
+                      {option.subOptions.map((subOption, index) => (
                         <li
-                          key={subOption.id}
+                          key={index}
                           className={`filter-option ${
                             selectedSubCategoryOption === subOption.id
                               ? "selected"
@@ -415,6 +548,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name
@@ -465,24 +603,24 @@ function CategoryPage() {
           />
         </div>
         <div className="products-section">
-          <div>
-            <div className="product-card-box">
-              {allProducts.length > 0 ? (
-                allProducts.map((product, index) => (
-                  <div
-                    key={product.productId}
-                    className={`product-card ${
-                      isFilterClicked && "filter-active-margin"
+          <div className="product-card-box">
+            {allProducts.length > 0 ? (
+              allProducts.map((product, index) => (
+                <div
+                  key={index}
+                  className={`product-card ${
+                    isFilterClicked && "filter-active-margin"
+                  }`}
+                >
+                  <img
+                    src={`http://localhost:8080${product.productThumbnails[0]}`}
+                    alt={product.productName}
+                    className={`img-section ${
+                      isFilterClicked && "filter-active-img"
                     }`}
-                  >
-                    <img
-                      src={`http://localhost:8080${product.productThumbnails[0]}`}
-                      alt={product.productName}
-                      className={`img-section img${index + 1} ${
-                        isFilterClicked && "filter-active-img"
-                      }`}
-                    />
-                    <div className="product-info">
+                  />
+                  <div className="product-info">
+                    <div className="product-info-top-container">
                       <Link to={`/product/${product.productId}`}>
                         {product.productName}
                       </Link>
@@ -496,44 +634,47 @@ function CategoryPage() {
                           추천상품
                         </Link>
                       )}
-                      <Link
-                        to={`/product/${product.productId}`}
-                        className="product-price"
-                      >
-                        {`${product.price} 원`}
-                      </Link>
                     </div>
+                    <Link
+                      to={`/product/${product.productId}`}
+                      className="product-price"
+                    >
+                      {`${product.price} 원`}
+                    </Link>
                   </div>
-                ))
-              ) : (
-                <span>{`${category} 상품이 없습니다.`}</span>
-              )}
-            </div>
+                </div>
+              ))
+            ) : (
+              <span>{`${category} 상품이 없습니다.`}</span>
+            )}
           </div>
         </div>
       </div>
-      <div className="paging-btn-container">
-        <button
+      <div className="category-paging-btn-container">
+        <GrFormPrevious
           onClick={() => handlePageChange(-1)}
           disabled={currentPage === 0}
-          className="prev-next-btn"
-        >
-          <GrFormPrevious />
-        </button>
-        {visiblePages.map((page) => (
+          className={`category-page-move-btn ${
+            currentPage === 0 && "prev-btn-disable"
+          }`}
+        />
+        {visiblePages.map((page, index) => (
           <button
-            key={page}
+            key={index}
             onClick={() => setCurrentPage(page)}
-            className={`page-num-btn ${
-              currentPage === page ? "current-page" : ""
+            className={`category-page-num-btn ${
+              currentPage === page ? "category-current-page" : ""
             }`}
           >
             {page + 1}
           </button>
         ))}
-        <button onClick={() => handlePageChange(1)} className="prev-next-btn">
-          <GrFormNext />
-        </button>
+        <GrFormNext
+          onClick={() => handlePageChange(1)}
+          className={`category-page-move-btn ${
+            currentPage === totalPageSize - 1 && "next-btn-disable"
+          }`}
+        />
       </div>
     </div>
   );

@@ -30,19 +30,19 @@
     height: 100%;
     position: relative;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     overflow: hidden;
 }
 
-.product-card {
-    width: 340px;
+.ps-product-card {
+    width: 370px;
     height: 600px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    margin-right: 30px;
+    padding-right: 30px;
 }
 
 .product-card-img {

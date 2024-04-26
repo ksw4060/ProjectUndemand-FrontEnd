@@ -28,7 +28,6 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
     // 로컬 스토리지에서 Authorization 값 제거
     localStorage.removeItem("Authorization");
 
-    localStorage.removeItem("payload");
     localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
@@ -71,6 +70,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                     localStorage.removeItem("selectedSubCategoryOption");
                     localStorage.removeItem("optionName");
                     localStorage.removeItem("subOptionName");
+                    localStorage.removeItem("categoryId");
                     localStorage.setItem("topMenuClicked", true);
                   }}
                 >
@@ -80,30 +80,12 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                   {hoveredLinkIndex !== null && (
                     <div className="accordion-menu-container">
                       {categoryLinks[hoveredLinkIndex].contents.map(
-                        (content, i) => (
-                          <ul className="options-box" key={i}>
-                            <li className="option-title">
-                              <Link
-                                to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}`}
-                                onClick={() => {
-                                  localStorage.setItem(
-                                    "selectedCategoryOption",
-                                    content.id
-                                  );
-                                  localStorage.setItem(
-                                    "optionName",
-                                    content.name
-                                  );
-                                  localStorage.removeItem("topMenuClicked");
-                                }}
-                              >
-                                {content.name}
-                              </Link>
-                            </li>
-                            {content.subOptions.map((subOption, j) => (
-                              <li key={j} className="option">
+                        (content, i) => {
+                          return (
+                            <ul className="options-box" key={i}>
+                              <li className="option-title">
                                 <Link
-                                  to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}-${subOption.id}`}
+                                  to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}`}
                                   onClick={() => {
                                     localStorage.setItem(
                                       "selectedCategoryOption",
@@ -114,22 +96,50 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                                       content.name
                                     );
                                     localStorage.setItem(
-                                      "selectedSubCategoryOption",
-                                      subOption.id
-                                    );
-                                    localStorage.setItem(
-                                      "subOptionName",
-                                      subOption.name
+                                      "categoryId",
+                                      content.parentCategoryId
                                     );
                                     localStorage.removeItem("topMenuClicked");
                                   }}
                                 >
-                                  {subOption.name}
+                                  {content.name}
                                 </Link>
                               </li>
-                            ))}
-                          </ul>
-                        )
+                              {content.subOptions.map((subOption, j) => (
+                                <li key={j} className="option">
+                                  <Link
+                                    to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}-${subOption.id}`}
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "selectedCategoryOption",
+                                        content.id
+                                      );
+                                      localStorage.setItem(
+                                        "optionName",
+                                        content.name
+                                      );
+                                      localStorage.setItem(
+                                        "selectedSubCategoryOption",
+                                        subOption.id
+                                      );
+                                      localStorage.setItem(
+                                        "subOptionName",
+                                        subOption.name
+                                      );
+                                      localStorage.setItem(
+                                        "categoryId",
+                                        subOption.childCategoryId
+                                      );
+                                      localStorage.removeItem("topMenuClicked");
+                                    }}
+                                  >
+                                    {subOption.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          );
+                        }
                       )}
                     </div>
                   )}
@@ -153,12 +163,6 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
             </ul>
           ) : (
             <ul className="userbox logged-in-true">
-              {/* <li>
-                <Link onClick={handleLogoutClick}>로그아웃</Link>
-              </li> */}
-              {/* <li>
-                <Link to="/inquiry">Q&A</Link>
-              </li> */}
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
@@ -176,9 +180,6 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                   <li className="wishlist-btn">
                     <Link to="/wishlist">위시리스트</Link>
                   </li>
-                  {/* <li className="user-info-btn">
-                    <Link to="/user/:userId/information">회원정보</Link>
-                  </li> */}
                   <li>
                     <Link to="/inquiry">Q&A</Link>
                   </li>

@@ -72,10 +72,7 @@ const Login = () => {
             .join("")
         );
 
-        localStorage.setItem("payload", jsonPayload);
-
-        const payload = localStorage.getItem("payload");
-        const payloadObject = JSON.parse(payload);
+        const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
 
         // Delay of 1 second before navigating to home page
