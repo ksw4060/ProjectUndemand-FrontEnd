@@ -28,7 +28,6 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
     // 로컬 스토리지에서 Authorization 값 제거
     localStorage.removeItem("Authorization");
 
-    localStorage.removeItem("payload");
     localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
