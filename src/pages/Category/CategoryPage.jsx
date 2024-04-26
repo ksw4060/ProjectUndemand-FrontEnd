@@ -63,21 +63,20 @@ function CategoryPage() {
     const fetchProductsData = async () => {
       try {
         const conditionMap = {
-          best: "best",
-          new: "new",
+          new: "NEW",
+          best: "BEST",
           unisex: "UNISEX",
           men: "MAN",
           women: "WOMAN",
-          // recommend: "recommend",
-          discount: "discount",
+          recommend: "RECOMMEND",
         };
 
         const orderMap = {
-          new: "new",
-          best: "best",
-          lowPrice: "low-price",
-          highPrice: "high-price",
-          higtDiscountRate: "high-discount-rate",
+          new: "LATEST",
+          best: "POPULAR",
+          lowPrice: "LOW_PRICE",
+          highPrice: "HIGH_PRICE",
+          higtDiscountRate: "HIGH_DISCOUNT_RATE",
         };
 
         const condition = conditionMap[currentCategory] || "";
@@ -104,10 +103,6 @@ function CategoryPage() {
     fetchProductsData();
     // handleConditionChange();
   }, [currentPage, currentCategory, selectedSortOption]);
-
-  useEffect(() => {
-    console.log(allProducts);
-  }, [allProducts]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
