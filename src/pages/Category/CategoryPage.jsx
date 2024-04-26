@@ -5,6 +5,7 @@ import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import { IoMdSearch } from "react-icons/io";
 import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
@@ -21,8 +22,11 @@ function CategoryPage() {
   const [selectedSortOption, setSelectedSortOption] = useState("new");
   const [sortOptionName, setSortOptionName] = useState("정렬 기준");
   const [isSortClicked, setIsSortClicked] = useState(false);
+  const [searchString, setSearchString] = useState("");
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
     optionName ? `/ ${optionName.toUpperCase()}` : ""
   } ${subOptionName ? `/ ${subOptionName}` : ""}`;
@@ -55,9 +59,13 @@ function CategoryPage() {
     fetchFilterData();
   }, []);
 
-  // const handleConditionChange = () => {
-  //   setCurrentPage(0);
-  // };
+  useEffect(() => {
+    const handleConditionChange = () => {
+      setCurrentPage(0);
+    };
+
+    handleConditionChange();
+  }, [category, selectedSortOption, isSearchClicked]);
 
   useEffect(() => {
     const fetchProductsData = async () => {
@@ -80,7 +88,9 @@ function CategoryPage() {
         };
 
         const condition = conditionMap[currentCategory] || "";
+        const category = parseInt(categoryId) || "";
         const order = orderMap[selectedSortOption] || "";
+        const keyword = searchString || "";
 
         const response = await axios.get(
           `http://localhost:8080/api/v1/products`,
@@ -89,20 +99,28 @@ function CategoryPage() {
               size: pageSize,
               page: currentPage,
               condition: condition,
+              category: category,
               order: order,
+              keyword: keyword,
             },
           }
         );
         setAllProducts(response.data.content);
         setTotalPageSize(response.data.totalPages);
+        setIsSearchClicked(false);
       } catch (error) {
         console.error("상품을 불러오는 도중 에러가 발생했습니다:", error);
       }
     };
 
     fetchProductsData();
-    // handleConditionChange();
-  }, [currentPage, currentCategory, selectedSortOption]);
+  }, [
+    currentPage,
+    currentCategory,
+    selectedSortOption,
+    isSearchClicked,
+    categoryId,
+  ]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -145,6 +163,14 @@ function CategoryPage() {
       setSubOptionName("");
     }
   }, [category]);
+
+  const handleSearchBar = () => {
+    if (searchString) {
+      setIsSearchClicked(true);
+    } else {
+      return;
+    }
+  };
 
   const filterUrlMap = {
     상의: "tops",
@@ -191,10 +217,12 @@ function CategoryPage() {
     const subOptions = category.children.map((child) => ({
       id: subFilterUrlMap[child.name],
       name: child.name,
+      childCategoryId: child.categoryId,
     }));
     return {
       id: filterUrl,
       name: category.name,
+      parentCategoryId: category.categoryId,
       subOptions: subOptions,
     };
   });
@@ -306,6 +334,7 @@ function CategoryPage() {
     );
     const storedOptionName = localStorage.getItem("optionName");
     const storedSubOptionName = localStorage.getItem("subOptionName");
+    const storedCategoryId = localStorage.getItem("categoryId");
 
     if (storedCategoryOption) {
       setSelectedCategoryOption(storedCategoryOption);
@@ -318,6 +347,9 @@ function CategoryPage() {
     }
     if (storedSubOptionName) {
       setSubOptionName(storedSubOptionName);
+    }
+    if (storedCategoryId) {
+      setCategoryId(storedCategoryId);
     }
   }, [category]);
 
@@ -369,7 +401,7 @@ function CategoryPage() {
                 <li
                   onClick={() => {
                     setSelectedSortOption("lowPrice");
-                    setSortOptionName("가격 낮은 순");
+                    setSortOptionName("낮은 가격순");
                   }}
                 >
                   가격 낮은 순
@@ -377,7 +409,7 @@ function CategoryPage() {
                 <li
                   onClick={() => {
                     setSelectedSortOption("highPrice");
-                    setSortOptionName("가격 높은 순");
+                    setSortOptionName("높은 가격순");
                   }}
                 >
                   가격 높은 순
@@ -391,6 +423,17 @@ function CategoryPage() {
                   할인율순
                 </li>
               </ul>
+            </div>
+            <div className="search-bar-container">
+              <div className="search-bar">
+                <input
+                  type="text"
+                  value={searchString}
+                  onChange={(e) => setSearchString(e.target.value)}
+                  placeholder={`검색`}
+                />
+                <IoMdSearch onClick={() => handleSearchBar()} />
+              </div>
             </div>
           </div>
         </div>
@@ -415,6 +458,11 @@ function CategoryPage() {
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -432,6 +480,11 @@ function CategoryPage() {
                     onClick={() => {
                       handleCategoryOptionSelect(option.id);
                       setOptionName(option.name);
+                      // setCategoryId(option.parentCategoryId);
+                      localStorage.setItem(
+                        "categoryId",
+                        option.parentCategoryId
+                      );
                       setSubOptionName("");
                       localStorage.setItem("optionName", option.name);
                       localStorage.removeItem("subOptionName");
@@ -461,6 +514,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name
@@ -489,6 +547,11 @@ function CategoryPage() {
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption.id);
                             setSubOptionName(subOption.name);
+                            // setCategoryId(subOption.childCategoryId);
+                            localStorage.setItem(
+                              "categoryId",
+                              subOption.childCategoryId
+                            );
                             localStorage.setItem(
                               "subOptionName",
                               subOption.name

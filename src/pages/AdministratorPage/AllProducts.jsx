@@ -11,16 +11,10 @@ function AllProducts() {
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [managementModalOpen, setManagementModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
   const [visiblePages, setVisiblePages] = useState([]);
   const [totalPageSize, setTotalPageSize] = useState(0);
-
   const navigate = useNavigate();
-
-  // const handleConditionChange = () => {
-  //   setCurrentPage(0);
-  // };
 
   useEffect(() => {
     const fetchAllProductsData = async () => {
@@ -58,16 +52,24 @@ function AllProducts() {
 
   useEffect(() => {
     const pageButtons = () => {
-      const totalPageCount = totalPageSize;
+      const totalPages = totalPageSize;
       const pages = [];
-      for (let i = 0; i < totalPageCount; i++) {
+
+      const pageSize = 5;
+
+      const currentPageGroup = Math.ceil((currentPage + 1) / pageSize);
+
+      const startPage = (currentPageGroup - 1) * pageSize;
+      const endPage = Math.min(startPage + pageSize, totalPages);
+
+      for (let i = startPage; i < endPage; i++) {
         pages.push(i);
       }
       setVisiblePages(pages);
     };
 
     pageButtons();
-  }, [totalPageSize]);
+  }, [currentPage, totalPageSize]);
 
   const openManagementModal = () => {
     setManagementModalOpen(true);
