@@ -83,7 +83,7 @@ const Login = () => {
           window.location.replace("/");
         }, 300);
         setTimeout(() => {
-          alert(response.data.email + "님, 반갑습니다.");
+          alert(email + "님, 반갑습니다.");
         }, 1000);
       }
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
