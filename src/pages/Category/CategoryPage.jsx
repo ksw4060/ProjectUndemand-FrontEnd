@@ -5,6 +5,7 @@ import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import { IoMdSearch } from "react-icons/io";
 import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
@@ -21,6 +22,8 @@ function CategoryPage() {
   const [selectedSortOption, setSelectedSortOption] = useState("new");
   const [sortOptionName, setSortOptionName] = useState("정렬 기준");
   const [isSortClicked, setIsSortClicked] = useState(false);
+  const [searchString, setSearchString] = useState("");
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
   const [optionName, setOptionName] = useState("");
   const [subOptionName, setSubOptionName] = useState("");
   const categoryTitle = `${currentCategory.toUpperCase()} ${
@@ -81,6 +84,7 @@ function CategoryPage() {
 
         const condition = conditionMap[currentCategory] || "";
         const order = orderMap[selectedSortOption] || "";
+        const keyword = searchString || "";
 
         const response = await axios.get(
           `http://localhost:8080/api/v1/products`,
@@ -90,11 +94,13 @@ function CategoryPage() {
               page: currentPage,
               condition: condition,
               order: order,
+              keyword: keyword,
             },
           }
         );
         setAllProducts(response.data.content);
         setTotalPageSize(response.data.totalPages);
+        setIsSearchClicked(false);
       } catch (error) {
         console.error("상품을 불러오는 도중 에러가 발생했습니다:", error);
       }
@@ -102,7 +108,7 @@ function CategoryPage() {
 
     fetchProductsData();
     // handleConditionChange();
-  }, [currentPage, currentCategory, selectedSortOption]);
+  }, [currentPage, currentCategory, selectedSortOption, isSearchClicked]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -145,6 +151,14 @@ function CategoryPage() {
       setSubOptionName("");
     }
   }, [category]);
+
+  const handleSearchBar = () => {
+    if (searchString) {
+      setIsSearchClicked(true);
+    } else {
+      return;
+    }
+  };
 
   const filterUrlMap = {
     상의: "tops",
@@ -391,6 +405,17 @@ function CategoryPage() {
                   할인율순
                 </li>
               </ul>
+            </div>
+            <div className="search-bar-container">
+              <div className="search-bar">
+                <input
+                  type="text"
+                  value={searchString}
+                  onChange={(e) => setSearchString(e.target.value)}
+                  placeholder={`검색`}
+                />
+                <IoMdSearch onClick={() => handleSearchBar()} />
+              </div>
             </div>
           </div>
         </div>
