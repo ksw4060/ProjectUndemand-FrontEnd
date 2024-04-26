@@ -70,6 +70,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                     localStorage.removeItem("selectedSubCategoryOption");
                     localStorage.removeItem("optionName");
                     localStorage.removeItem("subOptionName");
+                    localStorage.removeItem("categoryId");
                     localStorage.setItem("topMenuClicked", true);
                   }}
                 >
