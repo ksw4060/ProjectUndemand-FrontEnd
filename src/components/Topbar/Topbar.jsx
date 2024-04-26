@@ -94,6 +94,10 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                                       "optionName",
                                       content.name
                                     );
+                                    localStorage.setItem(
+                                      "categoryId",
+                                      content.parentCategoryId
+                                    );
                                     localStorage.removeItem("topMenuClicked");
                                   }}
                                 >
@@ -120,6 +124,10 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                                       localStorage.setItem(
                                         "subOptionName",
                                         subOption.name
+                                      );
+                                      localStorage.setItem(
+                                        "categoryId",
+                                        subOption.childCategoryId
                                       );
                                       localStorage.removeItem("topMenuClicked");
                                     }}
