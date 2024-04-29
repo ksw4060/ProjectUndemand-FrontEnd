@@ -98,7 +98,7 @@ function App() {
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
-          <Route path="/:category" element={<CategoryPage />} />
+          <Route path="/:categoryPageUrl" element={<CategoryPage />} />
           <Route
             path="/product/:productId"
             element={

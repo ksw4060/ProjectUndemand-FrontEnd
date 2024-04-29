@@ -7,7 +7,7 @@ import "./Main.css";
 const Main = () => {
   const [mainBest, setMainBest] = useState([]);
   const [mainNew, setMainNew] = useState([]);
-  const [mainDiscount, setMainDiscount] = useState([]);
+  const [mainRecommend, setMainRecommend] = useState([]);
   const pageSize = 7;
 
   const CAROUSEL_IMAGES = [
@@ -19,7 +19,7 @@ const Main = () => {
   useEffect(() => {
     getBestProducts();
     getNewProducts();
-    getDiscountProducts();
+    getRecommendProducts();
   }, []);
 
   const getBestProducts = async () => {
@@ -64,7 +64,7 @@ const Main = () => {
     }
   };
 
-  const getDiscountProducts = async () => {
+  const getRecommendProducts = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/v1/products`,
@@ -72,14 +72,14 @@ const Main = () => {
           params: {
             size: pageSize,
             page: 0,
-            condition: "",
+            condition: "RECOMMEND",
             category: "",
-            order: "HIGH_DISCOUNT_RATE",
+            order: "",
             keyword: "",
           },
         }
       );
-      setMainDiscount(response.data.content);
+      setMainRecommend(response.data.content);
     } catch (error) {
       console.error("Error fetching product data:", error);
     }
@@ -90,7 +90,11 @@ const Main = () => {
       <Carousel imgList={CAROUSEL_IMAGES} />
       <ProductSlide products={mainBest} sectionTitle="Best Products" />
       <ProductSlide products={mainNew} sectionTitle="New Products" />
-      <ProductSlide products={mainDiscount} sectionTitle="Discount Products" />/
+      <ProductSlide
+        products={mainRecommend}
+        sectionTitle="Recommend Products"
+      />
+      /
     </div>
   );
 };

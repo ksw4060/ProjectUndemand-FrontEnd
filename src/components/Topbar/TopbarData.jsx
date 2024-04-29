@@ -21,73 +21,42 @@ function TopbarData() {
     fetchCategoryData();
   }, []);
 
-  const categoryUrlMap = {
-    상의: "tops",
-    하의: "bottoms",
-    "드레스 & 세트": "dressandset",
-    아우터: "outerwear",
-    신발: "shoes",
-    악세서리: "accessories",
-  };
+  const processedCategoryData = categoryData.map((parentCategory) => {
+    const processedParentName = parentCategory.name
+      .replace(/[-&]/g, "")
+      .toUpperCase();
+    const processedChildren = parentCategory.children.map((childCategory) => {
+      const processedChildName = childCategory.name
+        .replace(/[-&]/g, "")
+        .toUpperCase();
 
-  const subCategoryUrlMap = {
-    후드: "hoodie",
-    맨투맨: "sweatshirt",
-    "반팔 셔츠": "shortsleeveshirt",
-    "긴팔 셔츠": "longsleeveshirt",
-    반팔티: "shortsleevetee",
-    긴팔티: "longsleevetee",
-    "니트 & 스웨터": "knitsweater",
-    블라우스: "blouse",
-    긴바지: "trousers",
-    반바지: "shorts",
-    치마: "skirt",
-    원피스: "dress",
-    투피스: "twopiece",
-    셋업: "setup",
-    숏패딩: "shortpadding",
-    롱패딩: "longpadding",
-    가디건: "cardigan",
-    재킷: "jacket",
-    코트: "coat",
-    무스탕: "mustang",
-    조끼: "vest",
-    경량패딩: "lightweightpadding",
-    스니커즈: "sneakers",
-    "샌들 & 슬리퍼": "sandalslippers",
-    부츠: "boots",
-    모자: "hat",
-    양말: "socks",
-    가방: "bag",
-  };
+      return {
+        name: processedChildName,
+        categoryId: childCategory.categoryId,
+        depth: childCategory.depth,
+      };
+    });
 
-  const categoryOptions = categoryData.map((category) => {
-    const categoryUrl = categoryUrlMap[category.name];
-    const subOptions = category.children.map((child) => ({
-      id: subCategoryUrlMap[child.name],
-      childCategoryId: child.categoryId,
-      name: child.name,
-    }));
     return {
-      id: categoryUrl,
-      parentCategoryId: category.categoryId,
-      name: category.name,
-      subOptions: subOptions,
+      name: processedParentName,
+      categoryId: parentCategory.categoryId,
+      depth: parentCategory.depth,
+      children: processedChildren,
     };
   });
 
-  const genderOptions = categoryOptions.filter(
-    (category) => category.name !== "드레스 & 세트"
+  const genderOptions = processedCategoryData.filter(
+    (category) => category.name !== "DRESSSET"
   );
 
-  const menUnisexCategoryOptions = genderOptions.map((categoryOptions) => {
-    if (categoryOptions.name === "하의") {
-      const updatedSubOptions = categoryOptions.subOptions.filter(
-        (subOption) => subOption.name !== "치마"
+  const processedMUCategoryData = genderOptions.map((categoryOptions) => {
+    if (categoryOptions.name === "BOTTOM") {
+      const updatedSubOptions = categoryOptions.children.filter(
+        (subOption) => subOption.name !== "SKIRT"
       );
       return {
         ...categoryOptions,
-        subOptions: updatedSubOptions,
+        children: updatedSubOptions,
       };
     } else {
       return categoryOptions;
@@ -98,32 +67,32 @@ function TopbarData() {
     {
       to: "/best",
       label: "Best",
-      contents: categoryOptions,
+      contents: processedCategoryData,
     },
     {
       to: "/new",
       label: "New",
-      contents: categoryOptions,
+      contents: processedCategoryData,
     },
     {
       to: "/unisex",
       label: "Unisex",
-      contents: menUnisexCategoryOptions,
+      contents: processedMUCategoryData,
     },
     {
       to: "/men",
       label: "Men",
-      contents: menUnisexCategoryOptions,
+      contents: processedMUCategoryData,
     },
     {
       to: "/women",
       label: "Women",
-      contents: categoryOptions,
+      contents: processedCategoryData,
     },
     {
-      to: "/discount",
-      label: "Discount",
-      contents: categoryOptions,
+      to: "/recommend",
+      label: "Recommend",
+      contents: processedCategoryData,
     },
   ];
 

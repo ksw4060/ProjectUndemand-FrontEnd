@@ -25,6 +25,20 @@
 }
 
 .topbar-logo > a {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.topbar-logo > a > img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    object-position: center;
+    margin-right: 10px;
+}
+
+.topbar-logo > a > span {
     color: rgb(0, 0, 0);
 }
 

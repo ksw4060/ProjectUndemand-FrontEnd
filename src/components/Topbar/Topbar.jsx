@@ -45,7 +45,10 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
   return (
     <div className="topbar">
       <div className="topbar-logo">
-        <Link to="/">Project Undemand</Link>
+        <Link to="/">
+          <img src="/ODD_LOGO.png" alt="ODD Logo" />
+          <span>ODD Shop</span>
+        </Link>
       </div>
       <div className="topbar-navbar">
         <div className="topbar-navbar-container">
@@ -68,9 +71,8 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                   onClick={() => {
                     localStorage.removeItem("selectedCategoryOption");
                     localStorage.removeItem("selectedSubCategoryOption");
-                    localStorage.removeItem("optionName");
-                    localStorage.removeItem("subOptionName");
-                    localStorage.removeItem("categoryId");
+                    localStorage.removeItem("parentCategoryId");
+                    localStorage.removeItem("childCategoryId");
                     localStorage.setItem("topMenuClicked", true);
                   }}
                 >
@@ -85,55 +87,51 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                             <ul className="options-box" key={i}>
                               <li className="option-title">
                                 <Link
-                                  to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}`}
+                                  to={`${categoryLinks[hoveredLinkIndex].to}-${content.name}`}
                                   onClick={() => {
                                     localStorage.setItem(
                                       "selectedCategoryOption",
-                                      content.id
-                                    );
-                                    localStorage.setItem(
-                                      "optionName",
                                       content.name
                                     );
                                     localStorage.setItem(
-                                      "categoryId",
-                                      content.parentCategoryId
+                                      "parentCategoryId",
+                                      content.categoryId
                                     );
+                                    localStorage.removeItem("childCategoryId");
                                     localStorage.removeItem("topMenuClicked");
+                                    localStorage.removeItem(
+                                      "selectedSubCategoryOption"
+                                    );
                                   }}
                                 >
                                   {content.name}
                                 </Link>
                               </li>
-                              {content.subOptions.map((subOption, j) => (
+                              {content.children.map((children, j) => (
                                 <li key={j} className="option">
                                   <Link
-                                    to={`${categoryLinks[hoveredLinkIndex].to}-${content.id}-${subOption.id}`}
+                                    to={`${categoryLinks[hoveredLinkIndex].to}-${content.name}-${children.name}`}
                                     onClick={() => {
                                       localStorage.setItem(
                                         "selectedCategoryOption",
-                                        content.id
-                                      );
-                                      localStorage.setItem(
-                                        "optionName",
                                         content.name
                                       );
                                       localStorage.setItem(
                                         "selectedSubCategoryOption",
-                                        subOption.id
+                                        children.name
                                       );
                                       localStorage.setItem(
-                                        "subOptionName",
-                                        subOption.name
+                                        "parentCategoryId",
+                                        content.categoryId
                                       );
                                       localStorage.setItem(
-                                        "categoryId",
-                                        subOption.childCategoryId
+                                        "childCategoryId",
+                                        children.categoryId
                                       );
                                       localStorage.removeItem("topMenuClicked");
                                     }}
                                   >
-                                    {subOption.name}
+                                    {children.name}
                                   </Link>
                                 </li>
                               ))}

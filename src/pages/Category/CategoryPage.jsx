@@ -6,32 +6,37 @@ import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
-import CheckBox from "../../components/CheckBox/CheckBox.jsx";
 import axios from "axios";
 
 function CategoryPage() {
-  const { category } = useParams();
-  const [isCategoryScroll, setIsCategoryScroll] = useState(false);
-  const [isFilterClicked, setIsFilterClicked] = useState(false);
+  const { categoryPageUrl } = useParams();
+  const [currentCategory, setCurrentCategory] = useState(() => {
+    return (
+      localStorage.getItem("currentCategory") || categoryPageUrl.split("-")[0]
+    );
+  });
+
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
     useState(null);
-  const [currentCategory, setCurrentCategory] = useState(() => {
-    return localStorage.getItem("currentCategory") || category.split("-")[0];
-  });
-  const [selectedSortOption, setSelectedSortOption] = useState("new");
-  const [sortOptionName, setSortOptionName] = useState("정렬 기준");
+  const [categoryId, setCategoryId] = useState("");
+  const [filterOptionData, setFilterOptionData] = useState([]);
+
+  const [isCategoryScroll, setIsCategoryScroll] = useState(false);
+
+  const [isFilterClicked, setIsFilterClicked] = useState(false);
+
   const [isSortClicked, setIsSortClicked] = useState(false);
+  const [sortOptionName, setSortOptionName] = useState("정렬 기준");
+  const [selectedSortOption, setSelectedSortOption] = useState("new");
+
   const [searchString, setSearchString] = useState("");
   const [isSearchClicked, setIsSearchClicked] = useState(false);
-  const [optionName, setOptionName] = useState("");
-  const [subOptionName, setSubOptionName] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+
   const categoryTitle = `${currentCategory.toUpperCase()} ${
-    optionName ? `/ ${optionName.toUpperCase()}` : ""
-  } ${subOptionName ? `/ ${subOptionName}` : ""}`;
+    selectedCategoryOption ? `/ ${selectedCategoryOption}` : ""
+  } ${selectedSubCategoryOption ? `/ ${selectedSubCategoryOption}` : ""}`;
   const navigate = useNavigate();
-  const [filterOptionData, setFilterOptionData] = useState([]);
 
   const pageSize = 12;
   const [currentPage, setCurrentPage] = useState(0);
@@ -40,9 +45,11 @@ function CategoryPage() {
   const [totalPageSize, setTotalPageSize] = useState(0);
 
   useEffect(() => {
-    setCurrentCategory(category.split("-")[0]);
-    localStorage.setItem("currentCategory", category.split("-")[0]);
-  }, [category, currentCategory]);
+    setCurrentCategory(categoryPageUrl.split("-")[0]);
+    localStorage.setItem("currentCategory", categoryPageUrl.split("-")[0]);
+    setSearchString("");
+    setCategoryId("");
+  }, [categoryPageUrl, currentCategory]);
 
   const fetchFilterData = async () => {
     try {
@@ -65,7 +72,7 @@ function CategoryPage() {
     };
 
     handleConditionChange();
-  }, [category, selectedSortOption, isSearchClicked]);
+  }, [categoryPageUrl, selectedSortOption, isSearchClicked]);
 
   useEffect(() => {
     const fetchProductsData = async () => {
@@ -122,6 +129,11 @@ function CategoryPage() {
     categoryId,
   ]);
 
+  useEffect(() => {
+    console.log("currentCategory :", currentCategory);
+    console.log("categoryId :", categoryId);
+  }, [currentCategory, categoryId]);
+
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
       alert("첫번째 페이지입니다.");
@@ -159,10 +171,8 @@ function CategoryPage() {
     if (isTopMenuClicked) {
       setSelectedCategoryOption(null);
       setSelectedSubCategoryOption(null);
-      setOptionName("");
-      setSubOptionName("");
     }
-  }, [category]);
+  }, [categoryPageUrl]);
 
   const handleSearchBar = () => {
     if (searchString) {
@@ -172,106 +182,45 @@ function CategoryPage() {
     }
   };
 
-  const filterUrlMap = {
-    상의: "tops",
-    하의: "bottoms",
-    "드레스 & 세트": "dressandset",
-    아우터: "outerwear",
-    신발: "shoes",
-    악세서리: "accessories",
-  };
-
-  const subFilterUrlMap = {
-    후드: "hoodie",
-    맨투맨: "sweatshirt",
-    "반팔 셔츠": "shortsleeveshirt",
-    "긴팔 셔츠": "longsleeveshirt",
-    반팔티: "shortsleevetee",
-    긴팔티: "longsleevetee",
-    "니트 & 스웨터": "knitsweater",
-    블라우스: "blouse",
-    긴바지: "trousers",
-    반바지: "shorts",
-    치마: "skirt",
-    원피스: "dress",
-    투피스: "twopiece",
-    셋업: "setup",
-    숏패딩: "shortpadding",
-    롱패딩: "longpadding",
-    가디건: "cardigan",
-    재킷: "jacket",
-    코트: "coat",
-    무스탕: "mustang",
-    조끼: "vest",
-    경량패딩: "lightweightpadding",
-    스니커즈: "sneakers",
-    "샌들 & 슬리퍼": "sandalslippers",
-    부츠: "boots",
-    모자: "hat",
-    양말: "socks",
-    가방: "bag",
-  };
-
-  const filterOptions = filterOptionData.map((category) => {
-    const filterUrl = filterUrlMap[category.name];
-    const subOptions = category.children.map((child) => ({
-      id: subFilterUrlMap[child.name],
-      name: child.name,
-      childCategoryId: child.categoryId,
-    }));
+  const filterOptions = filterOptionData.map((parentCategory) => {
+    const processedParentName = parentCategory.name
+      .replace(/[-&]/g, "")
+      .toUpperCase();
+    const subOptions = parentCategory.children.map((childCategory) => {
+      const processedChildName = childCategory.name
+        .replace(/[-&]/g, "")
+        .toUpperCase();
+      return {
+        name: processedChildName,
+        categoryId: childCategory.categoryId,
+        depth: childCategory.depth,
+      };
+    });
     return {
-      id: filterUrl,
-      name: category.name,
-      parentCategoryId: category.categoryId,
-      subOptions: subOptions,
+      name: processedParentName,
+      categoryId: parentCategory.categoryId,
+      depth: parentCategory.depth,
+      children: subOptions,
     };
   });
 
   const genderOptions = filterOptions.filter(
-    (category) => category.name !== "드레스 & 세트"
+    (category) => category.name !== "DRESSSET"
   );
 
   const menUnisexFilterOptions = genderOptions.map((filterOptions) => {
-    if (filterOptions.name === "하의") {
-      const updatedSubOptions = filterOptions.subOptions.filter(
-        (subOption) => subOption.name !== "치마"
+    if (filterOptions.name === "BOTTOM") {
+      const updatedSubOptions = filterOptions.children.filter(
+        (subOption) => subOption.name !== "SKIRT"
       );
       return {
         ...filterOptions,
-        subOptions: updatedSubOptions,
+        children: updatedSubOptions,
       };
     } else {
       return filterOptions;
     }
   });
-
-  const priceOptions = [
-    { id: "price0", range: "0 ~ 50,000 원" },
-    { id: "price1", range: "50,000 ~ 100,000 원" },
-    { id: "price2", range: "100,000 ~ 150,000 원" },
-    { id: "price3", range: "150,000 ~ 200,000 원" },
-    { id: "price4", range: "200,000 ~ 250,000 원" },
-    { id: "price5", range: "250,000 원 이상" },
-  ];
-
-  const [selectedPriceOptions, setSelectedPriceOptions] = useState(new Set());
-
-  const [showMorePriceOptions, setShowMorePriceOptions] = useState(false);
-
-  const colorOptions = [
-    { id: "black", name: "블랙" },
-    { id: "white", name: "화이트" },
-    { id: "navy", name: "네이비" },
-    { id: "gray", name: "그레이" },
-    { id: "red", name: "레드" },
-    { id: "blue", name: "블루" },
-    { id: "green", name: "그린" },
-    { id: "yellow", name: "옐로우" },
-  ];
-
-  const [selectedColorOptions, setSelectedColorOptions] = useState(new Set());
-
-  const [showMoreColorOptions, setShowMoreColorOptions] = useState(false);
 
   useEffect(() => {
     const handleCategoryScroll = () => {
@@ -297,33 +246,38 @@ function CategoryPage() {
     setIsSortClicked((prevState) => !prevState);
   };
 
-  const handleShowMoreOptions = (optionType) => {
-    if (optionType === "price") {
-      setShowMorePriceOptions((prevState) => !prevState);
-    } else if (optionType === "color") {
-      setShowMoreColorOptions((prevState) => !prevState);
-    }
-  };
-
   const handleCategoryOptionSelect = (id) => {
-    localStorage.setItem("selectedCategoryOption", id);
+    localStorage.setItem("selectedCategoryOption", id.name);
+    localStorage.setItem("optionName", id.name);
     localStorage.removeItem("selectedSubCategoryOption");
-    if (selectedCategoryOption === id) {
-      setSelectedSubCategoryOption(null);
+    localStorage.removeItem("subOptionName");
+    localStorage.setItem("parentCategoryId", id.categoryId);
+    localStorage.removeItem("childCategoryId");
+    if (selectedCategoryOption === id.name && !selectedSubCategoryOption) {
+      localStorage.removeItem("selectedCategoryOption");
+      localStorage.removeItem("optionName");
+      localStorage.removeItem("parentCategoryId");
+      const newCategoryUrl = `/${currentCategory}`;
+      navigate(newCategoryUrl, { replace: true });
+      return;
     }
-    setSelectedCategoryOption(id);
-    setSelectedSubCategoryOption(null);
-    const newCategoryUrl = `/${currentCategory}-${id}`;
+    const newCategoryUrl = `/${currentCategory}-${id.name}`;
     navigate(newCategoryUrl, { replace: true });
   };
 
   const handleSubcategoryOptionSelect = (subOptionId) => {
-    localStorage.setItem("selectedSubCategoryOption", subOptionId);
-    if (selectedSubCategoryOption === subOptionId) {
+    localStorage.setItem("selectedSubCategoryOption", subOptionId.name);
+    localStorage.setItem("subOptionName", subOptionId.name);
+    localStorage.setItem("childCategoryId", subOptionId.categoryId);
+    if (selectedSubCategoryOption === subOptionId.name) {
+      localStorage.removeItem("selectedSubCategoryOption");
+      localStorage.removeItem("subOptionName");
+      localStorage.removeItem("childCategoryId");
+      const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}`;
+      navigate(newSubcategoryUrl, { replace: true });
       return;
     }
-    setSelectedSubCategoryOption(subOptionId);
-    const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}-${subOptionId}`;
+    const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}-${subOptionId.name}`;
     navigate(newSubcategoryUrl, { replace: true });
   };
 
@@ -332,26 +286,28 @@ function CategoryPage() {
     const storedSubCategoryOption = localStorage.getItem(
       "selectedSubCategoryOption"
     );
-    const storedOptionName = localStorage.getItem("optionName");
-    const storedSubOptionName = localStorage.getItem("subOptionName");
-    const storedCategoryId = localStorage.getItem("categoryId");
+    const storedParentCategoryId = localStorage.getItem("parentCategoryId");
+    const storedChildCategoryId = localStorage.getItem("childCategoryId");
 
     if (storedCategoryOption) {
       setSelectedCategoryOption(storedCategoryOption);
+    } else {
+      setSelectedCategoryOption(null);
     }
     if (storedSubCategoryOption) {
       setSelectedSubCategoryOption(storedSubCategoryOption);
+    } else {
+      setSelectedSubCategoryOption(null);
     }
-    if (storedOptionName) {
-      setOptionName(storedOptionName);
+    if (storedParentCategoryId) {
+      setCategoryId(storedParentCategoryId);
+      if (storedChildCategoryId) {
+        setCategoryId(storedChildCategoryId);
+      } else {
+        setCategoryId(storedParentCategoryId);
+      }
     }
-    if (storedSubOptionName) {
-      setSubOptionName(storedSubOptionName);
-    }
-    if (storedCategoryId) {
-      setCategoryId(storedCategoryId);
-    }
-  }, [category]);
+  }, [categoryPageUrl]);
 
   useEffect(() => {
     return () => {
@@ -359,7 +315,8 @@ function CategoryPage() {
       localStorage.removeItem("selectedSubCategoryOption");
       localStorage.removeItem("optionName");
       localStorage.removeItem("subOptionName");
-      localStorage.removeItem("categoryId");
+      localStorage.removeItem("parentCategoryId");
+      localStorage.removeItem("childCategoryId");
     };
   }, []);
 
@@ -405,7 +362,7 @@ function CategoryPage() {
                     setSortOptionName("낮은 가격순");
                   }}
                 >
-                  가격 낮은 순
+                  낮은 가격순
                 </li>
                 <li
                   onClick={() => {
@@ -413,7 +370,7 @@ function CategoryPage() {
                     setSortOptionName("높은 가격순");
                   }}
                 >
-                  가격 높은 순
+                  높은 가격순
                 </li>
                 <li
                   onClick={() => {
@@ -454,19 +411,10 @@ function CategoryPage() {
                   <li
                     key={index}
                     className={`filter-option ${
-                      selectedCategoryOption === option.id ? "selected" : ""
+                      selectedCategoryOption === option.name ? "selected" : ""
                     }`}
                     onClick={() => {
-                      handleCategoryOptionSelect(option.id);
-                      setOptionName(option.name);
-                      // setCategoryId(option.parentCategoryId);
-                      localStorage.setItem(
-                        "categoryId",
-                        option.parentCategoryId
-                      );
-                      setSubOptionName("");
-                      localStorage.setItem("optionName", option.name);
-                      localStorage.removeItem("subOptionName");
+                      handleCategoryOptionSelect(option);
                     }}
                   >
                     {option.name}
@@ -476,19 +424,10 @@ function CategoryPage() {
                   <li
                     key={index}
                     className={`filter-option ${
-                      selectedCategoryOption === option.id ? "selected" : ""
+                      selectedCategoryOption === option.name ? "selected" : ""
                     }`}
                     onClick={() => {
-                      handleCategoryOptionSelect(option.id);
-                      setOptionName(option.name);
-                      // setCategoryId(option.parentCategoryId);
-                      localStorage.setItem(
-                        "categoryId",
-                        option.parentCategoryId
-                      );
-                      setSubOptionName("");
-                      localStorage.setItem("optionName", option.name);
-                      localStorage.removeItem("subOptionName");
+                      handleCategoryOptionSelect(option);
                     }}
                   >
                     {option.name}
@@ -501,29 +440,19 @@ function CategoryPage() {
           currentCategory === "discount"
             ? filterOptions.map(
                 (option, index) =>
-                  selectedCategoryOption === option.id &&
-                  option.subOptions && (
+                  selectedCategoryOption === option.name &&
+                  option.children && (
                     <ul key={index} className="category-sub-options">
-                      {option.subOptions.map((subOption, index) => (
+                      {option.children.map((subOption, index) => (
                         <li
                           key={index}
                           className={`filter-option ${
-                            selectedSubCategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.name
                               ? "selected"
                               : ""
                           }`}
                           onClick={() => {
-                            handleSubcategoryOptionSelect(subOption.id);
-                            setSubOptionName(subOption.name);
-                            // setCategoryId(subOption.childCategoryId);
-                            localStorage.setItem(
-                              "categoryId",
-                              subOption.childCategoryId
-                            );
-                            localStorage.setItem(
-                              "subOptionName",
-                              subOption.name
-                            );
+                            handleSubcategoryOptionSelect(subOption);
                           }}
                         >
                           {subOption.name}
@@ -534,29 +463,19 @@ function CategoryPage() {
               )
             : menUnisexFilterOptions.map(
                 (option, index) =>
-                  selectedCategoryOption === option.id &&
-                  option.subOptions && (
+                  selectedCategoryOption === option.name &&
+                  option.children && (
                     <ul key={index} className="category-sub-options">
-                      {option.subOptions.map((subOption, index) => (
+                      {option.children.map((subOption, index) => (
                         <li
                           key={index}
                           className={`filter-option ${
-                            selectedSubCategoryOption === subOption.id
+                            selectedSubCategoryOption === subOption.name
                               ? "selected"
                               : ""
                           }`}
                           onClick={() => {
-                            handleSubcategoryOptionSelect(subOption.id);
-                            setSubOptionName(subOption.name);
-                            // setCategoryId(subOption.childCategoryId);
-                            localStorage.setItem(
-                              "categoryId",
-                              subOption.childCategoryId
-                            );
-                            localStorage.setItem(
-                              "subOptionName",
-                              subOption.name
-                            );
+                            handleSubcategoryOptionSelect(subOption);
                           }}
                         >
                           {subOption.name}
@@ -565,42 +484,6 @@ function CategoryPage() {
                     </ul>
                   )
               )}
-          <CheckBox
-            options={priceOptions}
-            selectedOptions={selectedPriceOptions}
-            onOptionToggle={(id) => {
-              setSelectedPriceOptions((prevOptions) => {
-                const updatedOptions = new Set(prevOptions);
-                if (updatedOptions.has(id)) {
-                  updatedOptions.delete(id);
-                } else {
-                  updatedOptions.add(id);
-                }
-                return updatedOptions;
-              });
-            }}
-            showMoreOptions={showMorePriceOptions}
-            handleShowMoreOptions={() => handleShowMoreOptions("price")}
-            title="가격대"
-          />
-          <CheckBox
-            options={colorOptions}
-            selectedOptions={selectedColorOptions}
-            onOptionToggle={(id) => {
-              setSelectedColorOptions((prevOptions) => {
-                const updatedOptions = new Set(prevOptions);
-                if (updatedOptions.has(id)) {
-                  updatedOptions.delete(id);
-                } else {
-                  updatedOptions.add(id);
-                }
-                return updatedOptions;
-              });
-            }}
-            showMoreOptions={showMoreColorOptions}
-            handleShowMoreOptions={() => handleShowMoreOptions("color")}
-            title="색상"
-          />
         </div>
         <div className="products-section">
           <div className="product-card-box">
@@ -645,7 +528,7 @@ function CategoryPage() {
                 </div>
               ))
             ) : (
-              <span>{`${category} 상품이 없습니다.`}</span>
+              <span>{`${categoryPageUrl} 상품이 없습니다.`}</span>
             )}
           </div>
         </div>
