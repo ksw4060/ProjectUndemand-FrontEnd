@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./ManagementModal.css";
 import { MdClose } from "react-icons/md";
 import axios from "axios";
@@ -7,20 +7,6 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const [parentCategoryName, setParentCategoryName] = useState("");
   const [childCategoryName, setChildCategoryName] = useState("");
   const [parentId, setParentId] = useState("");
-  const [topsId, setTopsId] = useState(localStorage.getItem("topsId") || "");
-  const [bottomsId, setBottomsId] = useState(
-    localStorage.getItem("bottomsId") || ""
-  );
-  const [dressAndSetId, setDressAndSetId] = useState(
-    localStorage.getItem("dressAndSetId") || ""
-  );
-  const [outerwearId, setOuterwearId] = useState(
-    localStorage.getItem("outerwearId") || ""
-  );
-  const [shoesId, setShoesId] = useState(localStorage.getItem("shoesId") || "");
-  const [accessoriesId, setAccessoriesId] = useState(
-    localStorage.getItem("accessoriesId") || ""
-  );
   const [productName, setProductName] = useState("");
   const [productType, setProductType] = useState("WOMAN");
   const [price, setPrice] = useState("");
@@ -55,21 +41,10 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           name: parentCategoryName,
         }
       );
-      if (parentCategoryName === "상의") {
-        setTopsId(response.data);
-      } else if (parentCategoryName === "하의") {
-        setBottomsId(response.data);
-      } else if (parentCategoryName === "드레스 & 세트") {
-        setDressAndSetId(response.data);
-      } else if (parentCategoryName === "아우터") {
-        setOuterwearId(response.data);
-      } else if (parentCategoryName === "신발") {
-        setShoesId(response.data);
-      } else if (parentCategoryName === "악세서리") {
-        setAccessoriesId(response.data);
-      }
       setShowModal(true);
-      setModalMessage(`상위 카테고리가 생성 되었습니다.`);
+      setModalMessage(
+        `상위 카테고리 ${parentCategoryName}(이)가 생성 되었습니다. 카테고리 ID는 [${response.data}]입니다.`
+      );
     } catch (error) {
       console.error("Error creating parent category:", error);
     }
@@ -83,26 +58,18 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("topsId", topsId);
-    localStorage.setItem("bottomsId", bottomsId);
-    localStorage.setItem("dressAndSetId", dressAndSetId);
-    localStorage.setItem("outerwearId", outerwearId);
-    localStorage.setItem("shoesId", shoesId);
-    localStorage.setItem("accessoriesId", accessoriesId);
-  }, [topsId, bottomsId, dressAndSetId, outerwearId, shoesId, accessoriesId]);
-
   const childCategoryCreate = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:8080/api/v1/categorys/child/${parentId}`,
         {
           name: childCategoryName,
         }
       );
-      console.log(response.data);
       setShowModal(true);
-      setModalMessage(`하위 카테고리가 생성 되었습니다.`);
+      setModalMessage(
+        `하위 카테고리 ${childCategoryName}(이)가 생성 되었습니다.`
+      );
     } catch (error) {
       console.error("Error creating child category:", error);
     }
@@ -630,98 +597,34 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           <div className="management-modal-input-container">
             <div className="input-section">
               <h2>상위 카테고리</h2>
-              <select
+              <input
+                type="text"
                 value={parentCategoryName}
                 onChange={(e) => setParentCategoryName(e.target.value)}
-              >
-                <option value="">상위 카테고리를 선택해 주세요.</option>
-                <option value="상의">상의</option>
-                <option value="하의">하의</option>
-                <option value="드레스 & 세트">드레스&세트</option>
-                <option value="아우터">아우터</option>
-                <option value="신발">신발</option>
-                <option value="악세서리">악세서리</option>
-              </select>
+                placeholder="상위 카테고리의 이름을 입력해주세요."
+              />
               <button onClick={handleParentCategorySubmitBtn}>
-                Create Parent Category
+                상위 카테고리 생성
               </button>
             </div>
 
             <div className="input-section">
               <h2>하위 카테고리</h2>
-              <select
+              <input
+                type="text"
                 value={parentId}
                 onChange={(e) => setParentId(e.target.value)}
-              >
-                <option value="">상위 카테고리를 선택해 주세요.</option>
-                <option value={topsId}>상의</option>
-                <option value={bottomsId}>하의</option>
-                <option value={dressAndSetId}>드레스&세트</option>
-                <option value={outerwearId}>아우터</option>
-                <option value={shoesId}>신발</option>
-                <option value={accessoriesId}>악세서리</option>
-              </select>
+                placeholder="상위 카테고리의 ID를 입력해주세요."
+              />
 
-              <select
+              <input
+                type="text"
                 value={childCategoryName}
                 onChange={(e) => setChildCategoryName(e.target.value)}
-              >
-                <option value="">하위 카테고리를 선택해 주세요.</option>
-                {parseInt(parentId) === parseInt(topsId) && (
-                  <>
-                    <option value="후드">후드</option>
-                    <option value="맨투맨">맨투맨</option>
-                    <option value="반팔 셔츠">반팔 셔츠</option>
-                    <option value="긴팔 셔츠">긴팔 셔츠</option>
-                    <option value="반팔티">반팔티</option>
-                    <option value="긴팔티">긴팔티</option>
-                    <option value="니트 & 스웨터">니트 & 스웨터</option>
-                    <option value="블라우스">블라우스</option>
-                  </>
-                )}
-                {parseInt(parentId) === parseInt(bottomsId) && (
-                  <>
-                    <option value="긴바지">긴바지</option>
-                    <option value="반바지">반바지</option>
-                    <option value="치마">치마</option>
-                  </>
-                )}
-                {parseInt(parentId) === parseInt(dressAndSetId) && (
-                  <>
-                    <option value="원피스">원피스</option>
-                    <option value="투피스">투피스</option>
-                    <option value="셋업">셋업</option>
-                  </>
-                )}
-                {parseInt(parentId) === parseInt(outerwearId) && (
-                  <>
-                    <option value="숏패딩">숏패딩</option>
-                    <option value="롱패딩">롱패딩</option>
-                    <option value="가디건">가디건</option>
-                    <option value="재킷">재킷</option>
-                    <option value="코트">코트</option>
-                    <option value="무스탕">무스탕</option>
-                    <option value="조끼">조끼</option>
-                    <option value="경량패딩">경량패딩</option>
-                  </>
-                )}
-                {parseInt(parentId) === parseInt(shoesId) && (
-                  <>
-                    <option value="스니커즈">스니커즈</option>
-                    <option value="샌들 & 슬리퍼">샌들 & 슬리퍼</option>
-                    <option value="부츠">부츠</option>
-                  </>
-                )}
-                {parseInt(parentId) === parseInt(accessoriesId) && (
-                  <>
-                    <option value="모자">모자</option>
-                    <option value="양말">양말</option>
-                    <option value="가방">가방</option>
-                  </>
-                )}
-              </select>
+                placeholder="하위 카테고리의 이름을 입력해주세요."
+              />
               <button onClick={handleChildCategorySubmitBtn}>
-                Create Child Category
+                하위 카테고리 생성
               </button>
             </div>
           </div>
