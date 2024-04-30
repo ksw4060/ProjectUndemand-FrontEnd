@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 
 const SnsSignInUrl = ({ type }) => {
   // 클릭 이벤트 핸들러
