@@ -11,6 +11,11 @@
       "src": "ODD_LOGO.png",
       "type": "image/png",
       "sizes": "210x210"
+    },
+    {
+      "src": "ODD_LOGO_FULL.png",
+      "type": "image/png",
+      "sizes": "270x70"
     }
   ],
   "start_url": ".",

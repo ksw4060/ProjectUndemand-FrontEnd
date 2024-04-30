@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
@@ -8,19 +9,23 @@ import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
 import axios from "axios";
 
-function CategoryPage() {
+function CategoryPage({
+  filterOptions,
+  menUnisexFilterOptions,
+  selectedCategoryOption,
+  setSelectedCategoryOption,
+  selectedSubCategoryOption,
+  setSelectedSubCategoryOption,
+  categoryId,
+  setCategoryId,
+  handleCategoryOptionSelect,
+  handleSubcategoryOptionSelect,
+  setIsCondiChange,
+  prevCondition,
+  setPrevCondition,
+}) {
   const { categoryPageUrl } = useParams();
-  const [currentCategory, setCurrentCategory] = useState(() => {
-    return (
-      localStorage.getItem("currentCategory") || categoryPageUrl.split("-")[0]
-    );
-  });
-
-  const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
-  const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
-    useState(null);
-  const [categoryId, setCategoryId] = useState("");
-  const [filterOptionData, setFilterOptionData] = useState([]);
+  const [urlCondition, setUrlCondition] = useState("");
 
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
 
@@ -33,10 +38,9 @@ function CategoryPage() {
   const [searchString, setSearchString] = useState("");
   const [isSearchClicked, setIsSearchClicked] = useState(false);
 
-  const categoryTitle = `${currentCategory.toUpperCase()} ${
+  const categoryTitle = `${urlCondition.toUpperCase()} ${
     selectedCategoryOption ? `/ ${selectedCategoryOption}` : ""
   } ${selectedSubCategoryOption ? `/ ${selectedSubCategoryOption}` : ""}`;
-  const navigate = useNavigate();
 
   const pageSize = 12;
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,27 +48,26 @@ function CategoryPage() {
   const [visiblePages, setVisiblePages] = useState([]);
   const [totalPageSize, setTotalPageSize] = useState(0);
 
-  useEffect(() => {
-    setCurrentCategory(categoryPageUrl.split("-")[0]);
-    localStorage.setItem("currentCategory", categoryPageUrl.split("-")[0]);
-    setSearchString("");
-    setCategoryId("");
-  }, [categoryPageUrl, currentCategory]);
+  const navigate = useNavigate();
 
-  const fetchFilterData = async () => {
-    try {
-      const categoryResponse = await axios.get(
-        "http://localhost:8080/api/v1/categorys"
-      );
-      setFilterOptionData(categoryResponse.data);
-    } catch (error) {
-      console.error("Error fetching category data:", error);
+  useEffect(() => {
+    const storedCondition = localStorage.getItem("condition");
+    if (storedCondition) {
+      setUrlCondition(storedCondition);
     }
-  };
+    if (categoryPageUrl.split("-")[0]) {
+      setUrlCondition(categoryPageUrl.split("-")[0].toUpperCase());
+    }
+    setSearchString("");
+    // console.log(storedCondition);
+  }, [categoryPageUrl, urlCondition]);
 
   useEffect(() => {
-    fetchFilterData();
-  }, []);
+    if (prevCondition && prevCondition !== urlCondition) {
+      setIsCondiChange(true);
+    }
+    setPrevCondition(urlCondition);
+  }, [urlCondition, prevCondition]);
 
   useEffect(() => {
     const handleConditionChange = () => {
@@ -78,12 +81,12 @@ function CategoryPage() {
     const fetchProductsData = async () => {
       try {
         const conditionMap = {
-          new: "NEW",
-          best: "BEST",
-          unisex: "UNISEX",
-          men: "MAN",
-          women: "WOMAN",
-          recommend: "RECOMMEND",
+          NEW: "NEW",
+          BEST: "BEST",
+          UNISEX: "UNISEX",
+          MEN: "MAN",
+          WOMEN: "WOMAN",
+          RECOMMEND: "RECOMMEND",
         };
 
         const orderMap = {
@@ -94,7 +97,7 @@ function CategoryPage() {
           higtDiscountRate: "HIGH_DISCOUNT_RATE",
         };
 
-        const condition = conditionMap[currentCategory] || "";
+        const condition = conditionMap[urlCondition] || "";
         const category = parseInt(categoryId) || "";
         const order = orderMap[selectedSortOption] || "";
         const keyword = searchString || "";
@@ -123,16 +126,11 @@ function CategoryPage() {
     fetchProductsData();
   }, [
     currentPage,
-    currentCategory,
+    urlCondition,
     selectedSortOption,
     isSearchClicked,
     categoryId,
   ]);
-
-  useEffect(() => {
-    console.log("currentCategory :", currentCategory);
-    console.log("categoryId :", categoryId);
-  }, [currentCategory, categoryId]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -165,15 +163,6 @@ function CategoryPage() {
     pageButtons();
   }, [currentPage, totalPageSize]);
 
-  useEffect(() => {
-    const isTopMenuClicked = localStorage.getItem("topMenuClicked");
-
-    if (isTopMenuClicked) {
-      setSelectedCategoryOption(null);
-      setSelectedSubCategoryOption(null);
-    }
-  }, [categoryPageUrl]);
-
   const handleSearchBar = () => {
     if (searchString) {
       setIsSearchClicked(true);
@@ -181,46 +170,6 @@ function CategoryPage() {
       return;
     }
   };
-
-  const filterOptions = filterOptionData.map((parentCategory) => {
-    const processedParentName = parentCategory.name
-      .replace(/[-&]/g, "")
-      .toUpperCase();
-    const subOptions = parentCategory.children.map((childCategory) => {
-      const processedChildName = childCategory.name
-        .replace(/[-&]/g, "")
-        .toUpperCase();
-      return {
-        name: processedChildName,
-        categoryId: childCategory.categoryId,
-        depth: childCategory.depth,
-      };
-    });
-    return {
-      name: processedParentName,
-      categoryId: parentCategory.categoryId,
-      depth: parentCategory.depth,
-      children: subOptions,
-    };
-  });
-
-  const genderOptions = filterOptions.filter(
-    (category) => category.name !== "DRESSSET"
-  );
-
-  const menUnisexFilterOptions = genderOptions.map((filterOptions) => {
-    if (filterOptions.name === "BOTTOM") {
-      const updatedSubOptions = filterOptions.children.filter(
-        (subOption) => subOption.name !== "SKIRT"
-      );
-      return {
-        ...filterOptions,
-        children: updatedSubOptions,
-      };
-    } else {
-      return filterOptions;
-    }
-  });
 
   useEffect(() => {
     const handleCategoryScroll = () => {
@@ -244,41 +193,6 @@ function CategoryPage() {
 
   const handleSortClick = () => {
     setIsSortClicked((prevState) => !prevState);
-  };
-
-  const handleCategoryOptionSelect = (id) => {
-    localStorage.setItem("selectedCategoryOption", id.name);
-    localStorage.setItem("optionName", id.name);
-    localStorage.removeItem("selectedSubCategoryOption");
-    localStorage.removeItem("subOptionName");
-    localStorage.setItem("parentCategoryId", id.categoryId);
-    localStorage.removeItem("childCategoryId");
-    if (selectedCategoryOption === id.name && !selectedSubCategoryOption) {
-      localStorage.removeItem("selectedCategoryOption");
-      localStorage.removeItem("optionName");
-      localStorage.removeItem("parentCategoryId");
-      const newCategoryUrl = `/${currentCategory}`;
-      navigate(newCategoryUrl, { replace: true });
-      return;
-    }
-    const newCategoryUrl = `/${currentCategory}-${id.name}`;
-    navigate(newCategoryUrl, { replace: true });
-  };
-
-  const handleSubcategoryOptionSelect = (subOptionId) => {
-    localStorage.setItem("selectedSubCategoryOption", subOptionId.name);
-    localStorage.setItem("subOptionName", subOptionId.name);
-    localStorage.setItem("childCategoryId", subOptionId.categoryId);
-    if (selectedSubCategoryOption === subOptionId.name) {
-      localStorage.removeItem("selectedSubCategoryOption");
-      localStorage.removeItem("subOptionName");
-      localStorage.removeItem("childCategoryId");
-      const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}`;
-      navigate(newSubcategoryUrl, { replace: true });
-      return;
-    }
-    const newSubcategoryUrl = `/${currentCategory}-${selectedCategoryOption}-${subOptionId.name}`;
-    navigate(newSubcategoryUrl, { replace: true });
   };
 
   useEffect(() => {
@@ -313,12 +227,34 @@ function CategoryPage() {
     return () => {
       localStorage.removeItem("selectedCategoryOption");
       localStorage.removeItem("selectedSubCategoryOption");
-      localStorage.removeItem("optionName");
-      localStorage.removeItem("subOptionName");
       localStorage.removeItem("parentCategoryId");
       localStorage.removeItem("childCategoryId");
+      localStorage.removeItem("condition");
     };
   }, []);
+
+  const handleNavigateCOS = (parentCategory) => {
+    if (
+      selectedCategoryOption === parentCategory.name &&
+      !selectedSubCategoryOption
+    ) {
+      const newCategoryUrl = `/${urlCondition}`;
+      navigate(newCategoryUrl, { replace: true });
+    } else {
+      const newCategoryUrl = `/${urlCondition}-${parentCategory.name}`;
+      navigate(newCategoryUrl, { replace: true });
+    }
+  };
+
+  const handleNavigateSCOS = (childCategory) => {
+    if (selectedSubCategoryOption === childCategory.name) {
+      const newSubcategoryUrl = `/${urlCondition}-${selectedCategoryOption}`;
+      navigate(newSubcategoryUrl, { replace: true });
+    } else {
+      const newSubcategoryUrl = `/${urlCondition}-${selectedCategoryOption}-${childCategory.name}`;
+      navigate(newSubcategoryUrl, { replace: true });
+    }
+  };
 
   return (
     <div className="category-page">
@@ -403,10 +339,10 @@ function CategoryPage() {
       >
         <div className={`filter-section ${isFilterClicked && "filter-active"}`}>
           <ul className="category-options">
-            {currentCategory === "best" ||
-            currentCategory === "new" ||
-            currentCategory === "women" ||
-            currentCategory === "discount"
+            {urlCondition === "BEST" ||
+            urlCondition === "NEW" ||
+            urlCondition === "WOMEN" ||
+            urlCondition === "RECOMMEND"
               ? filterOptions.map((option, index) => (
                   <li
                     key={index}
@@ -415,6 +351,7 @@ function CategoryPage() {
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option);
+                      handleNavigateCOS(option);
                     }}
                   >
                     {option.name}
@@ -428,16 +365,17 @@ function CategoryPage() {
                     }`}
                     onClick={() => {
                       handleCategoryOptionSelect(option);
+                      handleNavigateCOS(option);
                     }}
                   >
                     {option.name}
                   </li>
                 ))}
           </ul>
-          {currentCategory === "best" ||
-          currentCategory === "new" ||
-          currentCategory === "women" ||
-          currentCategory === "discount"
+          {urlCondition === "BEST" ||
+          urlCondition === "NEW" ||
+          urlCondition === "WOMEN" ||
+          urlCondition === "RECOMMEND"
             ? filterOptions.map(
                 (option, index) =>
                   selectedCategoryOption === option.name &&
@@ -453,6 +391,7 @@ function CategoryPage() {
                           }`}
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption);
+                            handleNavigateSCOS(subOption);
                           }}
                         >
                           {subOption.name}
@@ -476,6 +415,7 @@ function CategoryPage() {
                           }`}
                           onClick={() => {
                             handleSubcategoryOptionSelect(subOption);
+                            handleNavigateSCOS(subOption);
                           }}
                         >
                           {subOption.name}

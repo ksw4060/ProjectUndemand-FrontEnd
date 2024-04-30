@@ -1,17 +1,60 @@
-import { React } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import TopbarData from "./TopbarData.jsx";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import "./Topbar.css";
 
-function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
-  const {
-    handleLoginClick,
-    hoveredLinkIndex,
-    categoryLinks,
-    handleMouseOver,
-    handleMouseLeave,
-  } = TopbarData();
+function Topbar({
+  isMenuVisible,
+  setIsMenuVisible,
+  processedCategoryData,
+  processedMUCategoryData,
+  handleConditionSelect,
+  handleCategoryOptionSelect,
+  handleSubcategoryOptionSelect,
+  isLoggedin,
+}) {
+  const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
+  const categoryLinks = [
+    {
+      to: "/best",
+      label: "BEST",
+      contents: processedCategoryData,
+    },
+    {
+      to: "/new",
+      label: "NEW",
+      contents: processedCategoryData,
+    },
+    {
+      to: "/unisex",
+      label: "UNISEX",
+      contents: processedMUCategoryData,
+    },
+    {
+      to: "/men",
+      label: "MEN",
+      contents: processedMUCategoryData,
+    },
+    {
+      to: "/women",
+      label: "WOMEN",
+      contents: processedCategoryData,
+    },
+    {
+      to: "/recommend",
+      label: "RECOMMEND",
+      contents: processedCategoryData,
+    },
+  ];
+
+  const handleMouseOver = (index) => {
+    setHoveredLinkIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredLinkIndex(null);
+  };
+
   /**
    * 로그아웃 클릭 시 , 브라우저에 저장된 Access, Refresh 를 제거합니다.
    * @returns
@@ -46,8 +89,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
     <div className="topbar">
       <div className="topbar-logo">
         <Link to="/">
-          <img src="/ODD_LOGO.png" alt="ODD Logo" />
-          <span>ODD Shop</span>
+          <img src="/ODD_LOGO_FULL.png" alt="ODD Logo" />
         </Link>
       </div>
       <div className="topbar-navbar">
@@ -69,11 +111,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                   to={link.to}
                   onMouseOver={() => handleMouseOver(index)}
                   onClick={() => {
-                    localStorage.removeItem("selectedCategoryOption");
-                    localStorage.removeItem("selectedSubCategoryOption");
-                    localStorage.removeItem("parentCategoryId");
-                    localStorage.removeItem("childCategoryId");
-                    localStorage.setItem("topMenuClicked", true);
+                    handleConditionSelect(link);
                   }}
                 >
                   {link.label}
@@ -89,19 +127,19 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                                 <Link
                                   to={`${categoryLinks[hoveredLinkIndex].to}-${content.name}`}
                                   onClick={() => {
-                                    localStorage.setItem(
-                                      "selectedCategoryOption",
-                                      content.name
-                                    );
-                                    localStorage.setItem(
-                                      "parentCategoryId",
-                                      content.categoryId
-                                    );
-                                    localStorage.removeItem("childCategoryId");
-                                    localStorage.removeItem("topMenuClicked");
-                                    localStorage.removeItem(
-                                      "selectedSubCategoryOption"
-                                    );
+                                    // localStorage.setItem(
+                                    //   "selectedCategoryOption",
+                                    //   content.name
+                                    // );
+                                    // localStorage.setItem(
+                                    //   "parentCategoryId",
+                                    //   content.categoryId
+                                    // );
+                                    // localStorage.removeItem("childCategoryId");
+                                    // localStorage.removeItem(
+                                    //   "selectedSubCategoryOption"
+                                    // );
+                                    handleCategoryOptionSelect(content);
                                   }}
                                 >
                                   {content.name}
@@ -116,19 +154,19 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                                         "selectedCategoryOption",
                                         content.name
                                       );
-                                      localStorage.setItem(
-                                        "selectedSubCategoryOption",
-                                        children.name
-                                      );
+                                      // localStorage.setItem(
+                                      //   "selectedSubCategoryOption",
+                                      //   children.name
+                                      // );
                                       localStorage.setItem(
                                         "parentCategoryId",
                                         content.categoryId
                                       );
-                                      localStorage.setItem(
-                                        "childCategoryId",
-                                        children.categoryId
-                                      );
-                                      localStorage.removeItem("topMenuClicked");
+                                      // localStorage.setItem(
+                                      //   "childCategoryId",
+                                      //   children.categoryId
+                                      // );
+                                      handleSubcategoryOptionSelect(children);
                                     }}
                                   >
                                     {children.name}
@@ -151,9 +189,7 @@ function Topbar({ isMenuVisible, setIsMenuVisible, isLoggedin }) {
                 <Link to="/signup">회원가입</Link>
               </li>
               <li>
-                <Link to="/login" onClick={handleLoginClick}>
-                  로그인
-                </Link>
+                <Link to="/login">로그인</Link>
               </li>
               <li>
                 <Link to="/inquiry">Q&A</Link>
