@@ -18,10 +18,20 @@ import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.j
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [categoryData, setCategoryData] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
+
+  const [prevCondition, setPrevCondition] = useState("");
+  const [isCondiChange, setIsCondiChange] = useState(false);
+  const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
+  const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
+    useState(null);
+  const [categoryId, setCategoryId] = useState("");
+
   const [isScroll, setIscroll] = useState(false);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const navigate = useNavigate();
@@ -29,6 +39,19 @@ function App() {
   const [isReceiptPage, setIsReceiptPage] = useState(false);
 
   useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/categorys"
+        );
+        setCategoryData(response.data);
+      } catch (error) {
+        console.error("Error fetching category data:", error);
+      }
+    };
+
+    fetchCategoryData();
+
     const accessToken = localStorage.getItem("Authorization");
     if (accessToken) {
       setIsLoggedin(true);
@@ -38,6 +61,91 @@ function App() {
       setMemberId("");
     }
   }, []);
+
+  const processedCategoryData = categoryData.map((parentCategory) => {
+    const processedParentName = parentCategory.name
+      .replace(/[-&]/g, "")
+      .toUpperCase();
+    const processedChildren = parentCategory.children.map((childCategory) => {
+      const processedChildName = childCategory.name
+        .replace(/[-&]/g, "")
+        .toUpperCase();
+
+      return {
+        name: processedChildName,
+        categoryId: childCategory.categoryId,
+        depth: childCategory.depth,
+      };
+    });
+
+    return {
+      name: processedParentName,
+      categoryId: parentCategory.categoryId,
+      depth: parentCategory.depth,
+      children: processedChildren,
+    };
+  });
+
+  const genderOptions = processedCategoryData.filter(
+    (category) => category.name !== "DRESSSET"
+  );
+
+  const processedMUCategoryData = genderOptions.map((categoryOptions) => {
+    if (categoryOptions.name === "BOTTOM") {
+      const updatedSubOptions = categoryOptions.children.filter(
+        (subOption) => subOption.name !== "SKIRT"
+      );
+      return {
+        ...categoryOptions,
+        children: updatedSubOptions,
+      };
+    } else {
+      return categoryOptions;
+    }
+  });
+
+  const handleConditionSelect = (condition) => {
+    localStorage.removeItem("selectedCategoryOption");
+    localStorage.removeItem("selectedSubCategoryOption");
+    localStorage.removeItem("parentCategoryId");
+    localStorage.removeItem("childCategoryId");
+    setCategoryId("");
+    localStorage.setItem("topMenuClicked", true);
+    localStorage.setItem("condition", condition.label);
+  };
+
+  const handlePCategorySelect = (parentCategory) => {
+    localStorage.setItem("selectedCategoryOption", parentCategory.name);
+    localStorage.removeItem("selectedSubCategoryOption");
+    localStorage.setItem("parentCategoryId", parentCategory.categoryId);
+    localStorage.removeItem("childCategoryId");
+    localStorage.removeItem("topMenuClicked");
+    setIsCondiChange(false);
+    if (
+      selectedCategoryOption === parentCategory.name &&
+      !selectedSubCategoryOption &&
+      isCondiChange === false
+    ) {
+      localStorage.removeItem("selectedCategoryOption");
+      localStorage.removeItem("parentCategoryId");
+      return;
+    }
+  };
+
+  const handleCCategorySelect = (childCategory) => {
+    localStorage.setItem("selectedSubCategoryOption", childCategory.name);
+    localStorage.setItem("childCategoryId", childCategory.categoryId);
+    localStorage.removeItem("topMenuClicked");
+    setIsCondiChange(false);
+    if (
+      selectedSubCategoryOption === childCategory.name &&
+      isCondiChange === false
+    ) {
+      localStorage.removeItem("selectedSubCategoryOption");
+      localStorage.removeItem("childCategoryId");
+      return;
+    }
+  };
 
   useEffect(() => {
     if (location.pathname === "/cart/order/done") {
@@ -74,6 +182,11 @@ function App() {
           <Topbar
             isMenuVisible={isMenuVisible}
             setIsMenuVisible={setIsMenuVisible}
+            processedCategoryData={processedCategoryData}
+            processedMUCategoryData={processedMUCategoryData}
+            handleConditionSelect={handleConditionSelect}
+            handleCategoryOptionSelect={handlePCategorySelect}
+            handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
           />
         </div>
@@ -103,7 +216,26 @@ function App() {
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
-          <Route path="/:category" element={<CategoryPage />} />
+          <Route
+            path="/:categoryPageUrl"
+            element={
+              <CategoryPage
+                filterOptions={processedCategoryData}
+                menUnisexFilterOptions={processedMUCategoryData}
+                selectedCategoryOption={selectedCategoryOption}
+                setSelectedCategoryOption={setSelectedCategoryOption}
+                selectedSubCategoryOption={selectedSubCategoryOption}
+                setSelectedSubCategoryOption={setSelectedSubCategoryOption}
+                categoryId={categoryId}
+                setCategoryId={setCategoryId}
+                handleCategoryOptionSelect={handlePCategorySelect}
+                handleSubcategoryOptionSelect={handleCCategorySelect}
+                setIsCondiChange={setIsCondiChange}
+                prevCondition={prevCondition}
+                setPrevCondition={setPrevCondition}
+              />
+            }
+          />
           <Route
             path="/product/:productId"
             element={
