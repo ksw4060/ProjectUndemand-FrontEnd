@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
+import ChannelTalk from "./ChannelTalk.js";
 import { Main } from "./pages/Main/Main.jsx";
 import { Signup } from "./pages/AuthPages/Signup.jsx";
 import { Login } from "./pages/AuthPages/Login.jsx";
@@ -38,6 +39,18 @@ function App() {
   const location = useLocation();
   const [isReceiptPage, setIsReceiptPage] = useState(false);
 
+  const channelTalkLoad = () => {
+    ChannelTalk.loadScript();
+    const channelTalkConfig = {
+      pluginKey: "40b177ce-d6df-417b-8ade-22ba492c8cb3",
+    };
+    if (isLoggedin) {
+      channelTalkConfig.memberId = memberId;
+    }
+    ChannelTalk.boot(channelTalkConfig);
+    ChannelTalk.setAppearance("system");
+  };
+
   useEffect(() => {
     const fetchCategoryData = async () => {
       try {
@@ -60,6 +73,8 @@ function App() {
       setIsLoggedin(false);
       setMemberId("");
     }
+
+    channelTalkLoad();
   }, []);
 
   const processedCategoryData = categoryData.map((parentCategory) => {
@@ -175,6 +190,15 @@ function App() {
     window.scrollTo(0, 0);
   }, [navigate]);
 
+  // ChannelTalk.loadScript();
+  // const channelTalkConfig = {
+  //   pluginKey: "40b177ce-d6df-417b-8ade-22ba492c8cb3",
+  // };
+  // if (isLoggedin) {
+  //   channelTalkConfig.memberId = memberId;
+  // }
+  // ChannelTalk.boot(channelTalkConfig);
+
   return (
     <div className="Body">
       {isReceiptPage === false ? (
@@ -208,10 +232,8 @@ function App() {
             element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
           <Route
-              path="/user/mypage/*"
-              element={
-                <MyPage isLoggedin={isLoggedin} memberId={memberId} />
-              }
+            path="/user/mypage/*"
+            element={<MyPage isLoggedin={isLoggedin} memberId={memberId} />}
           />
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />
