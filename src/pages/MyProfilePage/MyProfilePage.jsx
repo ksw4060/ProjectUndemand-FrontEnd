@@ -14,6 +14,7 @@ function MyProfilePage({ isLoggedin, memberId}) {
     axios.get(`http://localhost:8080/api/v1/profile/${memberId}`)
         .then((response) => {
           setProfileData(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -32,7 +33,7 @@ function MyProfilePage({ isLoggedin, memberId}) {
       </div>
       <div className="short-my-profile">
         <div className="profile-container">
-          <img src={profileData.profileImgPath || '기본 이미지 URL'} alt="프로필 이미지"/>
+          <img src={profileData.profileImgPath || 'https://defaultst.imweb.me/common/img/default_profile.png'} alt="프로필 이미지"/>
           <div className="name-joined-container">
             <span className="user-name-info">{profileData.member.username||`회원 이름`}</span>
             <span className="user-joined-date-info">{'PU멤버 가입: ' + profileData.member.joined_at.substring(0, 10)}</span>
