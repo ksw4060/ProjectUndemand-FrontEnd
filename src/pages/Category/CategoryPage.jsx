@@ -52,14 +52,12 @@ function CategoryPage({
 
   useEffect(() => {
     const storedCondition = localStorage.getItem("condition");
-    if (storedCondition) {
+    if (storedCondition === categoryPageUrl.split("-")[0]) {
       setUrlCondition(storedCondition);
-    }
-    if (categoryPageUrl.split("-")[0]) {
-      setUrlCondition(categoryPageUrl.split("-")[0].toUpperCase());
+    } else if (storedCondition !== categoryPageUrl.split("-")[0]) {
+      setUrlCondition(categoryPageUrl.split("-")[0]);
     }
     setSearchString("");
-    // console.log(storedCondition);
   }, [categoryPageUrl, urlCondition]);
 
   useEffect(() => {
@@ -125,8 +123,8 @@ function CategoryPage({
 
     fetchProductsData();
   }, [
-    currentPage,
     urlCondition,
+    currentPage,
     selectedSortOption,
     isSearchClicked,
     categoryId,
@@ -173,7 +171,7 @@ function CategoryPage({
 
   useEffect(() => {
     const handleCategoryScroll = () => {
-      if (window.scrollY > 150) {
+      if (window.scrollY > 150 && window.innerWidth > 1200) {
         setIsCategoryScroll(true);
       } else {
         setIsCategoryScroll(false);
