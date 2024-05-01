@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 function ProductSlide({ products, sectionTitle }) {
   const sectionType = sectionTitle.split(" ")[0];
   const sectionTypeLowercase = sectionType.toLowerCase();
-  const imgListLength = 3;
+  const imgListLength = 7;
   const [currentIdx, setCurrentIdx] = useState(0);
   const [carouselTransition, setCarouselTransition] = useState(
     "all 300ms ease-in-out"
@@ -53,7 +53,7 @@ function ProductSlide({ products, sectionTitle }) {
               className="ps-product-card"
               key={product.productId}
               style={{
-                transform: `translateX(-${currentIdx * 200}%)`,
+                transform: `translateX(-${currentIdx * 100}%)`,
                 transition: `${carouselTransition}`,
               }}
             >

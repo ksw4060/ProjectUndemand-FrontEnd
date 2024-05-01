@@ -172,7 +172,7 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 120) {
+      if (window.scrollY > 120 && window.innerWidth > 1200) {
         setIscroll(true);
       } else {
         setIscroll(false);
@@ -189,15 +189,6 @@ function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [navigate]);
-
-  // ChannelTalk.loadScript();
-  // const channelTalkConfig = {
-  //   pluginKey: "40b177ce-d6df-417b-8ade-22ba492c8cb3",
-  // };
-  // if (isLoggedin) {
-  //   channelTalkConfig.memberId = memberId;
-  // }
-  // ChannelTalk.boot(channelTalkConfig);
 
   return (
     <div className="Body">

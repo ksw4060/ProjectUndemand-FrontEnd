@@ -19,7 +19,7 @@
 
 .title-section.scroll-category {
     position: fixed;
-    top: 3%;
+    top: 17px;
     height: 60px;
     z-index: 1000;
 }
