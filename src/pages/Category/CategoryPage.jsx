@@ -243,10 +243,6 @@ function CategoryPage({
   }, [condition]);
 
   useEffect(() => {
-    console.log("categoryId:", categoryId);
-  }, [categoryId]);
-
-  useEffect(() => {
     return () => {
       localStorage.removeItem("selectedCategoryOption");
       localStorage.removeItem("selectedSubCategoryOption");

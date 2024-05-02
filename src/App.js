@@ -37,11 +37,12 @@ function App() {
   const location = useLocation();
   const [isReceiptPage, setIsReceiptPage] = useState(false);
   const [isCategoryPage, setIsCategoryPage] = useState(false);
+  const channelTalkPlugInKey = process.env.REACT_APP_CHANNELTALK_PLUGIN_KEY;
 
   const channelTalkLoad = () => {
     ChannelTalk.loadScript();
     const channelTalkConfig = {
-      pluginKey: "40b177ce-d6df-417b-8ade-22ba492c8cb3",
+      pluginKey: channelTalkPlugInKey,
     };
     if (isLoggedin) {
       channelTalkConfig.memberId = memberId;
