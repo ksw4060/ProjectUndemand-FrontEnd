@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
@@ -25,11 +24,13 @@ function CategoryPage({
   setPrevCondition,
 }) {
   const { categoryPageUrl } = useParams();
-  const [urlCondition, setUrlCondition] = useState("");
+  const [urlCondition, setUrlCondition] = useState(
+    localStorage.getItem("condition")
+  );
 
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
 
-  const [isFilterClicked, setIsFilterClicked] = useState(false);
+  const [isFilterClicked, setIsFilterClicked] = useState(true);
 
   const [isSortClicked, setIsSortClicked] = useState(false);
   const [sortOptionName, setSortOptionName] = useState("정렬 기준");
@@ -38,7 +39,7 @@ function CategoryPage({
   const [searchString, setSearchString] = useState("");
   const [isSearchClicked, setIsSearchClicked] = useState(false);
 
-  const categoryTitle = `${urlCondition.toUpperCase()} ${
+  const categoryTitle = `${urlCondition} ${
     selectedCategoryOption ? `/ ${selectedCategoryOption}` : ""
   } ${selectedSubCategoryOption ? `/ ${selectedSubCategoryOption}` : ""}`;
 
@@ -51,14 +52,9 @@ function CategoryPage({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCondition = localStorage.getItem("condition");
-    if (storedCondition === categoryPageUrl.split("-")[0]) {
-      setUrlCondition(storedCondition);
-    } else if (storedCondition !== categoryPageUrl.split("-")[0]) {
-      setUrlCondition(categoryPageUrl.split("-")[0]);
-    }
+    setUrlCondition(categoryPageUrl.split("-")[0]);
     setSearchString("");
-  }, [categoryPageUrl, urlCondition]);
+  }, [categoryPageUrl]);
 
   useEffect(() => {
     if (prevCondition && prevCondition !== urlCondition) {
@@ -95,8 +91,8 @@ function CategoryPage({
           higtDiscountRate: "HIGH_DISCOUNT_RATE",
         };
 
+        const category = categoryId || "";
         const condition = conditionMap[urlCondition] || "";
-        const category = parseInt(categoryId) || "";
         const order = orderMap[selectedSortOption] || "";
         const keyword = searchString || "";
 
@@ -106,8 +102,8 @@ function CategoryPage({
             params: {
               size: pageSize,
               page: currentPage,
-              condition: condition,
               category: category,
+              condition: condition,
               order: order,
               keyword: keyword,
             },
@@ -123,17 +119,44 @@ function CategoryPage({
 
     fetchProductsData();
   }, [
-    urlCondition,
     currentPage,
     selectedSortOption,
     isSearchClicked,
     categoryId,
+    urlCondition,
   ]);
+
+  const memoizedProductsData = useMemo(() => allProducts, [allProducts]);
+  const memoizedTotalPageSize = useMemo(() => totalPageSize, [totalPageSize]);
+
+  // useEffect(() => {
+  //   console.log("urlCondition", urlCondition);
+  // }, [urlCondition]);
+
+  // useEffect(() => {
+  //   console.log("currentPage", currentPage);
+  // }, [currentPage]);
+
+  // useEffect(() => {
+  //   console.log("selectedSortOption", selectedSortOption);
+  // }, [selectedSortOption]);
+
+  // useEffect(() => {
+  //   console.log("isSearchClicked", isSearchClicked);
+  // }, [isSearchClicked]);
+
+  // useEffect(() => {
+  //   console.log("categoryId", categoryId);
+  // }, [categoryId]);
+
+  // useEffect(() => {
+  //   console.log("allProducts:", allProducts);
+  // }, [allProducts]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
       alert("첫번째 페이지입니다.");
-    } else if (direction === 1 && currentPage === totalPageSize - 1) {
+    } else if (direction === 1 && currentPage === memoizedTotalPageSize - 1) {
       alert("마지막 페이지입니다.");
     } else {
       setCurrentPage(currentPage + direction);
@@ -142,7 +165,7 @@ function CategoryPage({
 
   useEffect(() => {
     const pageButtons = () => {
-      const totalPages = totalPageSize;
+      const totalPages = memoizedTotalPageSize;
       const pages = [];
 
       const pageSize = 5;
@@ -159,7 +182,7 @@ function CategoryPage({
     };
 
     pageButtons();
-  }, [currentPage, totalPageSize]);
+  }, [currentPage, memoizedTotalPageSize]);
 
   const handleSearchBar = () => {
     if (searchString) {
@@ -425,8 +448,8 @@ function CategoryPage({
         </div>
         <div className="products-section">
           <div className="product-card-box">
-            {allProducts.length > 0 ? (
-              allProducts.map((product, index) => (
+            {memoizedProductsData.length > 0 ? (
+              memoizedProductsData.map((product, index) => (
                 <div
                   key={index}
                   className={`product-card ${
@@ -493,7 +516,7 @@ function CategoryPage({
         <GrFormNext
           onClick={() => handlePageChange(1)}
           className={`category-page-move-btn ${
-            currentPage === totalPageSize - 1 && "next-btn-disable"
+            currentPage === memoizedTotalPageSize - 1 && "next-btn-disable"
           }`}
         />
       </div>

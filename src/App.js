@@ -120,11 +120,11 @@ function App() {
   });
 
   const handleConditionSelect = (condition) => {
+    setCategoryId("");
     localStorage.removeItem("selectedCategoryOption");
     localStorage.removeItem("selectedSubCategoryOption");
     localStorage.removeItem("parentCategoryId");
     localStorage.removeItem("childCategoryId");
-    setCategoryId("");
     localStorage.setItem("topMenuClicked", true);
     localStorage.setItem("condition", condition.label);
   };
