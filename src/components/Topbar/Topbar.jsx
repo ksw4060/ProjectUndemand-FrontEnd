@@ -88,6 +88,7 @@ function Topbar({
 
   const handleBurgerBtnClick = () => {
     setIsBurgerClicked((prevState) => !prevState);
+    setIsMenuVisible((prevState) => !prevState);
   };
 
   return (
@@ -116,6 +117,7 @@ function Topbar({
                       onClick={() => {
                         handleConditionSelect(link);
                         setIsBurgerClicked(false);
+                        setIsMenuVisible(false);
                       }}
                       className={
                         hoveredLinkIndex === index ? "condition-hovered" : ""
