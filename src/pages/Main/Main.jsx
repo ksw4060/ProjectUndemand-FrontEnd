@@ -94,7 +94,6 @@ const Main = () => {
         products={mainRecommend}
         sectionTitle="Recommend Products"
       />
-      /
     </div>
   );
 };

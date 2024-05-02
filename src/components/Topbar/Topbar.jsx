@@ -17,32 +17,32 @@ function Topbar({
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
   const categoryLinks = [
     {
-      to: "/BEST",
+      to: "/products/BEST",
       label: "BEST",
       contents: processedCategoryData,
     },
     {
-      to: "/NEW",
+      to: "/products/NEW",
       label: "NEW",
       contents: processedCategoryData,
     },
     {
-      to: "/UNISEX",
+      to: "/products/UNISEX",
       label: "UNISEX",
       contents: processedMUCategoryData,
     },
     {
-      to: "/MEN",
+      to: "/products/MEN",
       label: "MEN",
       contents: processedMUCategoryData,
     },
     {
-      to: "/WOMEN",
+      to: "/products/WOMEN",
       label: "WOMEN",
       contents: processedCategoryData,
     },
     {
-      to: "/RECOMMEND",
+      to: "/products/RECOMMEND",
       label: "RECOMMEND",
       contents: processedCategoryData,
     },
