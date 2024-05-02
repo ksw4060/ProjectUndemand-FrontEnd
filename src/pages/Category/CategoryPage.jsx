@@ -30,7 +30,7 @@ function CategoryPage({
 
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
 
-  const [isFilterClicked, setIsFilterClicked] = useState(false);
+  const [isFilterClicked, setIsFilterClicked] = useState(true);
 
   const [isSortClicked, setIsSortClicked] = useState(false);
   const [sortOptionName, setSortOptionName] = useState("정렬 기준");
