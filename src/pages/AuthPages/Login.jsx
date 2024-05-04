@@ -94,11 +94,11 @@ const Login = () => {
   return (
     <div className="signup-box">
       <div className="signup-box-top">
-        <div className="title">PU 로그인</div>
+        <div className="title">Login Page</div>
       </div>
       <div className="signup-box-middle">
         <label htmlFor="email" className="inputTitle">
-          이메일 주소
+          email
         </label>
         <div className="inputWrap">
           <input
@@ -111,7 +111,7 @@ const Login = () => {
         </div>
 
         <label htmlFor="password" className="inputTitle">
-          비밀번호
+          password
         </label>
         <div className="inputWrap">
           <input
@@ -125,7 +125,7 @@ const Login = () => {
       </div>
       <div className="signup-box-bottom">
         <button onClick={handleLogin} className="loginButton">
-          로그인
+          Login
         </button>
         <SnsLogins />
       </div>

@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import { Link } from "react-router-dom";
 import "./MyProfilePage.css";
 
-function MyProfilePage({ isLoggedin, memberId}) {
+function MyProfilePage({ isLoggedin, memberId }) {
   const [profileData, setProfileData] = useState(null);
 
-  console.log(isLoggedin)
-  console.log(memberId)
+  console.log("로그인여부 : ", isLoggedin);
 
   // "http://localhost:8080/api/v1//profile/{memberId}" axios POST 로 회원 정보를 받아서, response.data를 console.log에 출력하도록 해줘
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/v1/profile/${memberId}`)
-        .then((response) => {
-          setProfileData(response.data);
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    axios
+      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
+      .then((response) => {
+        setProfileData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [memberId]);
 
   if (!profileData) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
-
 
   return (
     <div className="my-profile-page">
@@ -33,11 +32,32 @@ function MyProfilePage({ isLoggedin, memberId}) {
       </div>
       <div className="short-my-profile">
         <div className="profile-container">
-          <img src={profileData.profileImgPath || 'https://defaultst.imweb.me/common/img/default_profile.png'} alt="프로필 이미지"/>
+          <div className="profile-image-container">
+            <img
+              src={
+                profileData.profileImgPath ||
+                "https://defaultst.imweb.me/common/img/default_profile.png"
+              }
+              alt="프로필 이미지"
+              className="profile-image"
+            />
+          </div>
           <div className="name-joined-container">
-            <span className="user-name-info">{profileData.member.username||`회원 이름`}</span>
-            <span className="user-joined-date-info">{'PU멤버 가입: ' + profileData.member.joined_at.substring(0, 10)}</span>
+            <span className="user-name-info">
+              이름 : {profileData.member.username || `없음`}
+            </span>
+            <span className="user-name-info">
+              이메일 : {profileData.member.email || `없음`}
+            </span>
+            <span className="user-name-info">
+              닉네임 : {profileData.member.nickname || `없음`}
+            </span>
+            <span className="user-joined-date-info">
+              {"PU멤버 가입: " + profileData.member.joined_at.substring(0, 10)}
+            </span>
+            <br />
             <Link to="/user/mypage/update-info">{`회원정보 수정`}</Link>
+            <Link to="/user/mypage/profile-detail">{`프로필 상세보기`}</Link>
           </div>
         </div>
       </div>
@@ -139,19 +159,19 @@ function MyProfilePage({ isLoggedin, memberId}) {
 export { MyProfilePage };
 
 // import { FaRegStar, FaStar } from "react-icons/fa6";
-  // 별점 생성 함수
-  // const renderStars = (rating) => {
-  //   const filledStars = Math.floor(rating);
-  //   const remainingStars = 5 - filledStars;
+// 별점 생성 함수
+// const renderStars = (rating) => {
+//   const filledStars = Math.floor(rating);
+//   const remainingStars = 5 - filledStars;
 
-  //   return (
-  //     <>
-  //       {[...Array(filledStars)].map((_, index) => (
-  //         <FaStar key={index} />
-  //       ))}
-  //       {[...Array(remainingStars)].map((_, index) => (
-  //         <FaRegStar key={filledStars + index} />
-  //       ))}
-  //     </>
-  //   );
-  // };
+//   return (
+//     <>
+//       {[...Array(filledStars)].map((_, index) => (
+//         <FaStar key={index} />
+//       ))}
+//       {[...Array(remainingStars)].map((_, index) => (
+//         <FaRegStar key={filledStars + index} />
+//       ))}
+//     </>
+//   );
+// };

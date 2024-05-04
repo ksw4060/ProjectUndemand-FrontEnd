@@ -12,7 +12,9 @@ const SnsSignInUrl = ({ type }) => {
 
   // 각 SNS에 대한 로그인 링크 생성 함수
 
-  return <button onClick={handleSignIn}>Sign in with {type}</button>;
+  return (
+    <button onClick={handleSignIn} className="sns-button kakao-button"></button>
+  );
 };
 
 export { SnsSignInUrl };

@@ -188,6 +188,8 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
+            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
+            memberId={memberId}
           />
         </div>
       ) : (
@@ -208,10 +210,8 @@ function App() {
             element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
           />
           <Route
-              path="/user/mypage/*"
-              element={
-                <MyPage isLoggedin={isLoggedin} memberId={memberId} />
-              }
+            path="/user/mypage/*"
+            element={<MyPage isLoggedin={isLoggedin} memberId={memberId} />}
           />
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />

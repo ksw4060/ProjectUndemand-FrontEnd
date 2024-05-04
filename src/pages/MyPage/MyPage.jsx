@@ -9,11 +9,8 @@ import "./MyPage.css";
 
 function MyPage(localstorageProps) {
   const [selectedPage, setSelectedPage] = useState("my profile");
-  console.log(localstorageProps);
   const isLoggedin = localstorageProps.isLoggedin;
-  console.log(isLoggedin);
   const memberId = localstorageProps.memberId;
-  console.log(memberId);
   // console.log(memberId);
   useEffect(() => {
     console.log(selectedPage);
@@ -40,15 +37,33 @@ function MyPage(localstorageProps) {
       <Routes>
         <Route path="/" element={<Navigate to="profile" replace />} />
         <Route
-            path="/profile"
-            element={
-              <MyProfilePage isLoggedin={isLoggedin} memberId={memberId} />
-            }
+          path="/profile"
+          element={
+            <MyProfilePage isLoggedin={isLoggedin} memberId={memberId} />
+          }
         />
-        <Route path="/payment-history" element={<MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/my-wish-list" element={<MyWishListPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/my-review" element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/update-info" element={<UpdateUserInfoPage isLoggedin={isLoggedin} memberId={memberId} />}></Route>
+        <Route
+          path="/payment-history"
+          element={
+            <MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/my-wish-list"
+          element={
+            <MyWishListPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/my-review"
+          element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />}
+        />
+        <Route
+          path="/update-info"
+          element={
+            <UpdateUserInfoPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        ></Route>
       </Routes>
     </div>
   );

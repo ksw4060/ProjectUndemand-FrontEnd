@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import "./Topbar.css";
@@ -12,8 +13,10 @@ function Topbar({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   isLoggedin,
+  memberId,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const categoryLinks = [
     {
       to: "/best",
@@ -54,6 +57,21 @@ function Topbar({
   const handleMouseLeave = () => {
     setHoveredLinkIndex(null);
   };
+
+  /**
+   * 2024.05.04 프로필로부터 데이터를 가져오기 위한 작업
+   */
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
+      .then((response) => {
+        setProfileData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [memberId]);
 
   /**
    * 로그아웃 클릭 시 , 브라우저에 저장된 Access, Refresh 를 제거합니다.
@@ -204,8 +222,19 @@ function Topbar({
               </li>
               <li className="hello-user">
                 <Link to="/user/mypage">
-                  <span>회원님, 반가워요!</span>
-                  <img src="" alt="" />
+                  <span>
+                    {profileData && profileData.nickname
+                      ? `${profileData.nickname}님, 반가워요!`
+                      : `회원님, 반가워요!`}
+                  </span>
+                  <img
+                    src={
+                      profileData && profileData.profileImgPath
+                        ? profileData.profileImgPath
+                        : "https://defaultst.imweb.me/common/img/default_profile.png"
+                    }
+                    alt="Profile img"
+                  />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
