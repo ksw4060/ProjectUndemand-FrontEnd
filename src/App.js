@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
+import ChannelTalk from "./ChannelTalk.js";
 import { Main } from "./pages/Main/Main.jsx";
 import { Signup } from "./pages/AuthPages/Signup.jsx";
 import { Login } from "./pages/AuthPages/Login.jsx";
@@ -25,8 +26,6 @@ function App() {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
 
-  const [prevCondition, setPrevCondition] = useState("");
-  const [isCondiChange, setIsCondiChange] = useState(false);
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
     useState(null);
@@ -37,6 +36,20 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isReceiptPage, setIsReceiptPage] = useState(false);
+  const [isCategoryPage, setIsCategoryPage] = useState(false);
+  const channelTalkPlugInKey = process.env.REACT_APP_CHANNELTALK_PLUGIN_KEY;
+
+  const channelTalkLoad = () => {
+    ChannelTalk.loadScript();
+    const channelTalkConfig = {
+      pluginKey: channelTalkPlugInKey,
+    };
+    if (isLoggedin) {
+      channelTalkConfig.memberId = memberId;
+    }
+    ChannelTalk.boot(channelTalkConfig);
+    ChannelTalk.setAppearance("system");
+  };
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -60,6 +73,8 @@ function App() {
       setIsLoggedin(false);
       setMemberId("");
     }
+
+    channelTalkLoad();
   }, []);
 
   const processedCategoryData = categoryData.map((parentCategory) => {
@@ -105,13 +120,14 @@ function App() {
   });
 
   const handleConditionSelect = (condition) => {
+    localStorage.setItem("condition", condition.label);
+    localStorage.setItem("topMenuClicked", true);
     localStorage.removeItem("selectedCategoryOption");
     localStorage.removeItem("selectedSubCategoryOption");
     localStorage.removeItem("parentCategoryId");
     localStorage.removeItem("childCategoryId");
     setCategoryId("");
-    localStorage.setItem("topMenuClicked", true);
-    localStorage.setItem("condition", condition.label);
+    setIsMenuVisible(false);
   };
 
   const handlePCategorySelect = (parentCategory) => {
@@ -120,14 +136,14 @@ function App() {
     localStorage.setItem("parentCategoryId", parentCategory.categoryId);
     localStorage.removeItem("childCategoryId");
     localStorage.removeItem("topMenuClicked");
-    setIsCondiChange(false);
+    setIsMenuVisible(false);
     if (
       selectedCategoryOption === parentCategory.name &&
-      !selectedSubCategoryOption &&
-      isCondiChange === false
+      !selectedSubCategoryOption
     ) {
       localStorage.removeItem("selectedCategoryOption");
       localStorage.removeItem("parentCategoryId");
+      setCategoryId("");
       return;
     }
   };
@@ -136,11 +152,8 @@ function App() {
     localStorage.setItem("selectedSubCategoryOption", childCategory.name);
     localStorage.setItem("childCategoryId", childCategory.categoryId);
     localStorage.removeItem("topMenuClicked");
-    setIsCondiChange(false);
-    if (
-      selectedSubCategoryOption === childCategory.name &&
-      isCondiChange === false
-    ) {
+    setIsMenuVisible(false);
+    if (selectedSubCategoryOption === childCategory.name) {
       localStorage.removeItem("selectedSubCategoryOption");
       localStorage.removeItem("childCategoryId");
       return;
@@ -156,8 +169,16 @@ function App() {
   }, [location.pathname === "/cart/order/done"]);
 
   useEffect(() => {
+    if (location.pathname.startsWith("/products/")) {
+      setIsCategoryPage(true);
+    } else {
+      setIsCategoryPage(false);
+    }
+  }, [location.pathname.startsWith("/products/")]);
+
+  useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 120) {
+      if (window.scrollY > 120 && window.innerWidth > 1200) {
         setIscroll(true);
       } else {
         setIscroll(false);
@@ -177,7 +198,7 @@ function App() {
 
   return (
     <div className="Body">
-      {isReceiptPage === false ? (
+      {isReceiptPage === false && isCategoryPage === false ? (
         <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
           <Topbar
             isMenuVisible={isMenuVisible}
@@ -195,10 +216,9 @@ function App() {
       ) : (
         <div></div>
       )}
-
       <div
         className={`Middle-section ${
-          isScroll && !isReceiptPage ? "scroll" : ""
+          isScroll && !isReceiptPage && !isCategoryPage ? "scroll" : ""
         } ${isMenuVisible ? "blur" : ""}`}
       >
         <Routes>
@@ -217,9 +237,10 @@ function App() {
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route
-            path="/:categoryPageUrl"
+            path="/products/:condition"
             element={
               <CategoryPage
+                isLoggedin={isLoggedin}
                 filterOptions={processedCategoryData}
                 menUnisexFilterOptions={processedMUCategoryData}
                 selectedCategoryOption={selectedCategoryOption}
@@ -230,9 +251,6 @@ function App() {
                 setCategoryId={setCategoryId}
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
-                setIsCondiChange={setIsCondiChange}
-                prevCondition={prevCondition}
-                setPrevCondition={setPrevCondition}
               />
             }
           />

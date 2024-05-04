@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { MdOutlineShoppingBag } from "react-icons/md";
+import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
 
 function Topbar({
@@ -17,34 +17,35 @@ function Topbar({
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [profileData, setProfileData] = useState(null);
+  const [isBurgerClicked, setIsBurgerClicked] = useState(false);
   const categoryLinks = [
     {
-      to: "/best",
+      to: "/products/BEST",
       label: "BEST",
       contents: processedCategoryData,
     },
     {
-      to: "/new",
+      to: "/products/NEW",
       label: "NEW",
       contents: processedCategoryData,
     },
     {
-      to: "/unisex",
+      to: "/products/UNISEX",
       label: "UNISEX",
       contents: processedMUCategoryData,
     },
     {
-      to: "/men",
+      to: "/products/MEN",
       label: "MEN",
       contents: processedMUCategoryData,
     },
     {
-      to: "/women",
+      to: "/products/WOMEN",
       label: "WOMEN",
       contents: processedCategoryData,
     },
     {
-      to: "/recommend",
+      to: "/products/RECOMMEND",
       label: "RECOMMEND",
       contents: processedCategoryData,
     },
@@ -103,14 +104,136 @@ function Topbar({
     document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
   }
 
+  const handleBurgerBtnClick = () => {
+    setIsBurgerClicked((prevState) => !prevState);
+    setIsMenuVisible((prevState) => !prevState);
+  };
+
   return (
     <div className="topbar">
       <div className="topbar-logo">
         <Link to="/">
           <img src="/ODD_LOGO_FULL.png" alt="ODD Logo" />
         </Link>
+        <div className="topbar-navbar-narrow">
+          <MdOutlineMenu
+            className="burger-menu-btn"
+            onClick={() => handleBurgerBtnClick()}
+          />
+          <div
+            className={`nnavbar-accordion-menu-container ${
+              isBurgerClicked === true ? "burger-menu-drop" : ""
+            }`}
+          >
+            <div className="nnavbar-accordion-menu">
+              <div className="conditions-container">
+                {categoryLinks.map((link, index) => (
+                  <div key={index} className="condition-link">
+                    <Link
+                      to={link.to}
+                      onMouseOver={() => handleMouseOver(index)}
+                      onClick={() => {
+                        handleConditionSelect(link);
+                        setIsBurgerClicked(false);
+                        setIsMenuVisible(false);
+                      }}
+                      className={
+                        hoveredLinkIndex === index ? "condition-hovered" : ""
+                      }
+                    >
+                      {link.label}
+                    </Link>
+                  </div>
+                ))}
+              </div>
+              <div className="user-btn-container">
+                {!isLoggedin ? (
+                  <ul className="user-btn-box logged-in-false">
+                    <li>
+                      <Link
+                        to="/signup"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        회원가입
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        로그인
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/inquiry"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        Q&A
+                      </Link>
+                    </li>
+                  </ul>
+                ) : (
+                  <ul className="user-btn-box logged-in-true">
+                    <li className="hello-user">
+                      <Link to="/user/mypage">
+                        <span>회원님, 반가워요!</span>
+                        <img src="" alt="" />
+                      </Link>
+                      <ul className="user-dropdown-menu">
+                        <li className="mypage-btn">
+                          <Link
+                            to="/user/mypage"
+                            onClick={() => setIsBurgerClicked(false)}
+                          >
+                            마이페이지
+                          </Link>
+                        </li>
+                        <li className="wishlist-btn">
+                          <Link
+                            to="/wishlist"
+                            onClick={() => setIsBurgerClicked(false)}
+                          >
+                            위시리스트
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/inquiry"
+                            onClick={() => setIsBurgerClicked(false)}
+                          >
+                            Q&A
+                          </Link>
+                        </li>
+                        <li className="logout-btn">
+                          <Link
+                            onClick={() => {
+                              handleLogoutClick();
+                              setIsBurgerClicked(false);
+                            }}
+                          >
+                            로그아웃
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <Link
+                        to="/cart"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        <MdOutlineShoppingBag />
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="topbar-navbar">
+      <div className="topbar-navbar-normal">
         <div className="topbar-navbar-container">
           <ul
             className="categorybox"

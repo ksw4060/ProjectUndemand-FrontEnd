@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./CategoryPage.css";
 import { RiEqualizerLine } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa6";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
+import { MdOutlineShoppingBag } from "react-icons/md";
 import axios from "axios";
 
 function CategoryPage({
+  isLoggedin,
   filterOptions,
   menUnisexFilterOptions,
   selectedCategoryOption,
@@ -20,16 +21,17 @@ function CategoryPage({
   setCategoryId,
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
-  setIsCondiChange,
-  prevCondition,
-  setPrevCondition,
 }) {
-  const { categoryPageUrl } = useParams();
-  const [urlCondition, setUrlCondition] = useState("");
+  const { condition } = useParams();
+  const [urlCondition, setUrlCondition] = useState(condition.split("-")[0]);
+
+  const [selectedCondition, setSelectedCondition] = useState(urlCondition);
+  const [isConditionClicked, setIsConditionClicked] = useState(false);
 
   const [isCategoryScroll, setIsCategoryScroll] = useState(false);
+  const [isMobileWidth, setIsMobileWidth] = useState(false);
 
-  const [isFilterClicked, setIsFilterClicked] = useState(false);
+  const [isFilterClicked, setIsFilterClicked] = useState(true);
 
   const [isSortClicked, setIsSortClicked] = useState(false);
   const [sortOptionName, setSortOptionName] = useState("정렬 기준");
@@ -38,7 +40,7 @@ function CategoryPage({
   const [searchString, setSearchString] = useState("");
   const [isSearchClicked, setIsSearchClicked] = useState(false);
 
-  const categoryTitle = `${urlCondition.toUpperCase()} ${
+  const categoryTitle = `${
     selectedCategoryOption ? `/ ${selectedCategoryOption}` : ""
   } ${selectedSubCategoryOption ? `/ ${selectedSubCategoryOption}` : ""}`;
 
@@ -51,23 +53,9 @@ function CategoryPage({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedCondition = localStorage.getItem("condition");
-    if (storedCondition) {
-      setUrlCondition(storedCondition);
-    }
-    if (categoryPageUrl.split("-")[0]) {
-      setUrlCondition(categoryPageUrl.split("-")[0].toUpperCase());
-    }
+    setUrlCondition(condition.split("-")[0]);
     setSearchString("");
-    // console.log(storedCondition);
-  }, [categoryPageUrl, urlCondition]);
-
-  useEffect(() => {
-    if (prevCondition && prevCondition !== urlCondition) {
-      setIsCondiChange(true);
-    }
-    setPrevCondition(urlCondition);
-  }, [urlCondition, prevCondition]);
+  }, [condition]);
 
   useEffect(() => {
     const handleConditionChange = () => {
@@ -75,7 +63,7 @@ function CategoryPage({
     };
 
     handleConditionChange();
-  }, [categoryPageUrl, selectedSortOption, isSearchClicked]);
+  }, [condition, selectedSortOption, isSearchClicked]);
 
   useEffect(() => {
     const fetchProductsData = async () => {
@@ -97,8 +85,8 @@ function CategoryPage({
           higtDiscountRate: "HIGH_DISCOUNT_RATE",
         };
 
-        const condition = conditionMap[urlCondition] || "";
-        const category = parseInt(categoryId) || "";
+        const category = categoryId || "";
+        const condition = conditionMap[selectedCondition] || "";
         const order = orderMap[selectedSortOption] || "";
         const keyword = searchString || "";
 
@@ -108,8 +96,8 @@ function CategoryPage({
             params: {
               size: pageSize,
               page: currentPage,
-              condition: condition,
               category: category,
+              condition: condition,
               order: order,
               keyword: keyword,
             },
@@ -126,16 +114,19 @@ function CategoryPage({
     fetchProductsData();
   }, [
     currentPage,
-    urlCondition,
     selectedSortOption,
     isSearchClicked,
     categoryId,
+    urlCondition,
   ]);
+
+  const memoizedProductsData = useMemo(() => allProducts, [allProducts]);
+  const memoizedTotalPageSize = useMemo(() => totalPageSize, [totalPageSize]);
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
       alert("첫번째 페이지입니다.");
-    } else if (direction === 1 && currentPage === totalPageSize - 1) {
+    } else if (direction === 1 && currentPage === memoizedTotalPageSize - 1) {
       alert("마지막 페이지입니다.");
     } else {
       setCurrentPage(currentPage + direction);
@@ -144,7 +135,7 @@ function CategoryPage({
 
   useEffect(() => {
     const pageButtons = () => {
-      const totalPages = totalPageSize;
+      const totalPages = memoizedTotalPageSize;
       const pages = [];
 
       const pageSize = 5;
@@ -161,7 +152,7 @@ function CategoryPage({
     };
 
     pageButtons();
-  }, [currentPage, totalPageSize]);
+  }, [currentPage, memoizedTotalPageSize]);
 
   const handleSearchBar = () => {
     if (searchString) {
@@ -173,7 +164,7 @@ function CategoryPage({
 
   useEffect(() => {
     const handleCategoryScroll = () => {
-      if (window.scrollY > 150) {
+      if (window.scrollY > 120 && window.innerWidth > 1200) {
         setIsCategoryScroll(true);
       } else {
         setIsCategoryScroll(false);
@@ -187,12 +178,40 @@ function CategoryPage({
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileWidth(window.innerWidth <= 700);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handleFilterClick = () => {
     setIsFilterClicked((prevState) => !prevState);
   };
 
   const handleSortClick = () => {
     setIsSortClicked((prevState) => !prevState);
+  };
+
+  const handleConditionClick = () => {
+    setIsConditionClicked((prevState) => !prevState);
+  };
+
+  const handleCondiBtnClick = () => {
+    setCategoryId("");
+    localStorage.removeItem("selectedCategoryOption");
+    localStorage.removeItem("selectedSubCategoryOption");
+    localStorage.removeItem("parentCategoryId");
+    localStorage.removeItem("childCategoryId");
+    localStorage.removeItem("condition");
+    setIsConditionClicked(false);
   };
 
   useEffect(() => {
@@ -221,7 +240,7 @@ function CategoryPage({
         setCategoryId(storedParentCategoryId);
       }
     }
-  }, [categoryPageUrl]);
+  }, [condition]);
 
   useEffect(() => {
     return () => {
@@ -238,99 +257,384 @@ function CategoryPage({
       selectedCategoryOption === parentCategory.name &&
       !selectedSubCategoryOption
     ) {
-      const newCategoryUrl = `/${urlCondition}`;
+      const newCategoryUrl = `/products/${urlCondition}`;
       navigate(newCategoryUrl, { replace: true });
     } else {
-      const newCategoryUrl = `/${urlCondition}-${parentCategory.name}`;
+      const newCategoryUrl = `/products/${urlCondition}-${parentCategory.name}`;
       navigate(newCategoryUrl, { replace: true });
     }
   };
 
   const handleNavigateSCOS = (childCategory) => {
     if (selectedSubCategoryOption === childCategory.name) {
-      const newSubcategoryUrl = `/${urlCondition}-${selectedCategoryOption}`;
+      const newSubcategoryUrl = `/products/${urlCondition}-${selectedCategoryOption}`;
       navigate(newSubcategoryUrl, { replace: true });
     } else {
-      const newSubcategoryUrl = `/${urlCondition}-${selectedCategoryOption}-${childCategory.name}`;
+      const newSubcategoryUrl = `/products/${urlCondition}-${selectedCategoryOption}-${childCategory.name}`;
       navigate(newSubcategoryUrl, { replace: true });
     }
   };
 
+  const handleLogoutClick = () => {
+    // 로컬 스토리지에서 Authorization 값 확인
+    const authorization = localStorage.getItem("Authorization");
+
+    if (!authorization) {
+      alert("경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.");
+      return; // 로그아웃을 진행하지 않고 함수 종료
+    }
+
+    // 로컬 스토리지에서 Authorization 값 제거
+    localStorage.removeItem("Authorization");
+
+    localStorage.removeItem("memberId");
+    // 쿠키 스토리지에서 refreshToken 값 제거
+    deleteCookie("refreshToken");
+
+    console.log("로그아웃 완료.");
+
+    window.location.replace("/login");
+  };
+
+  //쿠키삭제
+  function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  }
+
   return (
     <div className="category-page">
-      <div
-        className={`title-section ${isCategoryScroll ? "scroll-category" : ""}`}
-      >
-        <div className="wrapper">
-          <span className="category-path">{categoryTitle}</span>
-          <div className="filter-box">
-            <div className="filter" onClick={() => handleFilterClick()}>
-              <p>필터 표시</p>
-              <RiEqualizerLine className="icons" />
-            </div>
-            <div className="sort-by" onClick={() => handleSortClick()}>
-              <p>{sortOptionName}</p>
-              <FaChevronDown className="icons" />
+      <div className={`title-section`}>
+        <div className="logo-user-container">
+          <Link to="/">
+            <img src="/ODD_LOGO_FULL.png" alt="ODD Logo" />
+          </Link>
+          {!isLoggedin ? (
+            <ul className="userbox logged-in-false">
+              <li>
+                <Link to="/signup">회원가입</Link>
+              </li>
+              <li>
+                <Link to="/login">로그인</Link>
+              </li>
+              <li>
+                <Link to="/inquiry">Q&A</Link>
+              </li>
+            </ul>
+          ) : (
+            <ul className="userbox logged-in-true">
+              <li>
+                <Link to="/cart">
+                  <MdOutlineShoppingBag />
+                </Link>
+              </li>
+              <li className="hello-user">
+                <Link to="/user/mypage">
+                  <span>회원님, 반가워요!</span>
+                  <img src="" alt="" />
+                </Link>
+                <ul className="user-dropdown-menu">
+                  <li className="mypage-btn">
+                    <Link to="/user/mypage">마이페이지</Link>
+                  </li>
+                  <li className="wishlist-btn">
+                    <Link to="/wishlist">위시리스트</Link>
+                  </li>
+                  <li>
+                    <Link to="/inquiry">Q&A</Link>
+                  </li>
+                  <li className="logout-btn">
+                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          )}
+        </div>
+        {isMobileWidth === false ? (
+          <div
+            className={`wrapper ${isCategoryScroll ? "scroll-category" : ""}`}
+          >
+            <span className="category-path">
+              <div
+                className="category-path-condition"
+                onClick={() => handleConditionClick()}
+              >
+                <span>{urlCondition}</span>
+                <FaChevronDown className="icons" />
+              </div>
+              {categoryTitle}
               <ul
-                className={`category-page-dropdown-menu ${
-                  isSortClicked === true && "sort-dropdown-active"
+                className={`condition-dropdown-menu ${
+                  isConditionClicked === true ? "condition-drop-active" : ""
                 }`}
               >
                 <li
                   onClick={() => {
-                    setSelectedSortOption("new");
-                    setSortOptionName("최신순");
+                    setSelectedCondition("BEST");
+                    navigate("/products/BEST");
+                    handleCondiBtnClick();
                   }}
                 >
-                  최신순
+                  BEST
                 </li>
                 <li
                   onClick={() => {
-                    setSelectedSortOption("best");
-                    setSortOptionName("인기순");
+                    setSelectedCondition("NEW");
+                    navigate("/products/NEW");
+                    handleCondiBtnClick();
                   }}
                 >
-                  인기순
+                  NEW
                 </li>
                 <li
                   onClick={() => {
-                    setSelectedSortOption("lowPrice");
-                    setSortOptionName("낮은 가격순");
+                    setSelectedCondition("UNISEX");
+                    navigate("/products/UNISEX");
+                    handleCondiBtnClick();
                   }}
                 >
-                  낮은 가격순
+                  UNISEX
                 </li>
                 <li
                   onClick={() => {
-                    setSelectedSortOption("highPrice");
-                    setSortOptionName("높은 가격순");
+                    setSelectedCondition("MEN");
+                    navigate("/products/MEN");
+                    handleCondiBtnClick();
                   }}
                 >
-                  높은 가격순
+                  MEN
                 </li>
                 <li
                   onClick={() => {
-                    setSelectedSortOption("higtDiscountRate");
-                    setSortOptionName("할인율순");
+                    setSelectedCondition("WOMEN");
+                    navigate("/products/WOMEN");
+                    handleCondiBtnClick();
                   }}
                 >
-                  할인율순
+                  WOMEN
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("RECOMMEND");
+                    navigate("/products/RECOMMEND");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  RECOMMEND
                 </li>
               </ul>
-            </div>
-            <div className="search-bar-container">
-              <div className="search-bar">
-                <input
-                  type="text"
-                  value={searchString}
-                  onChange={(e) => setSearchString(e.target.value)}
-                  placeholder={`검색`}
-                />
-                <IoMdSearch onClick={() => handleSearchBar()} />
+            </span>
+            <div className="filter-box">
+              <div className="filter" onClick={() => handleFilterClick()}>
+                <p>필터 표시</p>
+                <RiEqualizerLine className="icons" />
+              </div>
+              <div className="sort-by" onClick={() => handleSortClick()}>
+                <p>{sortOptionName}</p>
+                <FaChevronDown className="icons" />
+                <ul
+                  className={`category-page-dropdown-menu ${
+                    isSortClicked === true && "sort-dropdown-active"
+                  }`}
+                >
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("new");
+                      setSortOptionName("최신순");
+                    }}
+                  >
+                    최신순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("best");
+                      setSortOptionName("인기순");
+                    }}
+                  >
+                    인기순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("lowPrice");
+                      setSortOptionName("낮은 가격순");
+                    }}
+                  >
+                    낮은 가격순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("highPrice");
+                      setSortOptionName("높은 가격순");
+                    }}
+                  >
+                    높은 가격순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("higtDiscountRate");
+                      setSortOptionName("할인율순");
+                    }}
+                  >
+                    할인율순
+                  </li>
+                </ul>
+              </div>
+              <div className="search-bar-container">
+                <div className="search-bar">
+                  <input
+                    type="text"
+                    value={searchString}
+                    onChange={(e) => setSearchString(e.target.value)}
+                    placeholder={`검색`}
+                  />
+                  <IoMdSearch onClick={() => handleSearchBar()} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className={`wrapper ${isCategoryScroll ? "scroll-category" : ""}`}
+          >
+            <span className="category-path">
+              <div
+                className="category-path-condition"
+                onClick={() => handleConditionClick()}
+              >
+                <span>{urlCondition}</span>
+                <FaChevronDown className="icons" />
+              </div>
+              {categoryTitle}
+              <ul
+                className={`condition-dropdown-menu ${
+                  isConditionClicked === true ? "condition-drop-active" : ""
+                }`}
+              >
+                <li
+                  onClick={() => {
+                    setSelectedCondition("BEST");
+                    navigate("/products/BEST");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  BEST
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("NEW");
+                    navigate("/products/NEW");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  NEW
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("UNISEX");
+                    navigate("/products/UNISEX");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  UNISEX
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("MEN");
+                    navigate("/products/MEN");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  MEN
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("WOMEN");
+                    navigate("/products/WOMEN");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  WOMEN
+                </li>
+                <li
+                  onClick={() => {
+                    setSelectedCondition("RECOMMEND");
+                    navigate("/products/RECOMMEND");
+                    handleCondiBtnClick();
+                  }}
+                >
+                  RECOMMEND
+                </li>
+              </ul>
+            </span>
+            <div className="filter-box">
+              <div className="filter" onClick={() => handleFilterClick()}>
+                <p>필터 표시</p>
+                <RiEqualizerLine className="icons" />
+              </div>
+              <div className="sort-by" onClick={() => handleSortClick()}>
+                <p>{sortOptionName}</p>
+                <FaChevronDown className="icons" />
+                <ul
+                  className={`category-page-dropdown-menu ${
+                    isSortClicked === true && "sort-dropdown-active"
+                  }`}
+                >
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("new");
+                      setSortOptionName("최신순");
+                    }}
+                  >
+                    최신순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("best");
+                      setSortOptionName("인기순");
+                    }}
+                  >
+                    인기순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("lowPrice");
+                      setSortOptionName("낮은 가격순");
+                    }}
+                  >
+                    낮은 가격순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("highPrice");
+                      setSortOptionName("높은 가격순");
+                    }}
+                  >
+                    높은 가격순
+                  </li>
+                  <li
+                    onClick={() => {
+                      setSelectedSortOption("higtDiscountRate");
+                      setSortOptionName("할인율순");
+                    }}
+                  >
+                    할인율순
+                  </li>
+                </ul>
+              </div>
+              <div className="search-bar-container">
+                <div className="search-bar">
+                  <input
+                    type="text"
+                    value={searchString}
+                    onChange={(e) => setSearchString(e.target.value)}
+                    placeholder={`검색`}
+                  />
+                  <IoMdSearch onClick={() => handleSearchBar()} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div
         className={`contents-section ${
@@ -425,53 +729,98 @@ function CategoryPage({
                   )
               )}
         </div>
-        <div className="products-section">
-          <div className="product-card-box">
-            {allProducts.length > 0 ? (
-              allProducts.map((product, index) => (
-                <div
-                  key={index}
-                  className={`product-card ${
-                    isFilterClicked && "filter-active-margin"
-                  }`}
-                >
-                  <img
-                    src={`http://localhost:8080${product.productThumbnails[0]}`}
-                    alt={product.productName}
-                    className={`img-section ${
-                      isFilterClicked && "filter-active-img"
+        {isMobileWidth === false ? (
+          <div
+            className={`products-section ${isFilterClicked && "filter-active"}`}
+          >
+            <div className="product-card-box">
+              {memoizedProductsData.length > 0 ? (
+                memoizedProductsData.map((product, index) => (
+                  <div
+                    key={index}
+                    className={`product-card ${
+                      isFilterClicked && "filter-active-margin"
                     }`}
-                  />
-                  <div className="product-info">
-                    <div className="product-info-top-container">
-                      <Link to={`/product/${product.productId}`}>
-                        {product.productName}
-                      </Link>
-                      {product.isDiscount && (
-                        <Link
-                          to={`/product/${product.productId}`}
-                        >{`${product.discountRate}% 할인 중`}</Link>
-                      )}
-                      {product.isRecommend && (
+                  >
+                    <img
+                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      alt={product.productName}
+                      className={`img-section ${
+                        isFilterClicked && "filter-active-img"
+                      }`}
+                    />
+                    <div className="product-info">
+                      <div className="product-info-top-container">
                         <Link to={`/product/${product.productId}`}>
-                          추천상품
+                          {product.productName}
                         </Link>
-                      )}
+                        {product.isDiscount && (
+                          <Link
+                            to={`/product/${product.productId}`}
+                          >{`${product.discountRate}% 할인 중`}</Link>
+                        )}
+                        {product.isRecommend && (
+                          <Link to={`/product/${product.productId}`}>
+                            추천상품
+                          </Link>
+                        )}
+                      </div>
+                      <Link
+                        to={`/product/${product.productId}`}
+                        className="product-price"
+                      >
+                        {`${product.price} 원`}
+                      </Link>
                     </div>
-                    <Link
-                      to={`/product/${product.productId}`}
-                      className="product-price"
-                    >
-                      {`${product.price} 원`}
-                    </Link>
                   </div>
-                </div>
-              ))
-            ) : (
-              <span>{`${categoryPageUrl} 상품이 없습니다.`}</span>
-            )}
+                ))
+              ) : (
+                <span>{`${condition} 상품이 없습니다.`}</span>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={`products-section`}>
+            <div className="product-card-box">
+              {memoizedProductsData.length > 0 ? (
+                memoizedProductsData.map((product, index) => (
+                  <div key={index} className={`product-card`}>
+                    <img
+                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      alt={product.productName}
+                      className={`img-section`}
+                    />
+                    <div className="product-info">
+                      <div className="product-info-top-container">
+                        <Link to={`/product/${product.productId}`}>
+                          {product.productName}
+                        </Link>
+                        {product.isDiscount && (
+                          <Link
+                            to={`/product/${product.productId}`}
+                          >{`${product.discountRate}% 할인 중`}</Link>
+                        )}
+                        {product.isRecommend && (
+                          <Link to={`/product/${product.productId}`}>
+                            추천상품
+                          </Link>
+                        )}
+                      </div>
+                      <Link
+                        to={`/product/${product.productId}`}
+                        className="product-price"
+                      >
+                        {`${product.price} 원`}
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <span>{`${condition} 상품이 없습니다.`}</span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <div className="category-paging-btn-container">
         <GrFormPrevious
@@ -495,7 +844,7 @@ function CategoryPage({
         <GrFormNext
           onClick={() => handlePageChange(1)}
           className={`category-page-move-btn ${
-            currentPage === totalPageSize - 1 && "next-btn-disable"
+            currentPage === memoizedTotalPageSize - 1 && "next-btn-disable"
           }`}
         />
       </div>
