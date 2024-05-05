@@ -1,39 +1,116 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 function Footer() {
+  const [activeMember, setActiveMember] = useState(null);
+
+  const handleMemberBtn = (index) => {
+    if (activeMember === index) {
+      setActiveMember(null);
+    } else {
+      setActiveMember(index);
+    }
+  };
+
+  const teamMemeberInfoMap = [
+    {
+      name: process.env.REACT_APP_TEAM_MEMBER_1_NAME,
+      position: process.env.REACT_APP_TEAM_MEMBER_1_POSITION,
+      email: process.env.REACT_APP_TEAM_MEMBER_1_EMAIL,
+      github: process.env.REACT_APP_TEAM_MEMBER_1_GITHUB,
+      blog: process.env.REACT_APP_TEAM_MEMBER_1_BLOG,
+      phone: process.env.REACT_APP_TEAM_MEMBER_1_PHONE,
+    },
+    {
+      name: process.env.REACT_APP_TEAM_MEMBER_2_NAME,
+      position: process.env.REACT_APP_TEAM_MEMBER_2_POSITION,
+      email: process.env.REACT_APP_TEAM_MEMBER_2_EMAIL,
+      github: process.env.REACT_APP_TEAM_MEMBER_2_GITHUB,
+      blog: process.env.REACT_APP_TEAM_MEMBER_2_BLOG,
+      phone: process.env.REACT_APP_TEAM_MEMBER_2_PHONE,
+    },
+    {
+      name: process.env.REACT_APP_TEAM_MEMBER_3_NAME,
+      position: process.env.REACT_APP_TEAM_MEMBER_3_POSITION,
+      email: process.env.REACT_APP_TEAM_MEMBER_3_EMAIL,
+      github: process.env.REACT_APP_TEAM_MEMBER_3_GITHUB,
+      blog: process.env.REACT_APP_TEAM_MEMBER_3_BLOG,
+      phone: process.env.REACT_APP_TEAM_MEMBER_3_PHONE,
+    },
+    {
+      name: process.env.REACT_APP_TEAM_MEMBER_4_NAME,
+      position: process.env.REACT_APP_TEAM_MEMBER_4_POSITION,
+      email: process.env.REACT_APP_TEAM_MEMBER_4_EMAIL,
+      github: process.env.REACT_APP_TEAM_MEMBER_4_GITHUB,
+      blog: process.env.REACT_APP_TEAM_MEMBER_4_BLOG,
+      phone: process.env.REACT_APP_TEAM_MEMBER_4_PHONE,
+    },
+  ];
+
   return (
     <div className="footer">
-      <div className="section section1">
-        <div className="footer-box1">
-          <h2>C/S CENTER</h2>
-          <h2>T.010-0000-0000</h2>
-          <p>평일 am 10:00 - pm 05:00 . 점심 pm 12:00 - pm 01:00</p>
-          <p>토.일.공휴일 휴무</p>
+      <div className="footer-left">
+        <div className="section section1">
+          <h4>C.S Center</h4>
+          <Link to="/inquiry">Q&A</Link>
         </div>
-        <div className="footer-box1">
-          <h3>ACCOUNT</h3>
-          <p>우리 000000-00-000000 . 토스 010-0000-0000</p>
-          <p>예금주 : 주식회사 PU</p>
-        </div>
-      </div>
-      <div className="section section2">
-        <h2>ProjectUndemand</h2>
-        <div className="footer-box2">
-          <h4>TEAM. ProjectUndemand</h4>
-          <h4>Back-End. 김성우 / 서채연</h4>
-          <h4>DevOps. 임상빈</h4>
-          <h4>Front-End. 김성우 / 이주한 </h4>
+        <div className="section section2">
+          <h4>TEAM MEMBERS</h4>
+          <div className="footer-box2">
+            {teamMemeberInfoMap.map((teamMember, index) => (
+              <Link key={index} onClick={() => handleMemberBtn(index)}>
+                {teamMember.name} : {teamMember.position}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="section section3">
-        <h2>INFORMATION</h2>
-        <div className="footer-box3">
-          <h4>김성우 : E-mail / GitHub / Blog / Tel</h4>
-          <h4>서채연 : E-mail / GitHub / Blog / Tel</h4>
-          <h4>임상빈 : E-mail / GitHub / Blog / Tel</h4>
-          <h4>이주한 : E-mail / GitHub / Blog / Tel</h4>
-        </div>
+      <div className="footer-right">
+        {teamMemeberInfoMap.map((teamMember, index) => {
+          return (
+            <div
+              key={index}
+              className={`section section3 ${
+                activeMember === index ? "member-card-active" : ""
+              }`}
+            >
+              <div className="member-card-top">
+                <img
+                  src="/ODD_LOGO_FULL.png"
+                  alt="ODD Logo"
+                  className="member-card-logo"
+                />
+              </div>
+              <div className="member-card-contents">
+                <div className="mc-name-position">
+                  <span>{teamMember.name}</span>
+                  <span>{teamMember.position}</span>
+                </div>
+                <div className="mc-border-line"></div>
+                <div className="mc-contact-info">
+                  <span>{`E-Mail : ${teamMember.email}`}</span>
+                  <span>
+                    {`GitHub : `}
+                    <Link to={teamMember.github} target="_black">
+                      {teamMember.github}
+                    </Link>
+                  </span>
+                  <span>
+                    {`Blog   : `}
+                    <Link to={teamMember.blog} target="_black">
+                      {teamMember.blog}
+                    </Link>
+                  </span>
+                  <span>{`Phone  : ${teamMember.phone}`}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <span className="floating-message">
+          {`=>`} Click member to show member card!
+        </span>
       </div>
     </div>
   );

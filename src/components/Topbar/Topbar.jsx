@@ -134,7 +134,10 @@ function Topbar({
                     <li>
                       <Link
                         to="/signup"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
                         Join
                       </Link>
@@ -142,7 +145,10 @@ function Topbar({
                     <li>
                       <Link
                         to="/login"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
                         Log in
                       </Link>
@@ -150,7 +156,10 @@ function Topbar({
                     <li>
                       <Link
                         to="/inquiry"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
                         Q&A
                       </Link>
