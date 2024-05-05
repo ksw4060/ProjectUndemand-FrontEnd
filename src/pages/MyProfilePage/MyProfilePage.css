@@ -90,6 +90,12 @@
     margin-top: 60px;
 }
 
+.payhis-product-info-zero-data {
+    margin-top: 50px;
+
+    font-size: 15px;
+}
+
 .sph-title,
 .swl-title,
 .smr-title {
@@ -153,6 +159,8 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 10px;
+
+    gap: 40px;
 }
 
 .smr-card-container {

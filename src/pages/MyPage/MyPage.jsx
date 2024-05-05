@@ -24,10 +24,10 @@ function MyPage(localstorageProps) {
             <Link to="/user/mypage/profile">프로필</Link>
           </span>
           <span onClick={() => setSelectedPage("my payment history")}>
-            <Link to="/user/mypage/payment-history">주문기록</Link>
+            <Link to="/user/mypage/payment-history">결제 내역</Link>
           </span>
           <span onClick={() => setSelectedPage("my wish list")}>
-            <Link to="/user/mypage/my-wish-list">위시리스트</Link>
+            <Link to="/user/mypage/my-wish-list">찜 상품</Link>
           </span>
           <span onClick={() => setSelectedPage("my review")}>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
