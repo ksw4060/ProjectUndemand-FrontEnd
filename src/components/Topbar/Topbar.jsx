@@ -136,7 +136,7 @@ function Topbar({
                         to="/signup"
                         onClick={() => setIsBurgerClicked(false)}
                       >
-                        회원가입
+                        Join
                       </Link>
                     </li>
                     <li>
@@ -144,7 +144,7 @@ function Topbar({
                         to="/login"
                         onClick={() => setIsBurgerClicked(false)}
                       >
-                        로그인
+                        Log in
                       </Link>
                     </li>
                     <li>
@@ -160,7 +160,7 @@ function Topbar({
                   <ul className="user-btn-box logged-in-true">
                     <li className="hello-user">
                       <Link to="/user/mypage">
-                        <span>회원님, 반가워요!</span>
+                        <span>Hello!</span>
                         <img src="" alt="" />
                       </Link>
                       <ul className="user-dropdown-menu">
@@ -169,7 +169,7 @@ function Topbar({
                             to="/user/mypage"
                             onClick={() => setIsBurgerClicked(false)}
                           >
-                            마이페이지
+                            My Page
                           </Link>
                         </li>
                         <li className="wishlist-btn">
@@ -177,7 +177,7 @@ function Topbar({
                             to="/wishlist"
                             onClick={() => setIsBurgerClicked(false)}
                           >
-                            위시리스트
+                            Wish List
                           </Link>
                         </li>
                         <li>
@@ -195,7 +195,7 @@ function Topbar({
                               setIsBurgerClicked(false);
                             }}
                           >
-                            로그아웃
+                            Log out
                           </Link>
                         </li>
                       </ul>
@@ -309,10 +309,10 @@ function Topbar({
           {!isLoggedin ? (
             <ul className="userbox logged-in-false">
               <li>
-                <Link to="/signup">회원가입</Link>
+                <Link to="/signup">Join</Link>
               </li>
               <li>
-                <Link to="/login">로그인</Link>
+                <Link to="/login">Log in</Link>
               </li>
               <li>
                 <Link to="/inquiry">Q&A</Link>
@@ -327,21 +327,21 @@ function Topbar({
               </li>
               <li className="hello-user">
                 <Link to="/user/mypage">
-                  <span>회원님, 반가워요!</span>
+                  <span>Hello!</span>
                   <img src="" alt="" />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
-                    <Link to="/user/mypage">마이페이지</Link>
+                    <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">위시리스트</Link>
+                    <Link to="/wishlist">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>
                   </li>
                   <li className="logout-btn">
-                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                    <Link onClick={handleLogoutClick}>Log out</Link>
                   </li>
                 </ul>
               </li>
