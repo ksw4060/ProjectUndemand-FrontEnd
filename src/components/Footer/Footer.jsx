@@ -17,34 +17,26 @@ function Footer() {
     {
       name: process.env.REACT_APP_TEAM_MEMBER_1_NAME,
       position: process.env.REACT_APP_TEAM_MEMBER_1_POSITION,
-      email: process.env.REACT_APP_TEAM_MEMBER_1_EMAIL,
       github: process.env.REACT_APP_TEAM_MEMBER_1_GITHUB,
       blog: process.env.REACT_APP_TEAM_MEMBER_1_BLOG,
-      phone: process.env.REACT_APP_TEAM_MEMBER_1_PHONE,
     },
     {
       name: process.env.REACT_APP_TEAM_MEMBER_2_NAME,
       position: process.env.REACT_APP_TEAM_MEMBER_2_POSITION,
-      email: process.env.REACT_APP_TEAM_MEMBER_2_EMAIL,
       github: process.env.REACT_APP_TEAM_MEMBER_2_GITHUB,
       blog: process.env.REACT_APP_TEAM_MEMBER_2_BLOG,
-      phone: process.env.REACT_APP_TEAM_MEMBER_2_PHONE,
     },
     {
       name: process.env.REACT_APP_TEAM_MEMBER_3_NAME,
       position: process.env.REACT_APP_TEAM_MEMBER_3_POSITION,
-      email: process.env.REACT_APP_TEAM_MEMBER_3_EMAIL,
       github: process.env.REACT_APP_TEAM_MEMBER_3_GITHUB,
       blog: process.env.REACT_APP_TEAM_MEMBER_3_BLOG,
-      phone: process.env.REACT_APP_TEAM_MEMBER_3_PHONE,
     },
     {
       name: process.env.REACT_APP_TEAM_MEMBER_4_NAME,
       position: process.env.REACT_APP_TEAM_MEMBER_4_POSITION,
-      email: process.env.REACT_APP_TEAM_MEMBER_4_EMAIL,
       github: process.env.REACT_APP_TEAM_MEMBER_4_GITHUB,
       blog: process.env.REACT_APP_TEAM_MEMBER_4_BLOG,
-      phone: process.env.REACT_APP_TEAM_MEMBER_4_PHONE,
     },
   ];
 
@@ -89,7 +81,6 @@ function Footer() {
                 </div>
                 <div className="mc-border-line"></div>
                 <div className="mc-contact-info">
-                  <span>{`E-Mail : ${teamMember.email}`}</span>
                   <span>
                     {`GitHub : `}
                     <Link to={teamMember.github} target="_black">
@@ -102,7 +93,6 @@ function Footer() {
                       {teamMember.blog}
                     </Link>
                   </span>
-                  <span>{`Phone  : ${teamMember.phone}`}</span>
                 </div>
               </div>
             </div>
