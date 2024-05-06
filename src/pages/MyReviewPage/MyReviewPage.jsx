@@ -22,19 +22,29 @@ function MyReviewPage() {
   const memberId = 1;
 
   useEffect(() => {
+    const fetchProductReviewData = async () => {
+      try {
+        // 로컬 스토리지에서 Authorization 토큰 가져오기
+        const authorization = localStorage.getItem("Authorization");
+
+        // Authorization 헤더를 포함한 axios 요청
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/review/user/${memberId}`,
+          {
+            headers: {
+              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+            },
+          }
+        );
+
+        setProductReviewData(response.data);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    };
+
     fetchProductReviewData();
   }, [memberId]);
-
-  const fetchProductReviewData = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/review/user/${memberId}`
-      );
-      setProductReviewData(response.data);
-    } catch (error) {
-      console.error(error.response.data);
-    }
-  };
 
   useEffect(() => {
     const fetchThumbnail = async () => {
@@ -66,9 +76,18 @@ function MyReviewPage() {
 
   const handleReviewDelete = async (reviewId) => {
     try {
+      // 로컬 스토리지에서 Authorization 토큰 가져오기
+      const authorization = localStorage.getItem("Authorization");
+      // Authorization 헤더를 포함한 axios 요청
       await axios.delete(
-        `http://localhost:8080/api/v1/review/${reviewId}/${memberId}`
+        `http://localhost:8080/api/v1/review/${reviewId}/${memberId}`,
+        {
+          headers: {
+            Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+          },
+        }
       );
+      // 리뷰 삭제 후 상태 업데이트
       setProductReviewData((prevData) =>
         prevData.filter((review) => review.reviewId !== reviewId)
       );

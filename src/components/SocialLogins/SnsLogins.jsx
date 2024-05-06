@@ -8,12 +8,10 @@ const SnsLogins = () => {
     <div className="sns-login-content">
       <div className="sns-login-button-box">
         <SnsSignInUrl type="kakao" />
-        {/* <button className="sns-button google-button">
+        {/*
           <SnsSignInUrl type="google" />
-        </button>
-        <button className="sns-button naver-button">
           <SnsSignInUrl type="naver" />
-        </button> */}
+        */}
       </div>
     </div>
   );

@@ -53,15 +53,26 @@ function App() {
   };
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
-      .then((response) => {
+    const fetchProfileData = async () => {
+      try {
+        // 로컬 스토리지에서 Authorization 토큰 가져오기
+        const authorization = localStorage.getItem("Authorization");
+        // Authorization 헤더를 포함한 axios 요청
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/profile/${memberId}`,
+          {
+            headers: {
+              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+            },
+          }
+        );
         setProfileData(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfileData();
   }, [memberId]);
 
   useEffect(() => {
@@ -239,8 +250,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route
-            path="/login/oauth2/code/kakao" //redirect_url
-            element={<KakaoLoginHandeler />} //당신이 redirect_url에 맞춰 꾸밀 컴포넌트
+            path="/login/oauth2/code/kakao" //kakao_redirect_url
+            element={<KakaoLoginHandeler />}
           />
           <Route
             path="/user/mypage/*"
