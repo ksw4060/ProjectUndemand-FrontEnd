@@ -11,6 +11,8 @@ function Inventory() {
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [managementModalOpen, setManagementModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const fetchAllInvensData = async () => {
@@ -44,12 +46,34 @@ function Inventory() {
 
   const groupedProductInven = groupProductInvenBySize(productInven);
 
+  const deleteInventory = async (inventoryId) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/v1/inventory/${inventoryId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
+      setShowModal(true);
+      setModalMessage(`인벤토리를 삭제하였습니다.`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const openManagementModal = () => {
     setManagementModalOpen(true);
   };
 
   const closeManagementModal = () => {
     setManagementModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    window.location.reload();
   };
 
   return (
@@ -102,6 +126,14 @@ function Inventory() {
                   >
                     인벤토리 수정
                   </button>
+                  <button
+                    className="inven-page-inven-btn"
+                    onClick={() => {
+                      deleteInventory(inven.inventoryId);
+                    }}
+                  >
+                    인벤토리 삭제
+                  </button>
                 </div>
               </div>
             ))}
@@ -114,6 +146,14 @@ function Inventory() {
           modalClose={closeManagementModal}
           type={modalType}
         ></ManagementModal>
+      )}
+      {showModal && (
+        <div className="confirm-modal">
+          <div className="confirm-modal-content">
+            <p>{modalMessage}</p>
+            <button onClick={() => closeModal()}>확인</button>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -101,17 +101,13 @@
 
 .admin-page-pd-btn {
     width: 100px;
-    height: 45px;
-    border-radius: 8px;
+    height: 35px;
+    border-radius: 25px;
     border: none;
     font-size: 14px;
     color: rgb(255, 255, 255);
     background-color: rgb(34, 34, 34);
     cursor: pointer;
-}
-
-.admin-page-pd-btn:last-child {
-    width: 110px;
 }
 
 .admin-page-pd-btn>a {
@@ -171,4 +167,46 @@
 .admin-page-num-btn.admin-current-page {
     font-size: 17px;
     font-weight: bold;
+}
+
+.admin-page-contents-container>.confirm-modal {
+    width: 30%;
+    height: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.confirm-modal-content {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.confirm-modal-content>p {
+    font-size: 21px;
+}
+
+.confirm-modal-content>button {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    border: 1.5px solid rgb(210, 210, 210);
+    outline: none;
+    font-size: 16px;
+    background-color: rgb(34, 34, 34);
+    color: rgb(255, 255, 255);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
 }
