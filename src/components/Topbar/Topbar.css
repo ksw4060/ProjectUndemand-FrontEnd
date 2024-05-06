@@ -107,6 +107,10 @@
     padding: 13px 0px;
 }
 
+.logged-in-false>li:nth-child(2) {
+    margin: 0px 30px;
+}
+
 .logged-in-true>li:first-child>a {
     display: flex;
     justify-content: center;
@@ -212,7 +216,7 @@
     visibility: hidden;
     position: absolute;
     top: 95%;
-    right: -5px;
+    right: -25px;
     background-color: rgb(255, 255, 255);
     box-shadow: 0 10px 20px rgba(0,0,0,0.19);
     transition: opacity 0.2s ease, visibility 0.3s ease;
@@ -252,6 +256,11 @@
         position: relative;
     }
 
+    .topbar-logo {
+        width: 90%;
+        height: 120px;
+    }
+
     .topbar-logo > a {
         width: 150px;
         display: flex;
@@ -260,7 +269,7 @@
     }
     
     .topbar-logo > a > img {
-        width: 150px;
+        width: 130px;
     }
 
     .topbar-navbar-normal {
@@ -275,9 +284,16 @@
         width: 30%;
         height: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
         padding-top: 10px;
+    }
+
+    .topbar-navbar-narrow>a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(34, 34, 34);
     }
 
     .burger-menu-btn {
@@ -293,7 +309,7 @@
         justify-content: center;
         align-items: center;
         position: absolute;
-        top: 90%;
+        top: 95%;
         right: 0px;
         background-color: rgb(255, 255, 255);
         z-index: 100;
@@ -301,14 +317,14 @@
     }
 
     .nnavbar-accordion-menu {
-        width: 70%;
+        width: 90%;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
     }
 
     .conditions-container {
-        width: 300px;
+        width: 150px;
         display: flex;
         flex-flow: column;
         justify-content: space-between;
@@ -321,14 +337,27 @@
     }
 
     .user-btn-container {
-        width: 100px;
+        width: 170px;
     }
 
     .user-btn-box {
+        width: 170px;
         display: flex;
         flex-flow: column;
         justify-content: space-between;
         align-items: flex-end;
+    }
+
+    .logged-in-false>li:nth-child(2) {
+        margin: 0px 0px;
+    }
+
+    .logged-in-true>li:first-child>a {
+        margin-right: 0;
+    }
+
+    .hello-user>a>span {
+        font-size: 20px;
     }
 
     .user-btn-box>li>a {
