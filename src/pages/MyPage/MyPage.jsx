@@ -9,11 +9,8 @@ import "./MyPage.css";
 
 function MyPage(localstorageProps) {
   const [selectedPage, setSelectedPage] = useState("my profile");
-  console.log(localstorageProps);
   const isLoggedin = localstorageProps.isLoggedin;
-  console.log(isLoggedin);
   const memberId = localstorageProps.memberId;
-  console.log(memberId);
   // console.log(memberId);
   useEffect(() => {
     console.log(selectedPage);
@@ -27,10 +24,10 @@ function MyPage(localstorageProps) {
             <Link to="/user/mypage/profile">프로필</Link>
           </span>
           <span onClick={() => setSelectedPage("my payment history")}>
-            <Link to="/user/mypage/payment-history">주문기록</Link>
+            <Link to="/user/mypage/payment-history">결제 내역</Link>
           </span>
           <span onClick={() => setSelectedPage("my wish list")}>
-            <Link to="/user/mypage/my-wish-list">위시리스트</Link>
+            <Link to="/user/mypage/my-wish-list">찜 상품</Link>
           </span>
           <span onClick={() => setSelectedPage("my review")}>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
@@ -40,15 +37,33 @@ function MyPage(localstorageProps) {
       <Routes>
         <Route path="/" element={<Navigate to="profile" replace />} />
         <Route
-            path="/profile"
-            element={
-              <MyProfilePage isLoggedin={isLoggedin} memberId={memberId} />
-            }
+          path="/profile"
+          element={
+            <MyProfilePage isLoggedin={isLoggedin} memberId={memberId} />
+          }
         />
-        <Route path="/payment-history" element={<MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/my-wish-list" element={<MyWishListPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/my-review" element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />} />
-        <Route path="/update-info" element={<UpdateUserInfoPage isLoggedin={isLoggedin} memberId={memberId} />}></Route>
+        <Route
+          path="/payment-history"
+          element={
+            <MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/my-wish-list"
+          element={
+            <MyWishListPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/my-review"
+          element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />}
+        />
+        <Route
+          path="/update-info"
+          element={
+            <UpdateUserInfoPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        ></Route>
       </Routes>
     </div>
   );

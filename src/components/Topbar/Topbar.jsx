@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
@@ -12,8 +13,10 @@ function Topbar({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   isLoggedin,
+  memberId,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
   const categoryLinks = [
     {
@@ -55,6 +58,21 @@ function Topbar({
   const handleMouseLeave = () => {
     setHoveredLinkIndex(null);
   };
+
+  /**
+   * 2024.05.04 프로필로부터 데이터를 가져오기 위한 작업
+   */
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
+      .then((response) => {
+        setProfileData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [memberId]);
 
   /**
    * 로그아웃 클릭 시 , 브라우저에 저장된 Access, Refresh 를 제거합니다.
@@ -167,54 +185,55 @@ function Topbar({
                   </ul>
                 ) : (
                   <ul className="user-btn-box logged-in-true">
-                    <li className="hello-user">
-                      <Link to="/user/mypage">
-                        <span>Hello!</span>
-                        <img src="" alt="" />
-                      </Link>
-                      <ul className="user-dropdown-menu">
-                        <li className="mypage-btn">
-                          <Link
-                            to="/user/mypage"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            My Page
-                          </Link>
-                        </li>
-                        <li className="wishlist-btn">
-                          <Link
-                            to="/wishlist"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            Wish List
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/inquiry"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            Q&A
-                          </Link>
-                        </li>
-                        <li className="logout-btn">
-                          <Link
-                            onClick={() => {
-                              handleLogoutClick();
-                              setIsBurgerClicked(false);
-                            }}
-                          >
-                            Log out
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
                     <li>
                       <Link
                         to="/cart"
                         onClick={() => setIsBurgerClicked(false)}
                       >
                         <MdOutlineShoppingBag />
+                      </Link>
+                    </li>
+                    <li className="hello-user">
+                      <Link to="/user/mypage">
+                        <span>
+                          {profileData && profileData.nickname
+                            ? `Hello, ${profileData.nickname}!`
+                            : `Hello, ODD!`}
+                        </span>
+                        <img
+                          src={
+                            profileData && profileData.profileImgPath
+                              ? profileData.profileImgPath
+                              : "https://defaultst.imweb.me/common/img/default_profile.png"
+                          }
+                          alt="Profile img"
+                        />
+                      </Link>
+                    </li>
+                    <li className="wishlist-btn">
+                      <Link
+                        to="/wishlist"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        Wish List
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/inquiry"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        Q&A
+                      </Link>
+                    </li>
+                    <li className="logout-btn">
+                      <Link
+                        onClick={() => {
+                          handleLogoutClick();
+                          setIsBurgerClicked(false);
+                        }}
+                      >
+                        Log out
                       </Link>
                     </li>
                   </ul>
@@ -336,8 +355,19 @@ function Topbar({
               </li>
               <li className="hello-user">
                 <Link to="/user/mypage">
-                  <span>Hello!</span>
-                  <img src="" alt="" />
+                  <span>
+                    {profileData && profileData.nickname
+                      ? `Hello, ${profileData.nickname}!`
+                      : `Hello, ODD!`}
+                  </span>
+                  <img
+                    src={
+                      profileData && profileData.profileImgPath
+                        ? profileData.profileImgPath
+                        : "https://defaultst.imweb.me/common/img/default_profile.png"
+                    }
+                    alt="Profile img"
+                  />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">

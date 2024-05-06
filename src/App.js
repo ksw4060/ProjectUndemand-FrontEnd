@@ -209,6 +209,8 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
+            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
+            memberId={memberId}
           />
         </div>
       ) : (

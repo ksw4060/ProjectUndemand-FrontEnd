@@ -1,5 +1,5 @@
 // import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import axios from "axios";
 
 const KakaoLoginHandeler = () => {
@@ -14,7 +14,7 @@ const KakaoLoginHandeler = () => {
     return new URL(window.location.href).searchParams.get("code");
   };
 
-  const handleKakaoLogin = async () => {
+  const handleKakaoLogin = useCallback(async () => {
     const code = getCodeFromUrl();
     if (!code) {
       // Handle the case where code is not available in the URL
@@ -33,8 +33,7 @@ const KakaoLoginHandeler = () => {
           // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
           localStorage.removeItem("Authorization");
           deleteCookie("refreshToken");
-          console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`)
-          // ----------- 24.04.26 로그인 시, 쿠키스토리지 refresh 가 휘발되는 문제 발생 --------------
+          console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`);
 
           // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
           localStorage.setItem("Authorization", "Bearer " + accessToken);
@@ -58,7 +57,7 @@ const KakaoLoginHandeler = () => {
           setTimeout(() => {
             window.location.replace("/");
           }, 300);
-          console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`)
+          console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`);
           // setTimeout(() => {
           //   alert(response.data.email + "님, 반갑습니다.");
           // }, 1500);
@@ -67,13 +66,10 @@ const KakaoLoginHandeler = () => {
       .catch((error) => {
         console.error("로그인 실패 : ", error.response);
       });
-  };
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleKakaoLogin();
-    };
+  }, []);
 
-    fetchData();
+  useEffect(() => {
+    handleKakaoLogin();
   }, [handleKakaoLogin]);
 
   return (

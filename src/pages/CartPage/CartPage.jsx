@@ -21,8 +21,34 @@ function CartPage({ memberId, isLoggedin }) {
           `http://localhost:8080/api/v1/cart/${memberId}`
         );
         setCartProducts(response.data);
+
+        const productThumbnails = {};
+        for (let i = 0; i < response.data.length; i++) {
+          const productId = response.data[i].productId;
+
+          axios
+            .get(`http://localhost:8080/api/v1/thumbnail/${productId}`)
+            .then((thumbnailResponse) => {
+              const thumbnailUrl = thumbnailResponse.data[0]; //grab the first thumbnail url from the response array
+              console.log(`Thumbnail for product ${productId}:`, thumbnailUrl); // Log the thumbnail url here
+
+              setCartProducts((currentProducts) =>
+                currentProducts.map((product) =>
+                  product.productId === productId
+                    ? { ...product, productImage: thumbnailUrl }
+                    : product
+                )
+              );
+            })
+            .catch((error) =>
+              console.error(
+                `Failed to fetch thumbnail for product with ID: ${productId}`,
+                error
+              )
+            );
+        }
       } catch (error) {
-        console.error(`잘못된 요청입니다:`, error);
+        console.error(`Failed to fetch cart:`, error);
       }
     };
 
@@ -110,8 +136,11 @@ function CartPage({ memberId, isLoggedin }) {
           {cartProducts.map((cartProduct, index) => (
             <div key={cartProduct.cartId} className="cart-middle">
               <img
-                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt=""
+                src={
+                  `http://localhost:8080${cartProduct.productImage}` ||
+                  "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
+                alt={cartProduct.productName}
                 className="cart-img"
               />
               <div className="cart-option-info">
