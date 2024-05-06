@@ -177,7 +177,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     cursor: pointer;
     padding-left: 25px;
 }
@@ -270,13 +270,13 @@
 
 .filter-option:hover {
     font-weight: bold;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     cursor: pointer;
 }
 
 .selected {
     font-weight: bold;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
 }
 
 .filter-option-more>p:hover {
@@ -356,7 +356,7 @@
 }
 
 .product-info-top-container>a:first-child {
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     font-weight: bold;
     margin: 15px 0px 7px 0px;
 }
@@ -367,7 +367,7 @@
 }
 
 .product-info>a {
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     font-weight: bold;
     margin: 15px 0px 5px 0px;
 }
@@ -644,7 +644,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        color: rgb(0, 0, 0);
+        color: rgb(34, 34, 34);
         cursor: pointer;
         padding-left: 25px;
     }
@@ -746,7 +746,7 @@
     
     .filter-option.selected {
         font-weight: bold;
-        color: rgb(0, 0, 0);
+        color: rgb(34, 34, 34);
     }
     
     .filter-option-more>p:hover {
@@ -821,7 +821,7 @@
     }
     
     .product-info-top-container>a:first-child {
-        color: rgb(0, 0, 0);
+        color: rgb(34, 34, 34);
         font-weight: bold;
         margin: 15px 0px 7px 0px;
     }
@@ -832,7 +832,7 @@
     }
     
     .product-info>a {
-        color: rgb(0, 0, 0);
+        color: rgb(34, 34, 34);
         font-weight: bold;
         margin: 15px 0px 5px 0px;
     }

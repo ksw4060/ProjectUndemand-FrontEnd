@@ -109,7 +109,7 @@ function Footer() {
           );
         })}
         <span className="floating-message">
-          {`=>`} Click member to show member card!
+          {`=>`} Click on the member names!
         </span>
       </div>
     </div>
