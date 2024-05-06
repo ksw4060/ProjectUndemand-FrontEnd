@@ -14,6 +14,8 @@ function AllProducts() {
   const [currentPage, setCurrentPage] = useState(0);
   const [visiblePages, setVisiblePages] = useState([]);
   const [totalPageSize, setTotalPageSize] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,20 @@ function AllProducts() {
 
     fetchAllProductsData();
   }, [currentPage, managementModalOpen]);
+
+  const deleteProduct = async (productId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/products/${productId}`, {
+        headers: {
+          Authorization: localStorage.getItem("Authorization"),
+        },
+      });
+      setShowModal(true);
+      setModalMessage(`상품을 삭제하였습니다.`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
@@ -77,6 +93,11 @@ function AllProducts() {
 
   const closeManagementModal = () => {
     setManagementModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    window.location.reload();
   };
 
   return (
@@ -138,10 +159,28 @@ function AllProducts() {
                 onClick={() => {
                   openManagementModal();
                   setSelectedProductData(product);
+                  setModalType("image management");
+                }}
+              >
+                상품 이미지
+              </button>
+              <button
+                className="admin-page-pd-btn"
+                onClick={() => {
+                  openManagementModal();
+                  setSelectedProductData(product);
                   setModalType("update product");
                 }}
               >
                 상품 수정
+              </button>
+              <button
+                className="admin-page-pd-btn"
+                onClick={() => {
+                  deleteProduct(product.productId);
+                }}
+              >
+                상품 삭제
               </button>
             </div>
           </div>
@@ -179,6 +218,14 @@ function AllProducts() {
           }`}
         />
       </div>
+      {showModal && (
+        <div className="confirm-modal">
+          <div className="confirm-modal-content">
+            <p>{modalMessage}</p>
+            <button onClick={() => closeModal()}>확인</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -67,13 +67,13 @@
 }
 
 .product-small-info>a:first-child {
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     font-weight: bold;
     margin: 15px 0px 7px 0px;
 }
 
 .product-small-info>a:last-child {
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     font-weight: bold;
     margin: 15px 0px 5px 0px;
 }

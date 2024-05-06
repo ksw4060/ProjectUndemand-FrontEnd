@@ -7,6 +7,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const [parentCategoryName, setParentCategoryName] = useState("");
   const [childCategoryName, setChildCategoryName] = useState("");
   const [parentId, setParentId] = useState("");
+  const [delCategoryId, setDelCategoryId] = useState("");
   const [productName, setProductName] = useState("");
   const [productType, setProductType] = useState("WOMAN");
   const [price, setPrice] = useState("");
@@ -26,12 +27,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const [additionalStock, setAdditionalStock] = useState("");
   const [color, setColor] = useState("");
   const [colorId, setColorId] = useState("");
-  const [imageFile, setImageFile] = useState([]);
+  const [thumbnailImageFile, setThumbnailImageFile] = useState([]);
+  const [contentImageFile, setContentImageFile] = useState([]);
   const [thumbnailId, setThumbnailId] = useState("");
-
-  const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
-  };
 
   const parentCategoryCreate = async () => {
     try {
@@ -39,6 +37,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         "http://localhost:8080/api/v1/categorys/parent",
         {
           name: parentCategoryName,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
       setShowModal(true);
@@ -64,6 +67,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         `http://localhost:8080/api/v1/categorys/child/${parentId}`,
         {
           name: childCategoryName,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
       setShowModal(true);
@@ -83,6 +91,31 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     }
   };
 
+  const handleDeleteCategoryBtn = async () => {
+    try {
+      await axios.post(
+        `http://localhost:8080/api/v1/categorys/${delCategoryId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
+      setShowModal(true);
+      setModalMessage(`카테고리를 삭제하였습니다.`);
+    } catch (error) {
+      console.error("Error creating child category:", error);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    setThumbnailImageFile(e.target.files[0]);
+  };
+
+  const handleContentImageChange = (e) => {
+    setContentImageFile(e.target.files[0]);
+  };
+
   const productCreate = async () => {
     try {
       const formData = new FormData();
@@ -94,11 +127,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
       formData.append("isDiscount", isDiscount);
       formData.append("discountRate", parseInt(discountRate));
       formData.append("isRecommend", isRecommend);
-      formData.append("images", imageFile);
+      formData.append("thumbnail_images", thumbnailImageFile);
+      formData.append("content_images", contentImageFile);
 
       await axios.post("http://localhost:8080/api/v1/products/new", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("Authorization"),
         },
       });
       setShowModal(true);
@@ -115,7 +150,8 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
       price &&
       productInfo &&
       manufacturer &&
-      imageFile
+      thumbnailImageFile &&
+      contentImageFile
     ) {
       await productCreate();
     } else {
@@ -126,9 +162,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const imageDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`
+        `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
       );
-      console.log(response.data);
       setShowModal(true);
       setModalMessage(`${response.data}`);
     } catch (error) {
@@ -157,6 +197,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           isDiscount: isDiscount,
           discountRate: discountRate,
           isRecommend: isRecommend,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
       setShowModal(true);
@@ -180,9 +225,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         `http://localhost:8080/api/v1/color/new`,
         {
           color: color,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
-      console.log(response.data);
       setShowModal(true);
       setModalMessage(`${response.data}`);
     } catch (error) {
@@ -201,9 +250,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const colorDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/color/${colorId}`
+        `http://localhost:8080/api/v1/color/${colorId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
       );
-      console.log(response.data);
       setModalMessage(`${response.data}`);
       setShowModal(true);
     } catch (error) {
@@ -221,7 +274,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
 
   const inventoryCreate = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:8080/api/v1/inventory/new`,
         {
           productId: selectedProductData,
@@ -232,9 +285,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           isRestockAvailable: isRestockAvailable,
           isRestocked: isRestocked,
           isSoldOut: isSoldOut,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
-      console.log(response.data);
       setShowModal(true);
       setModalMessage(`인벤토리를 생성하였습니다.`);
     } catch (error) {
@@ -252,7 +309,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
 
   const inventoryUpdate = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `http://localhost:8080/api/v1/inventory/${selectedProductData.inventoryId}`,
         {
           categoryId: categoryId,
@@ -260,9 +317,13 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           isRestockAvailable: isRestockAvailable,
           isRestocked: isRestocked,
           isSoldOut: isSoldOut,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
-      console.log(response.data);
       setShowModal(true);
       setModalMessage(`인벤토리를 수정하였습니다.`);
     } catch (error) {
@@ -271,18 +332,58 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   };
 
   const handleInventoryUpdateSubmitBtn = async () => {
-    if (
-      colorId &&
-      categoryId &&
-      size
-      // additionalStock &&
-      // isRestockAvailable &&
-      // isRestocked &&
-      // isSoldOut
-    ) {
+    if (colorId && categoryId && size) {
       await inventoryUpdate();
     } else {
       alert("모든 입력란을 작성해 주세요.");
+    }
+  };
+
+  const handleThumbnailSubmitBtn = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("productId", selectedProductData.productId);
+      formData.append("image", thumbnailImageFile);
+
+      await axios.post(
+        "http://localhost:8080/api/v1/thumbnail/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
+
+      setShowModal(true);
+      setModalMessage(`상품 썸네일을 추가하였습니다.`);
+    } catch (error) {
+      console.error(`Error submit thumbnail:`, error);
+    }
+  };
+
+  const handleContentSubmitBtn = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("productId", selectedProductData.productId);
+      formData.append("image", contentImageFile);
+
+      await axios.post(
+        "http://localhost:8080/api/v1/product/image/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
+
+      setShowModal(true);
+      setModalMessage(`상품 상세 이미지를 추가하였습니다.`);
+    } catch (error) {
+      console.error(`Error submit thumbnail:`, error);
     }
   };
 
@@ -426,7 +527,6 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
               />
               <button onClick={handleColorCreateSubmitBtn}>색상 등록</button>
             </div>
-
             <div className="input-section">
               <h2>색상 삭제</h2>
               <input
@@ -538,11 +638,19 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
                 </select>
               </div>
               <div className="modal-pd-image-submit">
-                <span>상품 이미지</span>
+                <span>상품 썸네일 이미지</span>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
+                />
+              </div>
+              <div className="modal-pd-cont-img-submit">
+                <span>상품 상세 이미지</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleContentImageChange}
                 />
               </div>
               <button onClick={handleProductCreateSubmitBtn}>상품 등록</button>
@@ -627,6 +735,17 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
                 하위 카테고리 생성
               </button>
             </div>
+
+            <div className="input-section">
+              <h2>카테고리 삭제</h2>
+              <input
+                type="text"
+                value={delCategoryId}
+                onChange={(e) => setDelCategoryId(e.target.value)}
+                placeholder="삭제할 카테고리의 ID를 입력해주세요."
+              />
+              <button onClick={handleDeleteCategoryBtn}>카테고리 삭제</button>
+            </div>
           </div>
         </div>
       )}
@@ -647,12 +766,6 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           </div>
           <div className="management-modal-input-container">
             <div className="input-section">
-              {/* <input
-                type="number"
-                value={productId}
-                onChange={(e) => setProductId(e.target.value)}
-                placeholder="Enter product ID"
-              /> */}
               <input
                 type="number"
                 value={colorId}
@@ -770,6 +883,57 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
               <button onClick={handleInventoryUpdateSubmitBtn}>
                 Update Inventory
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {type === "image management" && (
+        <div
+          className={`management-modal-container ${
+            showModal && "confirm-modal-active"
+          }`}
+        >
+          <div className="management-modal-top">
+            <h2>상품 이미지 관리</h2>
+            <MdClose
+              onClick={() => {
+                modalClose();
+              }}
+              className="close-management-modal"
+            />
+          </div>
+          <div className="management-modal-input-container">
+            <div className="modal-pd-image-submit">
+              <span>상품 썸네일 이미지</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              <button onClick={() => handleThumbnailSubmitBtn()}>
+                썸네일 추가
+              </button>
+            </div>
+            <div className="modal-pd-cont-img-submit">
+              <span>상품 상세 이미지</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleContentImageChange}
+              />
+              <button onClick={() => handleContentSubmitBtn()}>
+                상세 이미지 추가
+              </button>
+            </div>
+            <div className="modal-pd-image-del">
+              <span>썸네일 이미지 삭제</span>
+              <input
+                type="text"
+                value={thumbnailId}
+                onChange={(e) => setThumbnailId(e.target.value)}
+                placeholder="삭제할 상품 이미지의 ID를 입력해주세요."
+              />
+              <button onClick={handleImageDelete}>썸네일 이미지 삭제</button>
             </div>
           </div>
         </div>

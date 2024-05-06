@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
@@ -13,10 +12,9 @@ function Topbar({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   isLoggedin,
-  memberId,
+  profileData,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
-  const [profileData, setProfileData] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
   const categoryLinks = [
     {
@@ -60,21 +58,6 @@ function Topbar({
   };
 
   /**
-   * 2024.05.04 프로필로부터 데이터를 가져오기 위한 작업
-   */
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
-      .then((response) => {
-        setProfileData(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [memberId]);
-
-  /**
    * 로그아웃 클릭 시 , 브라우저에 저장된 Access, Refresh 를 제거합니다.
    * @returns
    */
@@ -116,6 +99,15 @@ function Topbar({
           <img src="/ODD_LOGO_FULL.png" alt="ODD Logo" />
         </Link>
         <div className="topbar-navbar-narrow">
+          <Link
+            to="/cart"
+            onClick={() => {
+              setIsBurgerClicked(false);
+              setIsMenuVisible(false);
+            }}
+          >
+            <MdOutlineShoppingBag />
+          </Link>
           <MdOutlineMenu
             className="burger-menu-btn"
             onClick={() => handleBurgerBtnClick()}
@@ -152,23 +144,32 @@ function Topbar({
                     <li>
                       <Link
                         to="/signup"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
-                        회원가입
+                        Join
                       </Link>
                     </li>
                     <li>
                       <Link
                         to="/login"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
-                        로그인
+                        Log In
                       </Link>
                     </li>
                     <li>
                       <Link
                         to="/inquiry"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
                         Q&A
                       </Link>
@@ -177,53 +178,58 @@ function Topbar({
                 ) : (
                   <ul className="user-btn-box logged-in-true">
                     <li className="hello-user">
-                      <Link to="/user/mypage">
-                        <span>회원님, 반가워요!</span>
-                        <img src="" alt="" />
+                      <Link
+                        to="/user/mypage"
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
+                      >
+                        <span>
+                          {profileData && profileData.nickname
+                            ? `Hello, ${profileData.nickname}!`
+                            : `Hello, ODD!`}
+                        </span>
+                        <img
+                          src={
+                            profileData && profileData.profileImgPath
+                              ? profileData.profileImgPath
+                              : "https://defaultst.imweb.me/common/img/default_profile.png"
+                          }
+                          alt="Profile img"
+                        />
                       </Link>
-                      <ul className="user-dropdown-menu">
-                        <li className="mypage-btn">
-                          <Link
-                            to="/user/mypage"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            마이페이지
-                          </Link>
-                        </li>
-                        <li className="wishlist-btn">
-                          <Link
-                            to="/wishlist"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            위시리스트
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/inquiry"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            Q&A
-                          </Link>
-                        </li>
-                        <li className="logout-btn">
-                          <Link
-                            onClick={() => {
-                              handleLogoutClick();
-                              setIsBurgerClicked(false);
-                            }}
-                          >
-                            로그아웃
-                          </Link>
-                        </li>
-                      </ul>
+                    </li>
+                    <li className="wishlist-btn">
+                      <Link
+                        to="/wishlist"
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
+                      >
+                        Wish List
+                      </Link>
                     </li>
                     <li>
                       <Link
-                        to="/cart"
-                        onClick={() => setIsBurgerClicked(false)}
+                        to="/inquiry"
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
-                        <MdOutlineShoppingBag />
+                        Q&A
+                      </Link>
+                    </li>
+                    <li className="logout-btn">
+                      <Link
+                        onClick={() => {
+                          handleLogoutClick();
+                          setIsBurgerClicked(false);
+                        }}
+                      >
+                        Log out
                       </Link>
                     </li>
                   </ul>
@@ -268,18 +274,6 @@ function Topbar({
                                 <Link
                                   to={`${categoryLinks[hoveredLinkIndex].to}-${content.name}`}
                                   onClick={() => {
-                                    // localStorage.setItem(
-                                    //   "selectedCategoryOption",
-                                    //   content.name
-                                    // );
-                                    // localStorage.setItem(
-                                    //   "parentCategoryId",
-                                    //   content.categoryId
-                                    // );
-                                    // localStorage.removeItem("childCategoryId");
-                                    // localStorage.removeItem(
-                                    //   "selectedSubCategoryOption"
-                                    // );
                                     handleCategoryOptionSelect(content);
                                   }}
                                 >
@@ -295,18 +289,10 @@ function Topbar({
                                         "selectedCategoryOption",
                                         content.name
                                       );
-                                      // localStorage.setItem(
-                                      //   "selectedSubCategoryOption",
-                                      //   children.name
-                                      // );
                                       localStorage.setItem(
                                         "parentCategoryId",
                                         content.categoryId
                                       );
-                                      // localStorage.setItem(
-                                      //   "childCategoryId",
-                                      //   children.categoryId
-                                      // );
                                       handleSubcategoryOptionSelect(children);
                                     }}
                                   >
@@ -327,10 +313,10 @@ function Topbar({
           {!isLoggedin ? (
             <ul className="userbox logged-in-false">
               <li>
-                <Link to="/signup">회원가입</Link>
+                <Link to="/signup">Join</Link>
               </li>
               <li>
-                <Link to="/login">로그인</Link>
+                <Link to="/login">Log In</Link>
               </li>
               <li>
                 <Link to="/inquiry">Q&A</Link>
@@ -347,8 +333,8 @@ function Topbar({
                 <Link to="/user/mypage">
                   <span>
                     {profileData && profileData.nickname
-                      ? `${profileData.nickname}님, 반가워요!`
-                      : `회원님, 반가워요!`}
+                      ? `Hello, ${profileData.nickname}!`
+                      : `Hello, ODD!`}
                   </span>
                   <img
                     src={
@@ -361,16 +347,16 @@ function Topbar({
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
-                    <Link to="/user/mypage">마이페이지</Link>
+                    <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">위시리스트</Link>
+                    <Link to="/wishlist">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>
                   </li>
                   <li className="logout-btn">
-                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                    <Link onClick={handleLogoutClick}>Log Out</Link>
                   </li>
                 </ul>
               </li>

@@ -38,7 +38,7 @@
 }
 
 .topbar-logo > a > span {
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
 }
 
 .topbar-navbar-normal {
@@ -83,18 +83,17 @@
 }
 
 .categorybox>li>a {
-    color: rgb(0, 0, 0);
-    font-size: 18px;
+    color: rgb(34, 34, 34);
+    font-size: 20px;
     font-weight: bold;
     padding: 13px 0px;
 }
 
 .hovered {
-    border-bottom: 2px solid rgb(0, 0, 0);
+    border-bottom: 2px solid rgb(34, 34, 34);
 }
 
 .userbox {
-    width: 200px;
     height: 60px;
     display: flex;
     justify-content: space-between;
@@ -102,16 +101,22 @@
 }
 
 .userbox>li>a {
-    font-size: 17px;
-    color: rgb(0, 0, 0);
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(34, 34, 34);
     padding: 13px 0px;
+}
+
+.logged-in-false>li:nth-child(2) {
+    margin: 0px 30px;
 }
 
 .logged-in-true>li:first-child>a {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 21px;
+    font-size: 25px;
+    margin-right: 30px;
 }
 
 .accordion-menu {
@@ -157,7 +162,7 @@
 .option-title>a {
     font-size: 20px;
     font-weight: bold;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
 }
 
 .option-title:hover {
@@ -175,12 +180,11 @@
 
 .option>a:hover {
     font-weight: bold;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     cursor: pointer;
 }
 
 .hello-user {
-    width: 150px;
     position: relative;
 }
 
@@ -198,6 +202,7 @@
     object-fit: cover;
     object-position: center;
     border-radius: 50%;
+    margin-left: 10px;
 }
 
 .user-dropdown-menu {
@@ -211,11 +216,12 @@
     visibility: hidden;
     position: absolute;
     top: 95%;
-    right: -5px;
+    right: -25px;
     background-color: rgb(255, 255, 255);
     box-shadow: 0 10px 20px rgba(0,0,0,0.19);
     transition: opacity 0.2s ease, visibility 0.3s ease;
     border-radius: 0px 0px 8px 8px;
+    z-index: 1000;
 }
 
 .hello-user:hover .user-dropdown-menu {
@@ -237,7 +243,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    color: rgb(0, 0, 0);
+    color: rgb(34, 34, 34);
     padding-left: 25px;
 }
 
@@ -250,6 +256,11 @@
         position: relative;
     }
 
+    .topbar-logo {
+        width: 90%;
+        height: 120px;
+    }
+
     .topbar-logo > a {
         width: 150px;
         display: flex;
@@ -258,7 +269,7 @@
     }
     
     .topbar-logo > a > img {
-        width: 150px;
+        width: 130px;
     }
 
     .topbar-navbar-normal {
@@ -273,15 +284,22 @@
         width: 30%;
         height: 100%;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
         padding-top: 10px;
+    }
+
+    .topbar-navbar-narrow>a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(34, 34, 34);
     }
 
     .burger-menu-btn {
         width: 40px;
         height: 40px;
-        color: rgb(17, 17, 17);
+        color: rgb(34, 34, 34);
         cursor: pointer;
     }
 
@@ -291,7 +309,7 @@
         justify-content: center;
         align-items: center;
         position: absolute;
-        top: 90%;
+        top: 95%;
         right: 0px;
         background-color: rgb(255, 255, 255);
         z-index: 100;
@@ -299,14 +317,14 @@
     }
 
     .nnavbar-accordion-menu {
-        width: 70%;
+        width: 90%;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
     }
 
     .conditions-container {
-        width: 300px;
+        width: 150px;
         display: flex;
         flex-flow: column;
         justify-content: space-between;
@@ -315,23 +333,36 @@
 
     .conditions-container>div>a {
         font-size: 18px;
-        color: rgb(17, 17, 17);
+        color: rgb(34, 34, 34);
     }
 
     .user-btn-container {
-        width: 100px;
+        width: 170px;
     }
 
     .user-btn-box {
+        width: 170px;
         display: flex;
         flex-flow: column;
         justify-content: space-between;
         align-items: flex-end;
     }
 
+    .logged-in-false>li:nth-child(2) {
+        margin: 0px 0px;
+    }
+
+    .logged-in-true>li:first-child>a {
+        margin-right: 0;
+    }
+
+    .hello-user>a>span {
+        font-size: 20px;
+    }
+
     .user-btn-box>li>a {
         font-size: 18px;
-        color: rgb(17, 17, 17);
+        color: rgb(34, 34, 34);
     }
 
     .burger-menu-drop {

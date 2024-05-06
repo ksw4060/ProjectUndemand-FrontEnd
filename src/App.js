@@ -25,6 +25,7 @@ function App() {
   const [categoryData, setCategoryData] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
+  const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
@@ -50,6 +51,18 @@ function App() {
     ChannelTalk.boot(channelTalkConfig);
     ChannelTalk.setAppearance("system");
   };
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
+      .then((response) => {
+        setProfileData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [memberId]);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -210,7 +223,7 @@ function App() {
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
             // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
-            memberId={memberId}
+            profileData={profileData}
           />
         </div>
       ) : (
@@ -251,6 +264,7 @@ function App() {
                 setCategoryId={setCategoryId}
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
+                profileData={profileData}
               />
             }
           />
