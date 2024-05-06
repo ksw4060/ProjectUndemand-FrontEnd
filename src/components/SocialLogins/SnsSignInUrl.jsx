@@ -5,7 +5,7 @@ const SnsSignInUrl = ({ type }) => {
   const handleSignIn = () => {
     console.log("============ handleKakaoSignIn 시작 ============");
     const KAKAO_REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
-    const KAKAO_REDIRECT_URL = "http://localhost:3000/login/oauth2/code/kakao";
+    const KAKAO_REDIRECT_URL = process.env.REACT_APP_KAKAO_REDIRECT_URL;
 
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_REST_API_KEY}&redirect_uri=${KAKAO_REDIRECT_URL}&response_type=code`;
   };

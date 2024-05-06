@@ -204,7 +204,7 @@ function MyReviewPage() {
           reviewId={selectedRId}
           memberId={memberId}
           modalClose={closeRUModal}
-          updateReviewData={fetchProductReviewData}
+          updateReviewData={productReviewData}
         ></ReviewUpdateModal>
       )}
     </div>

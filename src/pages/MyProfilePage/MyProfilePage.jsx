@@ -67,7 +67,7 @@ function MyProfilePage({ isLoggedin, memberId }) {
           <div className="profile-image-container">
             <img
               src={
-                profileData.profileImgPath ||
+                `http://localhost:8080${profileData.profileImgPath}` ||
                 "https://defaultst.imweb.me/common/img/default_profile.png"
               }
               alt="프로필 이미지"
