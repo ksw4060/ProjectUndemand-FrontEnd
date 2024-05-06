@@ -13,7 +13,12 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
   const fetchWishlist = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/wishlist/${memberId}`
+        `http://localhost:8080/api/v1/wishlist/${memberId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
       );
       const memberWishlist = response.data;
       memberWishlist.forEach((wishProduct) => {
@@ -32,14 +37,24 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
         if (!isWishlist) {
           // Add to wishlist
           const response = await axios.post(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            {
+              headers: {
+                Authorization: localStorage.getItem("Authorization"),
+              },
+            }
           );
           console.log(response.data);
           setIsWishlist(true);
         } else {
           // Remove from wishlist
           const response = await axios.delete(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`
+            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            {
+              headers: {
+                Authorization: localStorage.getItem("Authorization"),
+              },
+            }
           );
           console.log(response.data);
           setIsWishlist(false);

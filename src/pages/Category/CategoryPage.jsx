@@ -21,6 +21,7 @@ function CategoryPage({
   setCategoryId,
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
+  profileData,
 }) {
   const { condition } = useParams();
   const [urlCondition, setUrlCondition] = useState(condition.split("-")[0]);
@@ -311,10 +312,10 @@ function CategoryPage({
           {!isLoggedin ? (
             <ul className="userbox logged-in-false">
               <li>
-                <Link to="/signup">회원가입</Link>
+                <Link to="/signup">Join</Link>
               </li>
               <li>
-                <Link to="/login">로그인</Link>
+                <Link to="/login">Log in</Link>
               </li>
               <li>
                 <Link to="/inquiry">Q&A</Link>
@@ -329,21 +330,32 @@ function CategoryPage({
               </li>
               <li className="hello-user">
                 <Link to="/user/mypage">
-                  <span>회원님, 반가워요!</span>
-                  <img src="" alt="" />
+                  <span>
+                    {profileData && profileData.nickname
+                      ? `Hello, ${profileData.nickname}!`
+                      : `Hello, ODD!`}
+                  </span>
+                  <img
+                    src={
+                      profileData && profileData.profileImgPath
+                        ? profileData.profileImgPath
+                        : "https://defaultst.imweb.me/common/img/default_profile.png"
+                    }
+                    alt="Profile img"
+                  />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
-                    <Link to="/user/mypage">마이페이지</Link>
+                    <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">위시리스트</Link>
+                    <Link to="/wishlist">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>
                   </li>
                   <li className="logout-btn">
-                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                    <Link onClick={handleLogoutClick}>Log Out</Link>
                   </li>
                 </ul>
               </li>
