@@ -152,17 +152,70 @@ function Topbar({
                     <li>
                       <Link
                         to="/signup"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
                       >
-                        회원가입
+                        Join
                       </Link>
                     </li>
                     <li>
                       <Link
                         to="/login"
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
+                      >
+                        Log in
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/inquiry"
+                        onClick={() => {
+                          setIsBurgerClicked(false);
+                          setIsMenuVisible(false);
+                        }}
+                      >
+                        Q&A
+                      </Link>
+                    </li>
+                  </ul>
+                ) : (
+                  <ul className="user-btn-box logged-in-true">
+                    <li>
+                      <Link
+                        to="/cart"
                         onClick={() => setIsBurgerClicked(false)}
                       >
-                        로그인
+                        <MdOutlineShoppingBag />
+                      </Link>
+                    </li>
+                    <li className="hello-user">
+                      <Link to="/user/mypage">
+                        <span>
+                          {profileData && profileData.nickname
+                            ? `Hello, ${profileData.nickname}!`
+                            : `Hello, ODD!`}
+                        </span>
+                        <img
+                          src={
+                            profileData && profileData.profileImgPath
+                              ? profileData.profileImgPath
+                              : "https://defaultst.imweb.me/common/img/default_profile.png"
+                          }
+                          alt="Profile img"
+                        />
+                      </Link>
+                    </li>
+                    <li className="wishlist-btn">
+                      <Link
+                        to="/wishlist"
+                        onClick={() => setIsBurgerClicked(false)}
+                      >
+                        Wish List
                       </Link>
                     </li>
                     <li>
@@ -173,57 +226,14 @@ function Topbar({
                         Q&A
                       </Link>
                     </li>
-                  </ul>
-                ) : (
-                  <ul className="user-btn-box logged-in-true">
-                    <li className="hello-user">
-                      <Link to="/user/mypage">
-                        <span>회원님, 반가워요!</span>
-                        <img src="" alt="" />
-                      </Link>
-                      <ul className="user-dropdown-menu">
-                        <li className="mypage-btn">
-                          <Link
-                            to="/user/mypage"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            마이페이지
-                          </Link>
-                        </li>
-                        <li className="wishlist-btn">
-                          <Link
-                            to="/wishlist"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            위시리스트
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            to="/inquiry"
-                            onClick={() => setIsBurgerClicked(false)}
-                          >
-                            Q&A
-                          </Link>
-                        </li>
-                        <li className="logout-btn">
-                          <Link
-                            onClick={() => {
-                              handleLogoutClick();
-                              setIsBurgerClicked(false);
-                            }}
-                          >
-                            로그아웃
-                          </Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
+                    <li className="logout-btn">
                       <Link
-                        to="/cart"
-                        onClick={() => setIsBurgerClicked(false)}
+                        onClick={() => {
+                          handleLogoutClick();
+                          setIsBurgerClicked(false);
+                        }}
                       >
-                        <MdOutlineShoppingBag />
+                        Log out
                       </Link>
                     </li>
                   </ul>
@@ -327,10 +337,10 @@ function Topbar({
           {!isLoggedin ? (
             <ul className="userbox logged-in-false">
               <li>
-                <Link to="/signup">회원가입</Link>
+                <Link to="/signup">Join</Link>
               </li>
               <li>
-                <Link to="/login">로그인</Link>
+                <Link to="/login">Log in</Link>
               </li>
               <li>
                 <Link to="/inquiry">Q&A</Link>
@@ -347,8 +357,8 @@ function Topbar({
                 <Link to="/user/mypage">
                   <span>
                     {profileData && profileData.nickname
-                      ? `${profileData.nickname}님, 반가워요!`
-                      : `회원님, 반가워요!`}
+                      ? `Hello, ${profileData.nickname}!`
+                      : `Hello, ODD!`}
                   </span>
                   <img
                     src={
@@ -361,16 +371,16 @@ function Topbar({
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
-                    <Link to="/user/mypage">마이페이지</Link>
+                    <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">위시리스트</Link>
+                    <Link to="/wishlist">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>
                   </li>
                   <li className="logout-btn">
-                    <Link onClick={handleLogoutClick}>로그아웃</Link>
+                    <Link onClick={handleLogoutClick}>Log out</Link>
                   </li>
                 </ul>
               </li>

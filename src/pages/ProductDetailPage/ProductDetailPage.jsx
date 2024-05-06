@@ -37,7 +37,8 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedInvenId, setSelectedInvenId] = useState(null);
   const [firstClick, setFirstClick] = useState(true);
-  const [thumbnailImage, setThumbnailImage] = useState(null);
+  const [thumbnailImages, setThumbnailImages] = useState([]);
+  const [selectedThumbnail, setSelectedThumbnail] = useState();
 
   const fetchProduct = async () => {
     try {
@@ -66,7 +67,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
       const response = await axios.get(
         `http://localhost:8080/api/v1/thumbnail/${productId}`
       );
-      setThumbnailImage(response.data[0]);
+      setThumbnailImages(response.data);
     } catch (error) {
       console.error("Error fetching thumbnail:", error);
     }
@@ -297,10 +298,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     handleSearchInvenId();
   }, [selectedColor, selectedSize, productInventory]);
 
-  useEffect(() => {
-    console.log(productReviewData);
-  }, [productReviewData]);
-
   return (
     <div className="detail-page">
       {loading ? (
@@ -310,20 +307,28 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           <div className="img-and-option-section">
             <div className="img-box">
               <ul className="thumbnail-img-container">
-                <li className="thumbnail-img"></li>
-                <li className="thumbnail-img"></li>
-                <li className="thumbnail-img"></li>
-                <li className="thumbnail-img"></li>
-                <li className="thumbnail-img"></li>
+                {thumbnailImages.map((thumbnailImage, index) => {
+                  return (
+                    <li key={index} className="thumbnail-img">
+                      <img
+                        src={`http://localhost:8080${thumbnailImage}`}
+                        alt="Thumbnail"
+                        onClick={() => setSelectedThumbnail(thumbnailImage)}
+                      />
+                    </li>
+                  );
+                })}
               </ul>
               <div className="hero-img-container">
-                {thumbnailImage && (
-                  <img
-                    src={`http://localhost:8080${thumbnailImage}`}
-                    alt="Thumbnail"
-                    className="hero-img"
-                  />
-                )}
+                <img
+                  src={`http://localhost:8080${
+                    selectedThumbnail !== undefined
+                      ? selectedThumbnail
+                      : thumbnailImages[0]
+                  }`}
+                  alt="Thumbnail"
+                  className="hero-img"
+                />
               </div>
             </div>
             <div className="option-and-info-box">
@@ -558,7 +563,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                     productReviewData={productReviewData}
                     productInquiryData={productInquiryData}
                     product={product}
-                    thumbnailImage={thumbnailImage}
+                    thumbnailImage={thumbnailImages[0]}
                   ></ArticleViewModal>
                 )}
                 {reviewWritingAndInquiryPostingModalOpen && (
@@ -579,24 +584,16 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           <div className="detail-section">
             <div className="detail-img-box">
               <ul className="detail-img-container">
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
-                <li className="detail-img">
-                  <img src="" alt="" />
-                </li>
+                {product.contentImages.map((contentImage, index) => {
+                  return (
+                    <li key={index} className="detail-img">
+                      <img
+                        src={`http://localhost:8080${contentImage}`}
+                        alt=""
+                      />
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>

@@ -143,6 +143,16 @@ function AllProducts() {
               >
                 상품 수정
               </button>
+              <button
+                className="admin-page-pd-btn"
+                onClick={() => {
+                  openManagementModal();
+                  setSelectedProductData(product);
+                  setModalType("image management");
+                }}
+              >
+                상품 이미지
+              </button>
             </div>
           </div>
         </div>
