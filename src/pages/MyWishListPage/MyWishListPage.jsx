@@ -6,14 +6,28 @@ function MyWishListPage({ isLoggedin, memberId }) {
   const [wishLists, setWishLists] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/wishlist/${memberId}`)
-      .then((response) => {
+    const fetchWishLists = async () => {
+      try {
+        // 로컬 스토리지에서 Authorization 토큰 가져오기
+        const authorization = localStorage.getItem("Authorization");
+
+        // Authorization 헤더를 포함한 axios 요청
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/wishlist/${memberId}`,
+          {
+            headers: {
+              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+            },
+          }
+        );
+
         setWishLists(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error(`잘못된 요청입니다:`, error);
-      });
+      }
+    };
+
+    fetchWishLists();
   }, [memberId]);
 
   return (

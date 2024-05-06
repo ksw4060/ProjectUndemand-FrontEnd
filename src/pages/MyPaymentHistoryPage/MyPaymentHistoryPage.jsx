@@ -8,9 +8,19 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       try {
+        // 로컬 스토리지에서 Authorization 토큰 가져오기
+        const authorization = localStorage.getItem("Authorization");
+
+        // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
-          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+          `http://localhost:8080/api/v1/paymenthistory/${memberId}`,
+          {
+            headers: {
+              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+            },
+          }
         );
+
         setPaymentHistory(response.data);
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);

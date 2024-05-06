@@ -10,41 +10,47 @@ function MyProfilePage({ isLoggedin, memberId }) {
 
   console.log("로그인여부 : ", isLoggedin);
 
+  // 공통 데이터 가져오는 함수
+  const fetchUserData = async (url, setter) => {
+    try {
+      const authorization = localStorage.getItem("Authorization");
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: authorization,
+        },
+      });
+      setter(response.data);
+    } catch (error) {
+      console.error(`잘못된 요청입니다:`, error);
+    }
+  };
+
   // 회원 프로필 데이터
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/profile/${memberId}`)
-      .then((response) => {
-        setProfileData(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(`잘못된 요청입니다:`, error);
-      });
+    const fetchProfileData = async () => {
+      await fetchUserData(
+        `http://localhost:8080/api/v1/profile/${memberId}`,
+        setProfileData
+      );
+    };
+
+    fetchProfileData();
   }, [memberId]);
 
   // 결제 내역 데이터
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/paymenthistory/${memberId}`)
-      .then((response) => {
-        setPaymentHistory(response.data);
-      })
-      .catch((error) => {
-        console.error(`잘못된 요청입니다:`, error);
-      });
+    fetchUserData(
+      `http://localhost:8080/api/v1/paymenthistory/${memberId}`,
+      setPaymentHistory
+    );
   }, [memberId]);
 
   // 찜한 상품 데이터
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/v1/wishlist/${memberId}`)
-      .then((response) => {
-        setWishLists(response.data);
-      })
-      .catch((error) => {
-        console.error(`잘못된 요청입니다:`, error);
-      });
+    fetchUserData(
+      `http://localhost:8080/api/v1/wishlist/${memberId}`,
+      setWishLists
+    );
   }, [memberId]);
 
   if (!profileData) {

@@ -11,42 +11,36 @@ import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
 function CartPage({ memberId, isLoggedin }) {
   const navigate = useNavigate();
-  const axiosInstance = axios.create({ withCredentials: true });
   const [cartProducts, setCartProducts] = useState([]);
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
+        const authorization = localStorage.getItem("Authorization");
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`
+          `http://localhost:8080/api/v1/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: authorization,
+            },
+          }
         );
         setCartProducts(response.data);
-
-        const productThumbnails = {};
-        for (let i = 0; i < response.data.length; i++) {
-          const productId = response.data[i].productId;
-
-          axios
-            .get(`http://localhost:8080/api/v1/thumbnail/${productId}`)
-            .then((thumbnailResponse) => {
-              const thumbnailUrl = thumbnailResponse.data[0]; //grab the first thumbnail url from the response array
-              console.log(`Thumbnail for product ${productId}:`, thumbnailUrl); // Log the thumbnail url here
-
-              setCartProducts((currentProducts) =>
-                currentProducts.map((product) =>
-                  product.productId === productId
-                    ? { ...product, productImage: thumbnailUrl }
-                    : product
-                )
-              );
-            })
-            .catch((error) =>
-              console.error(
-                `Failed to fetch thumbnail for product with ID: ${productId}`,
-                error
-              )
-            );
-        }
+        // const productsWithThumbnails = await Promise.all(
+        //   response.data.map(async (product) => {
+        //     const thumbnailResponse = await axios.get(
+        //       `http://localhost:8080/api/v1/thumbnail/${product.productId}`,
+        //       {
+        //         headers: {
+        //           Authorization: authorization,
+        //         },
+        //       }
+        //     );
+        //     const thumbnailUrl = thumbnailResponse.data[0];
+        //     return { ...product, productImage: thumbnailUrl };
+        //   })
+        // );
+        // setCartProducts(productsWithThumbnails);
       } catch (error) {
         console.error(`Failed to fetch cart:`, error);
       }
@@ -55,64 +49,75 @@ function CartPage({ memberId, isLoggedin }) {
     fetchCart();
   }, [memberId]);
 
-  const handleIncrement = (index) => {
-    const updatedCartProducts = [...cartProducts];
-    const updatedProduct = { ...updatedCartProducts[index] };
-    updatedProduct.quantity++;
-    updatedCartProducts[index] = updatedProduct;
-    setCartProducts(updatedCartProducts);
-    updateQuantityOnServer(updatedProduct.cartId, updatedProduct.quantity);
+  const handleIncrement = async (cartId, quantity) => {
+    const newQuantity = quantity + 1;
+    await updateQuantityOnServer(cartId, newQuantity);
   };
 
-  const handleDecrement = (index) => {
-    const updatedCartProducts = [...cartProducts];
-    const updatedProduct = { ...updatedCartProducts[index] };
-    if (updatedProduct.quantity > 1) {
-      updatedProduct.quantity--;
-      updatedCartProducts[index] = updatedProduct;
-      setCartProducts(updatedCartProducts);
-      updateQuantityOnServer(updatedProduct.cartId, updatedProduct.quantity);
+  const handleDecrement = async (cartId, quantity) => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      await updateQuantityOnServer(cartId, newQuantity);
     }
   };
 
   const updateQuantityOnServer = async (cartId, quantity) => {
     try {
-      await axios.put(`http://localhost:8080/api/v1/cart/${cartId}`, {
-        quantity: quantity,
-      });
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/cart/${memberId}`
+      const authorization = localStorage.getItem("Authorization");
+      await axios.put(
+        `http://localhost:8080/api/v1/cart/${cartId}`,
+        { quantity: quantity },
+        {
+          headers: {
+            Authorization: authorization,
+          },
+        }
       );
-      const updatedProduct = response.data;
-      setCartProducts(updatedProduct);
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/cart/${memberId}`,
+        {
+          headers: {
+            Authorization: authorization,
+          },
+        }
+      );
+      setCartProducts(response.data);
     } catch (error) {
-      console.error(`수량 및 가격 수정 실패 - cartId: ${cartId}`, error);
+      console.error(`Failed to update quantity - cartId: ${cartId}`, error);
     }
   };
 
   const handleRemoveBtn = async (cartId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/cart/${cartId}`);
+      const authorization = localStorage.getItem("Authorization");
+      await axios.delete(`http://localhost:8080/api/v1/cart/${cartId}`, {
+        headers: {
+          Authorization: authorization,
+        },
+      });
       const updatedCartProducts = cartProducts.filter(
         (product) => product.cartId !== cartId
       );
       setCartProducts(updatedCartProducts);
     } catch (error) {
-      console.error(`장바구니에서 상품 빼기 실패 - cartId: ${cartId}`, error);
+      console.error(
+        `Failed to remove product from cart - cartId: ${cartId}`,
+        error
+      );
     }
   };
 
-  const totalPrice = cartProducts.reduce((acc, cartProduct) => {
-    return acc + cartProduct.totalPrice;
-  }, 0);
-
   const handleOrderBtn = async () => {
     try {
+      const authorization = localStorage.getItem("Authorization");
       const cartIds = cartProducts.map((product) => product.cartId);
-      const response = await axiosInstance.post(
+      const response = await axios.post(
         `http://localhost:8080/api/v1/order/create`,
+        { cartIds },
         {
-          cartIds: cartIds,
+          headers: {
+            Authorization: authorization,
+          },
         }
       );
       console.log(response.data);
@@ -122,9 +127,13 @@ function CartPage({ memberId, isLoggedin }) {
         },
       });
     } catch (error) {
-      console.error("요청을 보내는 중 오류가 발생했습니다:", error);
+      console.error("Failed to place order:", error);
     }
   };
+
+  const totalPrice = cartProducts.reduce((acc, cartProduct) => {
+    return acc + cartProduct.totalPrice;
+  }, 0);
 
   return (
     <div className="cart-page">
@@ -161,10 +170,20 @@ function CartPage({ memberId, isLoggedin }) {
                       <span>{cartProduct.quantity}</span>
                       <div className="btn-flex-cart">
                         <MdOutlineKeyboardArrowUp
-                          onClick={() => handleIncrement(index)}
+                          onClick={() =>
+                            handleIncrement(
+                              cartProduct.cartId,
+                              cartProduct.quantity
+                            )
+                          }
                         />
                         <MdOutlineKeyboardArrowDown
-                          onClick={() => handleDecrement(index)}
+                          onClick={() =>
+                            handleDecrement(
+                              cartProduct.cartId,
+                              cartProduct.quantity
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -205,7 +224,7 @@ function CartPage({ memberId, isLoggedin }) {
             </div>
           </div>
           <div className="bill-bottom">
-            <button className="order-btn" onClick={() => handleOrderBtn()}>
+            <button className="order-btn" onClick={handleOrderBtn}>
               주문결제
             </button>
           </div>
