@@ -93,7 +93,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
 
   const handleDeleteCategoryBtn = async () => {
     try {
-      await axios.post(
+      await axios.delete(
         `http://localhost:8080/api/v1/categorys/${delCategoryId}`,
         {
           headers: {

@@ -6,12 +6,16 @@
     align-items: center;
 }
 
+.receipt-page>.topbar-logo>a {
+    color: rgb(34, 34, 34);
+}
+
 .receipt-page-title {
     width: 70%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 23px;
+    font-size: 25px;
     font-weight: bold;
 }
 
@@ -48,7 +52,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: 24px;
+    font-size: 25px;
     font-weight: bold;
 }
 
@@ -77,14 +81,14 @@
 }
 
 .receipt-products-info>span:nth-child(1) {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     color: rgb(34, 34, 34);
     padding-bottom: 15px;
 }
 
 .receipt-products-info>span {
-    font-size: 16px;
+    font-size: 18px;
     color: rgb(150, 150, 150);
     padding-bottom: 5px;
 }
@@ -113,7 +117,7 @@
 }
 
 .receipt-box>span {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     padding-bottom: 23px;
 }
@@ -122,7 +126,7 @@
     width: 15%;
     height: 60px;
     outline: none;
-    font-size: 17px;
+    font-size: 18px;
     color: rgb(255, 255, 255);
     background-color: rgb(34, 34, 34);
     cursor: pointer;

@@ -11,6 +11,7 @@ import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
 function CartPage({ memberId, isLoggedin }) {
   const navigate = useNavigate();
+  const axiosInstance = axios.create({ withCredentials: true }); // 결제 로직에서 중요한 녀석입니다. 삭제 금지.
   const [cartProducts, setCartProducts] = useState([]);
 
   useEffect(() => {
@@ -26,21 +27,6 @@ function CartPage({ memberId, isLoggedin }) {
           }
         );
         setCartProducts(response.data);
-        // const productsWithThumbnails = await Promise.all(
-        //   response.data.map(async (product) => {
-        //     const thumbnailResponse = await axios.get(
-        //       `http://localhost:8080/api/v1/thumbnail/${product.productId}`,
-        //       {
-        //         headers: {
-        //           Authorization: authorization,
-        //         },
-        //       }
-        //     );
-        //     const thumbnailUrl = thumbnailResponse.data[0];
-        //     return { ...product, productImage: thumbnailUrl };
-        //   })
-        // );
-        // setCartProducts(productsWithThumbnails);
       } catch (error) {
         console.error(`Failed to fetch cart:`, error);
       }
@@ -111,7 +97,7 @@ function CartPage({ memberId, isLoggedin }) {
     try {
       const authorization = localStorage.getItem("Authorization");
       const cartIds = cartProducts.map((product) => product.cartId);
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `http://localhost:8080/api/v1/order/create`,
         { cartIds: cartIds },
         {

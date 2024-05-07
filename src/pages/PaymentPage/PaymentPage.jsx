@@ -87,6 +87,11 @@ function PaymentPage() {
           ordererName: fullName,
           phoneNumber: phoneNum,
           payMethod: payMethod,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
         }
       );
       console.log(response.data);
@@ -113,12 +118,20 @@ function PaymentPage() {
       (rsp) => {
         if (rsp.success) {
           axios
-            .post(`http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`, {
-              memberId: orderInfo.memberId,
-              orderId: orderInfo.orderId,
-              price: orderInfo.totalPrice,
-              inventoryIdList: orderInfo.productMgtIds,
-            })
+            .post(
+              `http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`,
+              {
+                memberId: orderInfo.memberId,
+                orderId: orderInfo.orderId,
+                price: orderInfo.totalPrice,
+                inventoryIdList: orderInfo.productMgtIds,
+              },
+              {
+                headers: {
+                  Authorization: localStorage.getItem("Authorization"),
+                },
+              }
+            )
             .then((res) => {
               console.log(rsp);
               navigate("/cart/order/done", {
@@ -288,7 +301,7 @@ function PaymentPage() {
             {cartProducts.map((cartProduct) => (
               <div key={cartProduct.cartId} className="cart-product">
                 <img
-                  src="https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
                   alt=""
                 />
                 <div className="cart-product-info">

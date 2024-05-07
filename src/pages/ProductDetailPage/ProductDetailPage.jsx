@@ -279,12 +279,10 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   useEffect(() => {
     fetchProduct();
     fetchThumbnail();
-    // fetchWishlist();
     fetchProductReviewData();
     fetchProductInquiryData();
 
     return () => {
-      // isWishlist 값을 삭제합니다.
       localStorage.removeItem("isWishlist");
     };
   }, [productId]);

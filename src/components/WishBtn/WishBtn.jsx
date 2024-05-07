@@ -39,9 +39,9 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
     if (isLoggedin === true) {
       try {
         if (!isWishlist) {
-          // Add to wishlist
           const response = await axios.post(
             `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            null,
             {
               headers: {
                 Authorization: localStorage.getItem("Authorization"),
@@ -51,7 +51,6 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
           console.log(response.data);
           setIsWishlist(true);
         } else {
-          // Remove from wishlist
           const response = await axios.delete(
             `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
             {
@@ -91,11 +90,6 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
     }
   };
 
-  // return (
-  //   <span className="heart-btn" onClick={() => handleWishSubmit()}>
-  //     {!isWishlist ? <FaRegHeart /> : <FaHeart />}
-  //   </span>
-  // );
   return renderWishButton();
 };
 
