@@ -113,7 +113,7 @@ function CartPage({ memberId, isLoggedin }) {
       const cartIds = cartProducts.map((product) => product.cartId);
       const response = await axios.post(
         `http://localhost:8080/api/v1/order/create`,
-        { cartIds },
+        { cartIds: cartIds },
         {
           headers: {
             Authorization: authorization,
@@ -142,68 +142,67 @@ function CartPage({ memberId, isLoggedin }) {
           <div className="cart-top">
             <header className="page-title">장바구니</header>
           </div>
-          {cartProducts.map((cartProduct, index) => (
-            <div key={cartProduct.cartId} className="cart-middle">
-              <img
-                src={
-                  `http://localhost:8080${cartProduct.productImage}` ||
-                  "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2124&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                }
-                alt={cartProduct.productName}
-                className="cart-img"
-              />
-              <div className="cart-option-info">
-                <div className="cart-product-name">
-                  {cartProduct.productName}
-                </div>
-                <div className="cart-product-type">
-                  {cartProduct.productType}
-                </div>
-                <div className="cart-product-color">{cartProduct.color}</div>
-                <div className="cart-product-size-quantity">
-                  <div className="size">
-                    <span>{cartProduct.size}</span>
+          {cartProducts.map((cartProduct, index) => {
+            return (
+              <div key={cartProduct.cartId} className="cart-middle">
+                <img
+                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
+                  alt={cartProduct.productName}
+                  className="cart-img"
+                />
+                <div className="cart-option-info">
+                  <div className="cart-product-name">
+                    {cartProduct.productName}
                   </div>
-                  <div className="quantity">
-                    <span>수량</span>
-                    <div className="quantity-input-cart">
-                      <span>{cartProduct.quantity}</span>
-                      <div className="btn-flex-cart">
-                        <MdOutlineKeyboardArrowUp
-                          onClick={() =>
-                            handleIncrement(
-                              cartProduct.cartId,
-                              cartProduct.quantity
-                            )
-                          }
-                        />
-                        <MdOutlineKeyboardArrowDown
-                          onClick={() =>
-                            handleDecrement(
-                              cartProduct.cartId,
-                              cartProduct.quantity
-                            )
-                          }
-                        />
+                  <div className="cart-product-type">
+                    {cartProduct.productType}
+                  </div>
+                  <div className="cart-product-color">{cartProduct.color}</div>
+                  <div className="cart-product-size-quantity">
+                    <div className="size">
+                      <span>{cartProduct.size}</span>
+                    </div>
+                    <div className="quantity">
+                      <span>수량</span>
+                      <div className="quantity-input-cart">
+                        <span>{cartProduct.quantity}</span>
+                        <div className="btn-flex-cart">
+                          <MdOutlineKeyboardArrowUp
+                            onClick={() =>
+                              handleIncrement(
+                                cartProduct.cartId,
+                                cartProduct.quantity
+                              )
+                            }
+                          />
+                          <MdOutlineKeyboardArrowDown
+                            onClick={() =>
+                              handleDecrement(
+                                cartProduct.cartId,
+                                cartProduct.quantity
+                              )
+                            }
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div className="cart-btn-container">
+                    <WishBtn
+                      memberId={memberId}
+                      productId={cartProduct.productId}
+                      isLoggedin={isLoggedin}
+                      pageType={"cart"}
+                    />
+                    <FaRegTrashCan
+                      onClick={() => handleRemoveBtn(cartProduct.cartId)}
+                    />
+                  </div>
                 </div>
-                <div className="cart-btn-container">
-                  <WishBtn
-                    memberId={memberId}
-                    productId={cartProduct.productId}
-                    isLoggedin={isLoggedin}
-                    pageType={"cart"}
-                  />
-                  <FaRegTrashCan
-                    onClick={() => handleRemoveBtn(cartProduct.cartId)}
-                  />
-                </div>
+                <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
               </div>
-              <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="bill">
           <div className="bill-top">

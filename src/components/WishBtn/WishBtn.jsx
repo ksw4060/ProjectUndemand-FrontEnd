@@ -11,23 +11,27 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
   }, []);
 
   const fetchWishlist = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/wishlist/${memberId}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("Authorization"),
-          },
-        }
-      );
-      const memberWishlist = response.data;
-      memberWishlist.forEach((wishProduct) => {
-        if (parseInt(wishProduct.productId) === parseInt(productId)) {
-          setIsWishlist(true);
-        }
-      });
-    } catch (error) {
-      console.error(error.response.data);
+    if (isLoggedin === true) {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/wishlist/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        const memberWishlist = response.data;
+        memberWishlist.forEach((wishProduct) => {
+          if (parseInt(wishProduct.productId) === parseInt(productId)) {
+            setIsWishlist(true);
+          }
+        });
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    } else {
+      return;
     }
   };
 
