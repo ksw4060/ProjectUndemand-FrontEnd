@@ -74,22 +74,26 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   };
 
   const fetchPaymentHistory = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/paymenthistory/${memberId}`
-      );
-      const paymentHistories = response.data.filter(
-        (paymentHistory) => paymentHistory.product === product.productName
-      );
-      setPHistories(paymentHistories);
-      const filteredPaymentHistories = response.data.filter(
-        (paymentHistory) =>
-          paymentHistory.product === product.productName &&
-          !paymentHistory.review
-      );
-      setFPHistories(filteredPaymentHistories);
-    } catch (error) {
-      console.error(error);
+    if (isLoggedin === true) {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+        );
+        const paymentHistories = response.data.filter(
+          (paymentHistory) => paymentHistory.product === product.productName
+        );
+        setPHistories(paymentHistories);
+        const filteredPaymentHistories = response.data.filter(
+          (paymentHistory) =>
+            paymentHistory.product === product.productName &&
+            !paymentHistory.review
+        );
+        setFPHistories(filteredPaymentHistories);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      return;
     }
   };
 
@@ -166,10 +170,18 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const handleCartSubmit = async () => {
     if (isLoggedin) {
       await axios
-        .post(`http://localhost:8080/api/v1/cart/add/${selectedInvenId}`, {
-          memberId: memberId,
-          quantity: quantity,
-        })
+        .post(
+          `http://localhost:8080/api/v1/cart/add/${selectedInvenId}`,
+          {
+            memberId: memberId,
+            quantity: quantity,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        )
         .then((response) => {
           alert(`장바구니에 상품을 담았습니다!`);
         })
@@ -267,12 +279,10 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   useEffect(() => {
     fetchProduct();
     fetchThumbnail();
-    // fetchWishlist();
     fetchProductReviewData();
     fetchProductInquiryData();
 
     return () => {
-      // isWishlist 값을 삭제합니다.
       localStorage.removeItem("isWishlist");
     };
   }, [productId]);
@@ -464,40 +474,43 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                           리뷰 작성하기
                         </Link>
                       </li>
-                      {productReviewData.map((tableRow, index) => (
-                        <li
-                          key={tableRow.reviewId}
-                          className="detail-page-review-container"
-                        >
-                          <div className="rating-and-write-info">
-                            <span>{renderStars(tableRow.rating)}</span>
-                            <div>
-                              {tableRow.writer !== null ? (
+                      {productReviewData.length > 0 &&
+                        productReviewData.map((tableRow, index) => (
+                          <li
+                            key={tableRow.reviewId}
+                            className="detail-page-review-container"
+                          >
+                            <div className="rating-and-write-info">
+                              <span>{renderStars(tableRow.rating)}</span>
+                              <div>
+                                {tableRow.writer !== null ? (
+                                  <span>
+                                    {`${tableRow.writer.slice(0, 1)}${"*"
+                                      .repeat(
+                                        Math.max(0, tableRow.writer.length - 1)
+                                      )
+                                      .slice(0, 2)}`}
+                                  </span>
+                                ) : (
+                                  <span></span>
+                                )}
                                 <span>
-                                  {`${tableRow.writer.slice(0, 1)}${"*"
-                                    .repeat(
-                                      Math.max(0, tableRow.writer.length - 1)
-                                    )
-                                    .slice(0, 2)}`}
+                                  {tableRow.updatedAt.substring(0, 10)}
                                 </span>
-                              ) : (
-                                <span></span>
-                              )}
-                              <span>{tableRow.updatedAt.substring(0, 10)}</span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="detail-page-review-content">
-                            {tableRow.reviewContent}
-                          </div>
-                          {tableRow.reviewImgPaths.length > 0 && (
-                            <img
-                              src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
-                              alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
-                              className="detail-page-review-img"
-                            />
-                          )}
-                        </li>
-                      ))}
+                            <div className="detail-page-review-content">
+                              {tableRow.reviewContent}
+                            </div>
+                            {tableRow.reviewImgPaths.length > 0 && (
+                              <img
+                                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                                alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
+                                className="detail-page-review-img"
+                              />
+                            )}
+                          </li>
+                        ))}
                       <li className="article-link">
                         <Link onClick={() => openArticleViewModal("review")}>
                           리뷰 더 보기

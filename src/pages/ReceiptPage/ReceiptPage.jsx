@@ -17,7 +17,7 @@ function ReceiptPage() {
   } = location.state;
   const orderer = ordererName;
   const receiptOrderId = orderId;
-  const receiptOrderDay = orderDay;
+  const receiptOrderDay = orderDay.substring(0, 10);
   const receiptAddress = address;
   const receiptDetailAddress = detailAddress;
   const receiptTotalPrice = totalPrice;
@@ -28,7 +28,12 @@ function ReceiptPage() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`
+          `http://localhost:8080/api/v1/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
         );
         setOrderedProducts(response.data);
       } catch (error) {
@@ -42,7 +47,12 @@ function ReceiptPage() {
   const handleReceiptConfirm = async () => {
     try {
       const response = await axiosInstance.get(
-        "http://localhost:8080/api/v1/order/paymentconfirm"
+        "http://localhost:8080/api/v1/order/paymentconfirm",
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
       );
       console.log(response);
     } catch (error) {
@@ -71,7 +81,7 @@ function ReceiptPage() {
             {orderedProducts.map((orderedProduct) => (
               <div key={orderedProduct.cartId} className="ordered-products">
                 <img
-                  src="https://images.unsplash.com/photo-1612731486606-2614b4d74921?q=80&w=2620&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src={`http://localhost:8080${orderedProduct.productThumbnail}`}
                   alt=""
                 />
                 <div className="receipt-products-info">
@@ -87,11 +97,11 @@ function ReceiptPage() {
           <div className="receipt-box-container">
             <header className="container-title">배송 및 주문자 정보</header>
             <div className="receipt-box">
-              <span>{`주문번호: ${receiptOrderId}`}</span>
-              <span>{`주문인: ${orderer}`}</span>
-              <span>{`주소: ${receiptAddress}`}</span>
-              <span>{`상세주소: ${receiptDetailAddress}`}</span>
-              <span>{`주문일:${receiptOrderDay}`}</span>
+              <span>{`주문번호 : ${receiptOrderId}`}</span>
+              <span>{`주문인 : ${orderer}`}</span>
+              <span>{`주소 : ${receiptAddress}`}</span>
+              <span>{`상세주소 : ${receiptDetailAddress}`}</span>
+              <span>{`주문일 : ${receiptOrderDay}`}</span>
             </div>
           </div>
         </div>
