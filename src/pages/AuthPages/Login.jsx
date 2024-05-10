@@ -7,17 +7,17 @@ import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
 // import { type } from "@testing-library/user-event/dist/type/index.js";
 
 const Login = () => {
-  // 로그인 시 주소창 접근 제한 http://localhost:8080/oauth2/authorization/kakao
   const navigate = useNavigate();
-  const token = localStorage.getItem("Authorization");
+  const authorization = localStorage.getItem("Authorization");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (token) {
+    if (authorization) {
+      console.log("이미 로그인 된 상태에서 로그인 페이지에 접속.");
       navigate("/");
     }
-  }, [navigate, token]);
+  }, [navigate, authorization]);
 
   const handleEmail = (e) => {
     const newEmail = e.target.value;
@@ -54,12 +54,13 @@ const Login = () => {
       const email = response.data.email;
 
       if (parseInt(response.status) === 200) {
-        // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
+        // 기존에 저장된 Authorization 토큰과 refreshToken과 memberId 를 삭제합니다.
         localStorage.removeItem("Authorization");
+        localStorage.removeItem("memberId");
         deleteCookie("refreshToken");
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
-        document.cookie = `refreshToken=${refreshToken};`;
+        document.cookie = `refreshToken=${refreshToken}; path=/; Secure; SameSite=Lax`;
 
         const base64Url = accessToken.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -75,18 +76,12 @@ const Login = () => {
         const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
 
-        // Delay of 1 second before navigating to home page
         setTimeout(() => {
           window.location.replace("/");
         }, 300);
-        // setTimeout(() => {
-        //   alert(email + "님, 반갑습니다.");
-        // }, 1000);
       }
-      // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
     } catch (error) {
       alert("가입되지 않은 이메일 이거나, 이메일 인증이 되지 않았습니다.");
-      //   console.error("로그인 실패 : ", error.response);
       console.error("로그인 실패 : ", error.response);
     }
   };

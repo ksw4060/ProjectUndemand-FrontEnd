@@ -70,3 +70,8 @@ function MyPage(localstorageProps) {
 }
 
 export { MyPage };
+// my-page-grid-container
+// my-page-profile
+// my-page-sale-datas
+// my-page-menu
+// my-page-content

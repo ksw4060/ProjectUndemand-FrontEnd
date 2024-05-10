@@ -36,7 +36,7 @@ function MyReviewPage() {
             },
           }
         );
-
+        console.log(response.data);
         setProductReviewData(response.data);
       } catch (error) {
         console.error(error.response.data);
@@ -152,53 +152,59 @@ function MyReviewPage() {
           </ul>
         </div>
       </div>
-      {productReviewData.map((tableRow, index) => {
-        return (
-          <div key={tableRow.reviewId} className="review-container">
-            <div className="review-product">
-              {thumbnailImages[index] ? (
-                <img
-                  src={`http://localhost:8080${thumbnailImages[index]}`}
-                  alt={`상품명: ${tableRow.productName}`}
-                />
-              ) : (
-                <div>로딩 중...</div>
-              )}
-              <div className="txt-info">
-                <span>{tableRow.productName}</span>
-              </div>
-            </div>
-            <div className="review-main-content-container">
-              <div className="rating-box">
-                <div className="star-rate">{renderStars(tableRow.rating)}</div>
-              </div>
-              <div className="review-box">
-                <div className="my-review-content">
-                  {tableRow.reviewContent}
+      {productReviewData && productReviewData.length > 0 ? (
+        productReviewData.map((tableRow, index) => {
+          return (
+            <div key={tableRow.reviewId} className="review-container">
+              <div className="review-product">
+                {thumbnailImages[index] ? (
+                  <img
+                    src={`http://localhost:8080${thumbnailImages[index]}`}
+                    alt={`상품명: ${tableRow.productName}`}
+                  />
+                ) : (
+                  <div>이미지 로딩 중...</div>
+                )}
+                <div className="txt-info">
+                  <span>{tableRow.productName}</span>
                 </div>
               </div>
-              <img
-                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
-                alt={`상품명 ${tableRow.productName}의 ${index}번 리뷰`}
-              />
-            </div>
-            <div className="review-edit-del-container">
-              <div className="review-date">
-                <span>마지막 수정일:</span>
-                {tableRow.updatedAt.substring(0, 10)}
+              <div className="review-main-content-container">
+                <div className="rating-box">
+                  <div className="star-rate">
+                    {renderStars(tableRow.rating)}
+                  </div>
+                </div>
+                <div className="review-box">
+                  <div className="my-review-content">
+                    {tableRow.reviewContent}
+                  </div>
+                </div>
+                <img
+                  src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                  alt={`상품명 ${tableRow.productName}의 ${index}번 리뷰`}
+                />
               </div>
-              <div className="review-edit-del">
-                <button onClick={() => handleRUModalOpen(tableRow.reviewId)}>
-                  리뷰 수정
-                </button>
-                <button onClick={() => handleReviewDelete(tableRow.reviewId)}>
-                  리뷰 삭제
-                </button>
+              <div className="review-edit-del-container">
+                <div className="review-date">
+                  <span>마지막 수정일:</span>
+                  {tableRow.updatedAt.substring(0, 10)}
+                </div>
+                <div className="review-edit-del">
+                  <button onClick={() => handleRUModalOpen(tableRow.reviewId)}>
+                    리뷰 수정
+                  </button>
+                  <button onClick={() => handleReviewDelete(tableRow.reviewId)}>
+                    리뷰 삭제
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <div>리뷰가 아직 작성되지 않았습니다.</div>
+      )}
       {rUModalOpen && (
         <ReviewUpdateModal
           reviewId={selectedRId}

@@ -18,6 +18,7 @@ import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
+import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
 import axios from "axios";
 
@@ -222,6 +223,7 @@ function App() {
 
   return (
     <div className="Body">
+      <TokenRefreshComponent />
       {isReceiptPage === false && isCategoryPage === false ? (
         <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
           <Topbar
