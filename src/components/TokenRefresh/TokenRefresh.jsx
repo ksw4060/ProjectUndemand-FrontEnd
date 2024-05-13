@@ -16,30 +16,31 @@ function getCookie(name) {
 
 const TokenRefreshComponent = () => {
   useEffect(() => {
-    const previousAccessToken = localStorage.getItem("Authorization");
+    const previousAuthorization = localStorage.getItem("Authorization");
     const refreshToken = getCookie("refreshToken");
 
     // setInterval 를 통해, 반복적으로 호출
     const accessTokenGenerator = async () => {
       try {
         const response = await axios.post(
-          `${process.env.REACT_APP_BACKEND_URL}/api/v1/reissue/access`,
+          `http://localhost:8080/api/v1/reissue/access`,
           { refreshToken: refreshToken },
           {
             headers: {
-              Authorization: `Bearer ${previousAccessToken}`,
+              Authorization: previousAuthorization,
               "Content-Type": "application/json",
             },
           }
         );
-        const accessToken = response.data["accessToken"];
+        console.log(response.data);
+        const newAccessToken = response.data["accessToken"];
+        console.log(newAccessToken);
         // 기존에 저장된 Authorization 토큰과 refreshToken과 memberId 를 삭제합니다.
         localStorage.removeItem("Authorization");
         localStorage.removeItem("memberId");
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
-        localStorage.setItem("Authorization", "Bearer " + accessToken);
-
-        const base64Url = accessToken.split(".")[1];
+        localStorage.setItem("Authorization", "Bearer " + newAccessToken);
+        const base64Url = newAccessToken.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
           atob(base64)
@@ -51,11 +52,15 @@ const TokenRefreshComponent = () => {
         );
 
         const payloadObject = JSON.parse(jsonPayload);
+        console.log("memberId : ", payloadObject.memberId);
         localStorage.setItem("memberId", payloadObject.memberId);
-      } catch (error) {}
+        console.info("accessToken 이 갱신 되었습니다.");
+      } catch (error) {
+        console.error("access token 재발급 실패.");
+      }
     };
-    // 10 분마다 엑세스토큰 갱신
-    const interval = setInterval(accessTokenGenerator, 1000 * 60 * 10);
+    // 10 분마다 엑세스토큰 갱신 (10sec정도, 엑세스토큰 주기보다 짧게 설정)
+    const interval = setInterval(accessTokenGenerator, 1000 * 59 * 10);
 
     return () => clearInterval(interval);
   }, []);

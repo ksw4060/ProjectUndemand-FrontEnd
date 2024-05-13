@@ -597,16 +597,17 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           <div className="detail-section">
             <div className="detail-img-box">
               <ul className="detail-img-container">
-                {product.contentImages.map((contentImage, index) => {
-                  return (
-                    <li key={index} className="detail-img">
-                      <img
-                        src={`http://localhost:8080${contentImage}`}
-                        alt=""
-                      />
-                    </li>
-                  );
-                })}
+                {product.contentImages.length > 0 &&
+                  product.contentImages.map((contentImage, index) => {
+                    return (
+                      <li key={index} className="detail-img">
+                        <img
+                          src={`http://localhost:8080${contentImage}`}
+                          alt=""
+                        />
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           </div>
