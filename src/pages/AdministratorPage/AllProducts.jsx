@@ -22,7 +22,7 @@ function AllProducts() {
     const fetchAllProductsData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/products",
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/products`,
           {
             params: {
               size: pageSize,
@@ -44,11 +44,14 @@ function AllProducts() {
 
   const deleteProduct = async (productId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/products/${productId}`, {
-        headers: {
-          Authorization: localStorage.getItem("Authorization"),
-        },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${productId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
       setShowModal(true);
       setModalMessage(`상품을 삭제하였습니다.`);
     } catch (error) {
@@ -118,7 +121,7 @@ function AllProducts() {
         <div key={product.productId} className="admin-page-pd-container">
           <div className="admin-page-pd-img-container">
             <img
-              src={`http://localhost:8080${product.productThumbnails[0]}`}
+              src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
               alt={`상품 이미지`}
             />
           </div>

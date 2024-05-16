@@ -92,7 +92,7 @@ function CategoryPage({
         const keyword = searchString || "";
 
         const response = await axios.get(
-          `http://localhost:8080/api/v1/products`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/products`,
           {
             params: {
               size: pageSize,
@@ -755,7 +755,7 @@ function CategoryPage({
                     }`}
                   >
                     <img
-                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                       alt={product.productName}
                       className={`img-section ${
                         isFilterClicked && "filter-active-img"
@@ -798,7 +798,7 @@ function CategoryPage({
                 memoizedProductsData.map((product, index) => (
                   <div key={index} className={`product-card`}>
                     <img
-                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                       alt={product.productName}
                       className={`img-section`}
                     />

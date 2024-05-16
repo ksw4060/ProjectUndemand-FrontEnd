@@ -43,14 +43,14 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProduct = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/products/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${productId}`
       );
       if (response.status === 200) {
         setProduct(response.data);
         setLoading(false);
       }
       const invenResponse = await axios.get(
-        `http://localhost:8080/api/v1/inventory`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`
       );
       const invenResData = invenResponse.data;
       const filteredInventory = invenResData.filter(
@@ -65,7 +65,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchThumbnail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/thumbnail/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${productId}`
       );
       setThumbnailImages(response.data);
     } catch (error) {
@@ -77,7 +77,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (isLoggedin === true) {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`
         );
         const paymentHistories = response.data.filter(
           (paymentHistory) => paymentHistory.product === product.productName
@@ -100,7 +100,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProductReviewData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/review/product/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/product/${productId}`
       );
       setProductReviewData(response.data);
     } catch (error) {
@@ -111,7 +111,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProductInquiryData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/inquiry/list/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/list/${productId}`
       );
       setProductInquiryData(response.data);
     } catch (error) {
@@ -171,7 +171,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (isLoggedin) {
       await axios
         .post(
-          `http://localhost:8080/api/v1/cart/add/${selectedInvenId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/add/${selectedInvenId}`,
           {
             memberId: memberId,
             quantity: quantity,
@@ -321,7 +321,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                   return (
                     <li key={index} className="thumbnail-img">
                       <img
-                        src={`http://localhost:8080${thumbnailImage}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${thumbnailImage}`}
                         alt="Thumbnail"
                         onClick={() => setSelectedThumbnail(thumbnailImage)}
                       />
@@ -331,7 +331,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
               </ul>
               <div className="hero-img-container">
                 <img
-                  src={`http://localhost:8080${
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${
                     selectedThumbnail !== undefined
                       ? selectedThumbnail
                       : thumbnailImages[0]
@@ -504,7 +504,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                             </div>
                             {tableRow.reviewImgPaths.length > 0 && (
                               <img
-                                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
                                 alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
                                 className="detail-page-review-img"
                               />
@@ -602,7 +602,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                     return (
                       <li key={index} className="detail-img">
                         <img
-                          src={`http://localhost:8080${contentImage}`}
+                          src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${contentImage}`}
                           alt=""
                         />
                       </li>

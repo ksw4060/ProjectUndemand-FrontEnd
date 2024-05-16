@@ -58,7 +58,7 @@ function ProductSlide({ products, sectionTitle }) {
               }}
             >
               <img
-                src={`http://localhost:8080${product.productThumbnails[0]}`}
+                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                 alt={product.productName}
                 className={`product-card-img`}
               />

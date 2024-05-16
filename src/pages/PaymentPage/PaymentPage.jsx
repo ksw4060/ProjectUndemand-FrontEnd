@@ -50,7 +50,7 @@ function PaymentPage() {
     const handleFetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
           {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
@@ -79,7 +79,7 @@ function PaymentPage() {
   async function completeOrder() {
     try {
       const response = await axiosInstance.post(
-        "http://localhost:8080/api/v1/order/done",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/order/done`,
         {
           postCode: postCode,
           address: address,
@@ -119,7 +119,7 @@ function PaymentPage() {
         if (rsp.success) {
           axios
             .post(
-              `http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`,
+              `${process.env.REACT_APP_BACKEND_BASE_URL}/order/payment/${rsp.imp_uid}`,
               {
                 memberId: orderInfo.memberId,
                 orderId: orderInfo.orderId,
@@ -301,7 +301,7 @@ function PaymentPage() {
             {cartProducts.map((cartProduct) => (
               <div key={cartProduct.cartId} className="cart-product">
                 <img
-                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
                   alt=""
                 />
                 <div className="cart-product-info">

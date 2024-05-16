@@ -19,7 +19,7 @@ function CartPage({ memberId, isLoggedin }) {
       try {
         const authorization = localStorage.getItem("Authorization");
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
           {
             headers: {
               Authorization: authorization,
@@ -51,7 +51,7 @@ function CartPage({ memberId, isLoggedin }) {
     try {
       const authorization = localStorage.getItem("Authorization");
       await axios.put(
-        `http://localhost:8080/api/v1/cart/${cartId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${cartId}`,
         { quantity: quantity },
         {
           headers: {
@@ -60,7 +60,7 @@ function CartPage({ memberId, isLoggedin }) {
         }
       );
       const response = await axios.get(
-        `http://localhost:8080/api/v1/cart/${memberId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
         {
           headers: {
             Authorization: authorization,
@@ -76,11 +76,14 @@ function CartPage({ memberId, isLoggedin }) {
   const handleRemoveBtn = async (cartId) => {
     try {
       const authorization = localStorage.getItem("Authorization");
-      await axios.delete(`http://localhost:8080/api/v1/cart/${cartId}`, {
-        headers: {
-          Authorization: authorization,
-        },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${cartId}`,
+        {
+          headers: {
+            Authorization: authorization,
+          },
+        }
+      );
       const updatedCartProducts = cartProducts.filter(
         (product) => product.cartId !== cartId
       );
@@ -98,7 +101,7 @@ function CartPage({ memberId, isLoggedin }) {
       const authorization = localStorage.getItem("Authorization");
       const cartIds = cartProducts.map((product) => product.cartId);
       const response = await axiosInstance.post(
-        `http://localhost:8080/api/v1/order/create`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/order/create`,
         { cartIds: cartIds },
         {
           headers: {
@@ -132,7 +135,7 @@ function CartPage({ memberId, isLoggedin }) {
             return (
               <div key={cartProduct.cartId} className="cart-middle">
                 <img
-                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
                   alt={cartProduct.productName}
                   className="cart-img"
                 />

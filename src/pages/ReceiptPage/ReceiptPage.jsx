@@ -28,7 +28,7 @@ function ReceiptPage() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
           {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
@@ -47,7 +47,7 @@ function ReceiptPage() {
   const handleReceiptConfirm = async () => {
     try {
       const response = await axiosInstance.get(
-        "http://localhost:8080/api/v1/order/paymentconfirm",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/order/paymentconfirm`,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
@@ -81,7 +81,7 @@ function ReceiptPage() {
             {orderedProducts.map((orderedProduct) => (
               <div key={orderedProduct.cartId} className="ordered-products">
                 <img
-                  src={`http://localhost:8080${orderedProduct.productThumbnail}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${orderedProduct.productThumbnail}`}
                   alt=""
                 />
                 <div className="receipt-products-info">
