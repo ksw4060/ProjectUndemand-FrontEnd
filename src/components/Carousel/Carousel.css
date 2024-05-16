@@ -60,6 +60,7 @@
     flex-shrink: 0;
     object-fit: cover;
     object-position: center;
+    cursor: pointer;
 }
 
 .carousel-img-card.side-img {
