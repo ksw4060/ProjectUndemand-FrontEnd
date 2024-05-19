@@ -1,173 +1,230 @@
 .my-profile-page {
-    width: 70%;
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin-top: 30px;
+  width: 70%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .my-profile-page-title {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.my-profile-page-title>span {
-    font-size: 25px;
-    font-weight: bold;
+.my-profile-page-title > span {
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .short-my-profile {
-    width: 100%;
-    height: 200px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-top: 40px;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  margin-top: 40px;
 }
 
 .profile-container {
-    width: 800px;
-    height: 250px;
-    display: flex;
-    /* justify-content: space-between; */
-    justify-content: flex-start;
-    align-items: center;
-
+  width: 800px;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  /* justify-content: flex-start; */
+  align-items: center;
 }
 
-.profile-image-container{
-    width: 20%;
-    height: 200px;
+.profile-image-container {
+  width: 350px;
+  height: 400px;
 
-    margin-left: 2%;
+  margin-left: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.profile-image{
-    width: 120px;
-    height: 120px;
-    background-color: rgb(210, 210, 210);
-    border-radius: 50%;
+.profile-image {
+  width: 300px;
+  height: 300px;
+  background-color: rgb(210, 210, 210);
+  border-radius: 50%;
 
-    padding: 5px;
-    margin-top: 20px;
+  padding: 5px;
+  /* margin-top: 20px; */
 }
 
 .name-joined-container {
-    width: 55%;
-    height: 70%;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-    align-items: flex-start;
+  width: 500px;
+  height: 400px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: flex-start;
 
-    margin-left: 40px;
-}
-
-.user-name-info {
-    font-size: 20px;
-    font-weight: bold;
-
-    margin-bottom: 7px;
+  padding: 40px;
+  margin-left: 50px;
 }
 
 .user-joined-date-info {
-    font-size: 16px;
+  font-size: 16px;
 }
 
-.name-joined-container>a {
-    font-size: 16px;
-    color: rgb(150, 150, 150);
+.name-joined-container > a {
+  font-size: 16px;
+  color: rgb(150, 150, 150);
 }
+
+/* 프로필 정보 시작 */
+.profile-font-size-and-weight {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.profile-info-container {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* margin-bottom: 20px; */
+}
+
+.profile-navi-page {
+  width: 100%;
+  height: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-info {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border-top: 1px solid rgb(210, 210, 210); */
+  border-bottom: 1px solid rgb(210, 210, 210);
+}
+
+.profile-info > span {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.profile-info > button {
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  border: 0.1px solid rgb(210, 210, 210);
+  font-size: 16px;
+  color: rgb(34, 34, 34);
+  background-color: rgb(255, 255, 255);
+}
+/* 프로필 정보 끝 */
 
 .short-payment-history,
 .short-wish-list,
 .short-my-review {
-    width: 100%;
-    height: 490px;
-    margin-top: 60px;
+  width: 100%;
+  height: 490px;
+  margin-top: 60px;
 }
 
 .payhis-product-info-zero-data {
-    margin-top: 50px;
+  margin-top: 50px;
 
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .sph-title,
 .swl-title,
 .smr-title {
-    width: 100%;
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.sph-title>span:first-child,
-.swl-title>span:first-child,
-.smr-title>span:first-child {
-    font-size: 25px;
-    font-weight: bold;
+.sph-title > span:first-child,
+.swl-title > span:first-child,
+.smr-title > span:first-child {
+  font-size: 25px;
+  font-weight: bold;
 }
 
-.sph-title>span:last-child>a,
-.swl-title>span:last-child>a,
-.smr-title>span:last-child>a {
-    color: rgb(150, 150, 150);
-    cursor: pointer;
+.sph-title > span:last-child > a,
+.swl-title > span:last-child > a,
+.smr-title > span:last-child > a {
+  color: rgb(150, 150, 150);
+  cursor: pointer;
 }
 
 .sph-card-container {
-    width: 100%;
-    height: 430px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
+  width: 100%;
+  height: 430px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
 }
 
 .sph-card {
-    width: 360px;
-    height: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-items: center;
+  width: 360px;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
-.sph-card>img {
-    width: 360px;
-    height: 360px;
-    background-color: rgb(210, 210, 210);
+.sph-card > img {
+  width: 360px;
+  height: 360px;
+  background-color: rgb(210, 210, 210);
 }
 
 .sph-card-text {
-    width: 100%;
-    height: 60px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .swl-card-container {
-    width: 100%;
-    height: 430px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
+  width: 100%;
+  height: 430px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
 
-    gap: 40px;
+  gap: 40px;
 }
 
 .smr-card-container {
-    width: 100%;
-    height: 430px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 10px;
+  width: 100%;
+  height: 430px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.profile-image-container > img {
+  max-width: 100%;
+}
+
+.left-section,
+.right-section {
+  float: left;
 }

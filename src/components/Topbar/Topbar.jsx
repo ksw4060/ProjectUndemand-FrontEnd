@@ -191,9 +191,14 @@ function Topbar({
                             : `Hello, ODD!`}
                         </span>
                         <img
+                          //   src={
+                          //     profileData && profileData.profileImgPath
+                          //       ? profileData.profileImgPath
+                          //       : "https://defaultst.imweb.me/common/img/default_profile.png"
+                          //   }
                           src={
                             profileData && profileData.profileImgPath
-                              ? profileData.profileImgPath
+                              ? `http://localhost:8080${profileData.profileImgPath}`
                               : "https://defaultst.imweb.me/common/img/default_profile.png"
                           }
                           alt="Profile img"
@@ -337,9 +342,14 @@ function Topbar({
                       : `Hello, ODD!`}
                   </span>
                   <img
+                    // src={
+                    //   profileData && profileData.profileImgPath
+                    //     ? profileData.profileImgPath
+                    //     : "https://defaultst.imweb.me/common/img/default_profile.png"
+                    // }
                     src={
                       profileData && profileData.profileImgPath
-                        ? profileData.profileImgPath
+                        ? `http://localhost:8080${profileData.profileImgPath}`
                         : "https://defaultst.imweb.me/common/img/default_profile.png"
                     }
                     alt="Profile img"

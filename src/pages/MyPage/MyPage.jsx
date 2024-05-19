@@ -7,14 +7,15 @@ import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
 import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
 import "./MyPage.css";
 
-function MyPage(localstorageProps) {
+function MyPage(myPageProps) {
   const [selectedPage, setSelectedPage] = useState("my profile");
-  const isLoggedin = localstorageProps.isLoggedin;
-  const memberId = localstorageProps.memberId;
-  // console.log(memberId);
+  const isLoggedin = myPageProps.isLoggedin;
+  const memberId = myPageProps.memberId;
+  const profileData = myPageProps.profileData;
+
   useEffect(() => {
     console.log(selectedPage);
-  }, [selectedPage, localstorageProps]);
+  }, [selectedPage, myPageProps]);
 
   return (
     <div className="my-page">
@@ -39,7 +40,11 @@ function MyPage(localstorageProps) {
         <Route
           path="/profile"
           element={
-            <MyProfilePage isLoggedin={isLoggedin} memberId={memberId} />
+            <MyProfilePage
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+              profileData={profileData}
+            />
           }
         />
         <Route
@@ -61,7 +66,11 @@ function MyPage(localstorageProps) {
         <Route
           path="/update-info"
           element={
-            <UpdateUserInfoPage isLoggedin={isLoggedin} memberId={memberId} />
+            <UpdateUserInfoPage
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+              profileData={profileData}
+            />
           }
         ></Route>
       </Routes>

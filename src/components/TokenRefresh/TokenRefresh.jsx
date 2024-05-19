@@ -32,9 +32,7 @@ const TokenRefreshComponent = () => {
             },
           }
         );
-        console.log(response.data);
         const newAccessToken = response.data["accessToken"];
-        console.log(newAccessToken);
         // 기존에 저장된 Authorization 토큰과 refreshToken과 memberId 를 삭제합니다.
         localStorage.removeItem("Authorization");
         localStorage.removeItem("memberId");
@@ -59,8 +57,8 @@ const TokenRefreshComponent = () => {
         console.error("access token 재발급 실패.");
       }
     };
-    // 10 분마다 엑세스토큰 갱신 (10sec정도, 엑세스토큰 주기보다 짧게 설정)
-    const interval = setInterval(accessTokenGenerator, 1000 * 59 * 10);
+    // 5 분마다 엑세스토큰 갱신
+    const interval = setInterval(accessTokenGenerator, 1000 * 60 * 5);
 
     return () => clearInterval(interval);
   }, []);

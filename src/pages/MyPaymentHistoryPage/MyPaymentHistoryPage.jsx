@@ -13,7 +13,7 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
 
         // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
-          `http://localhost:8080/api/v1/paymenthistory/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
           {
             headers: {
               Authorization: authorization, // 토큰을 Authorization 헤더에 추가

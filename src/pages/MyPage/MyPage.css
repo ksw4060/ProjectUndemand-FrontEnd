@@ -27,35 +27,3 @@
     color: rgb(34, 34, 34);
     cursor: pointer;
 }
-
-
-.my-page-grid-container {
-    display: grid;
-    grid-template-areas: 'profile profile datas datas datas datas'
-                         'mymenu profile profile profile profile profile';
-}
-
-.my-page-grid-container div {
-    background-color: bisque;
-    padding: 20px;
-
-    border: 1px solid white;
-
-    margin-left: 1px;
-}
-
-.my-page-profile {
-    grid-area: profile;
-}
-
-.my-page-sale-datas {
-    grid-area: datas;
-}
-
-.my-page-menu {
-    grid-area: mymenu;
-}
-
-.my-page-content {
-    grid-area: profile;
-}

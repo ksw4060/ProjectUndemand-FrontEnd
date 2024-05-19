@@ -14,7 +14,6 @@ import { InquiryDetailPage } from "./pages/InquiryDetailPage/InquiryDetailPage.j
 import { CartPage } from "./pages/CartPage/CartPage.jsx";
 import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
-// import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -257,7 +256,13 @@ function App() {
           />
           <Route
             path="/user/mypage/*"
-            element={<MyPage isLoggedin={isLoggedin} memberId={memberId} />}
+            element={
+              <MyPage
+                isLoggedin={isLoggedin}
+                memberId={memberId}
+                profileData={profileData}
+              />
+            }
           />
           {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />

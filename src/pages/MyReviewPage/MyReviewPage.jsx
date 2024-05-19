@@ -29,7 +29,7 @@ function MyReviewPage() {
 
         // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
-          `http://localhost:8080/api/v1/review/user/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/review/user/${memberId}`,
           {
             headers: {
               Authorization: authorization, // 토큰을 Authorization 헤더에 추가
@@ -51,7 +51,7 @@ function MyReviewPage() {
       try {
         const thumbnailPromises = productReviewData.map(async (userReview) => {
           const response = await axios.get(
-            `http://localhost:8080/api/v1/thumbnail/${userReview.productId}`
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${userReview.productId}`
           );
           return response.data[0];
         });
@@ -80,7 +80,7 @@ function MyReviewPage() {
       const authorization = localStorage.getItem("Authorization");
       // Authorization 헤더를 포함한 axios 요청
       await axios.delete(
-        `http://localhost:8080/api/v1/review/${reviewId}/${memberId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/${reviewId}/${memberId}`,
         {
           headers: {
             Authorization: authorization, // 토큰을 Authorization 헤더에 추가
