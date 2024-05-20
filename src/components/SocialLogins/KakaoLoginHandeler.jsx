@@ -38,17 +38,17 @@ const KakaoLoginHandeler = () => {
 
       console.log(response.data);
       const accessToken = response.data.accessToken;
-      //   const refreshToken = response.data.refreshToken;
+      const refreshToken = response.data.refreshToken;
       if (parseInt(response.status) === 200) {
         // ----------- 24.04.26 로그인 시, 쿠키스토리지 refresh 가 휘발되는 문제 발생 --------------
         // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
         localStorage.removeItem("Authorization");
-        // deleteCookie("refreshToken");
+        deleteCookie("refreshToken");
         // console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`);
 
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
-        // document.cookie = `refreshToken=${refreshToken};`;
+        document.cookie = `refreshToken=${refreshToken}; path=/; Secure; SameSite=Lax`;
 
         const base64Url = accessToken.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");

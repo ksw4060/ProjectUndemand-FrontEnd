@@ -229,12 +229,13 @@ function UpdateUserInfoPage({ isLoggedin, memberId, profileData }) {
         </div>
         <UserInfoInput label="비밀번호" type="password" />
         <UserInfoInput label="비밀번호 확인" type="password" />
-        <div className="uii-birth-day-container">
-          <span>생년월일</span>
+        <UserInfoInput label="닉네임" type="text" />
+        {/* <div className="uii-birth-day-container">
+          <span>닉네임</span>
           <div className="uii-cover">
             <span>{`2024/01/01`}</span>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="account-delete-container">
         <div className="account-delete">
