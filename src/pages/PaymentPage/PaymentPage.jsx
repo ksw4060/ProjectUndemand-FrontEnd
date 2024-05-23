@@ -105,7 +105,7 @@ function PaymentPage() {
     window.IMP.init("imp04081725");
     window.IMP.request_pay(
       {
-        pg: "html5_inicis",
+        pg: "kicc",
         pay_method: orderInfo.payMethod,
         merchant_uid: orderInfo.merchantUid,
         name: orderInfo.productName,
@@ -234,33 +234,33 @@ function PaymentPage() {
                   <span>결제 수단 선택</span>
                   <div className="payment-option-select">
                     <button
-                      onClick={() => setPayMethod("CARD")}
+                      onClick={() => setPayMethod("card")}
                       className={`option-pay-method ${
-                        payMethod === "CARD" ? "selected-pay-method" : ""
+                        payMethod === "card" ? "selected-pay-method" : ""
                       }`}
                     >
                       카드
                     </button>
                     <button
-                      onClick={() => setPayMethod("TRANS")}
+                      onClick={() => setPayMethod("trans")}
                       className={`option-pay-method ${
-                        payMethod === "TRANS" ? "selected-pay-method" : ""
+                        payMethod === "trans" ? "selected-pay-method" : ""
                       }`}
                     >
                       계좌이체
                     </button>
                     <button
-                      onClick={() => setPayMethod("VBANK")}
+                      onClick={() => setPayMethod("vbank")}
                       className={`option-pay-method ${
-                        payMethod === "VBANK" ? "selected-pay-method" : ""
+                        payMethod === "vbank" ? "selected-pay-method" : ""
                       }`}
                     >
                       가상계좌
                     </button>
                     <button
-                      onClick={() => setPayMethod("PHONE")}
+                      onClick={() => setPayMethod("phone")}
                       className={`option-pay-method ${
-                        payMethod === "PHONE" ? "selected-pay-method" : ""
+                        payMethod === "phone" ? "selected-pay-method" : ""
                       }`}
                     >
                       휴대폰 결제
