@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import "./ArticleSubmitModal.css";
 import { MdClose } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
+import swal from "sweetalert";
 import axios from "axios";
 
 function ArticleSubmitModal({
@@ -28,8 +29,6 @@ function ArticleSubmitModal({
   const [rating, setRating] = useState(0);
   const [imageFile, setImageFile] = useState(null);
   const { productId } = useParams();
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
@@ -52,8 +51,11 @@ function ArticleSubmitModal({
           },
         }
       );
-      setModalMessage(`${response.data.writer}님의 리뷰를 등록하였습니다.`);
-      setShowModal(true);
+      swal({
+        title: `"${response.data.writer}" 님의 리뷰를 등록하였습니다.`,
+      }).then(() => {
+        modalClose();
+      });
       updateReviewData();
     } catch (error) {
       console.error(error.response.data);
@@ -64,7 +66,9 @@ function ArticleSubmitModal({
     if (paymentId && reviewContent && rating) {
       await handleReviewSubmit();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -112,8 +116,11 @@ function ArticleSubmitModal({
         requestData
       )
       .then((response) => {
-        setModalMessage(`${writer}님의 문의 글을 등록하였습니다.`);
-        setShowModal(true);
+        swal({
+          title: `"${writer}" 님의 문의 글을 등록하였습니다.`,
+        }).then(() => {
+          modalClose();
+        });
         updateinquiryData();
       })
       .catch((error) => {
@@ -135,7 +142,9 @@ function ArticleSubmitModal({
       ) {
         await handleInquirySubmit();
       } else {
-        alert("모든 입력란을 작성해 주세요.");
+        swal({
+          title: "모든 입력란을 작성해 주세요!",
+        });
       }
     } else if (!isLoggedin) {
       if (
@@ -148,25 +157,17 @@ function ArticleSubmitModal({
       ) {
         await handleInquirySubmit();
       } else {
-        alert("모든 입력란을 작성해 주세요.");
+        swal({
+          title: "모든 입력란을 작성해 주세요!",
+        });
       }
     }
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    modalClose();
-    window.location.reload();
   };
 
   return (
     <div className="article-submit-modal">
       {modalType === "review" ? (
-        <div
-          className={`review-writing-modal ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`review-writing-modal`}>
           <div className="modal-top-section">
             <h2>리뷰 작성</h2>
             <h3>상품에 대한 리뷰를 작성해 주세요</h3>
@@ -245,11 +246,7 @@ function ArticleSubmitModal({
           </div>
         </div>
       ) : (
-        <div
-          className={`inquiry-writing-modal ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`inquiry-writing-modal`}>
           <div className="modal-top-section">
             <h2>문의 글 작성</h2>
             <h3>제품에 대한 문의 사항을 작성해 주세요</h3>
@@ -362,14 +359,6 @@ function ArticleSubmitModal({
                 등록
               </button>
             </div>
-          </div>
-        </div>
-      )}
-      {showModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={() => closeModal()}>확인</button>
           </div>
         </div>
       )}

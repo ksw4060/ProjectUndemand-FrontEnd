@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
+import swal from "sweetalert";
 
 function Topbar({
   isMenuVisible,
@@ -64,7 +65,9 @@ function Topbar({
     const authorization = localStorage.getItem("Authorization");
 
     if (!authorization) {
-      alert("경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.");
+      swal({
+        title: "경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.",
+      });
       return; // 로그아웃을 진행하지 않고 함수 종료
     }
 

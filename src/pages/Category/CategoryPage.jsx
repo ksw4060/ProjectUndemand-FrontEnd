@@ -8,6 +8,7 @@ import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import axios from "axios";
+import swal from "sweetalert";
 
 function CategoryPage({
   isLoggedin,
@@ -126,9 +127,13 @@ function CategoryPage({
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
-      alert("첫번째 페이지입니다.");
+      swal({
+        title: "첫번째 페이지입니다.",
+      });
     } else if (direction === 1 && currentPage === memoizedTotalPageSize - 1) {
-      alert("마지막 페이지입니다.");
+      swal({
+        title: "마지막 페이지입니다.",
+      });
     } else {
       setCurrentPage(currentPage + direction);
     }
@@ -281,7 +286,9 @@ function CategoryPage({
     const authorization = localStorage.getItem("Authorization");
 
     if (!authorization) {
-      alert("경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.");
+      swal({
+        title: "경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.",
+      });
       return; // 로그아웃을 진행하지 않고 함수 종료
     }
 

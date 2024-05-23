@@ -8,6 +8,7 @@ import {
 } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
+import swal from "sweetalert";
 
 function CartPage({ memberId, isLoggedin }) {
   const navigate = useNavigate();
@@ -100,7 +101,7 @@ function CartPage({ memberId, isLoggedin }) {
     try {
       const authorization = localStorage.getItem("Authorization");
       const cartIds = cartProducts.map((product) => product.cartId);
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/order/create`,
         { cartIds: cartIds },
         {
@@ -109,14 +110,15 @@ function CartPage({ memberId, isLoggedin }) {
           },
         }
       );
-      console.log(response.data);
       navigate(`/cart/order`, {
         state: {
           memberId: memberId,
         },
       });
     } catch (error) {
-      console.error("Failed to place order:", error);
+      swal({
+        title: "장바구니가 비어있어요!",
+      });
     }
   };
 

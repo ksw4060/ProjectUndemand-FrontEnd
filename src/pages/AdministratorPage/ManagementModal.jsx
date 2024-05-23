@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./ManagementModal.css";
 import { MdClose } from "react-icons/md";
 import axios from "axios";
+import swal from "sweetalert";
 
 function ManagementModal({ selectedProductData, modalClose, type }) {
   const [parentCategoryName, setParentCategoryName] = useState("");
@@ -16,8 +17,6 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const [isDiscount, setIsDiscount] = useState(false);
   const [discountRate, setDiscountRate] = useState(0);
   const [isRecommend, setIsRecommend] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [size, setSize] = useState("FREE");
   const [initialStock, setInitialStock] = useState("");
@@ -44,10 +43,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(
-        `상위 카테고리 ${parentCategoryName}(이)가 생성 되었습니다. 카테고리 ID는 [${response.data}]입니다.`
-      );
+      swal({
+        title: `상위 카테고리 ${parentCategoryName}(이)가 생성 되었습니다! 카테고리 ID는 [${response.data}]입니다.`,
+      });
     } catch (error) {
       console.error("Error creating parent category:", error);
     }
@@ -57,7 +55,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (parentCategoryName) {
       await parentCategoryCreate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -74,10 +74,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(
-        `하위 카테고리 ${childCategoryName}(이)가 생성 되었습니다.`
-      );
+      swal({
+        title: `하위 카테고리 ${childCategoryName}(이)가 생성 되었습니다!`,
+      });
     } catch (error) {
       console.error("Error creating child category:", error);
     }
@@ -87,7 +86,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (parentId && childCategoryName) {
       await childCategoryCreate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -101,8 +102,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`카테고리를 삭제하였습니다.`);
+      swal({
+        title: `카테고리를 삭제하였습니다!`,
+      });
     } catch (error) {
       console.error("Error creating child category:", error);
     }
@@ -140,8 +142,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`상품을 등록하였습니다.`);
+      swal({
+        title: `상품을 등록하였습니다!`,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -159,7 +164,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     ) {
       await productCreate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -173,8 +180,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`${response.data}`);
+      swal({
+        title: `${response.data}`,
+      });
     } catch (error) {
       console.error("이미지 삭제 에러:", error);
     }
@@ -184,7 +192,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (thumbnailId) {
       await imageDelete();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -208,8 +218,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`${response.data.productName} 상품을 수정하였습니다.`);
+      swal({
+        title: `${response.data.productName} 상품을 수정하였습니다!`,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -219,7 +232,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (productName && productType && price) {
       await productUpdate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -236,8 +251,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`${response.data}`);
+      swal({
+        title: `${response.data}`,
+      });
     } catch (error) {
       console.error(`Error creating color:`, error);
     }
@@ -247,7 +263,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (color) {
       await colorCreate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -261,8 +279,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setModalMessage(`${response.data}`);
-      setShowModal(true);
+      swal({
+        title: `${response.data}`,
+      });
     } catch (error) {
       console.error(error.response.data);
     }
@@ -272,7 +291,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (colorId) {
       await colorDelete();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -296,8 +317,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`인벤토리를 생성하였습니다.`);
+      swal({
+        title: `인벤토리를 생성하였습니다!`,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error(`Error creating inventory:`, error);
     }
@@ -307,7 +331,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (colorId && categoryId && size && initialStock) {
       await inventoryCreate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -328,8 +354,11 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`인벤토리를 수정하였습니다.`);
+      swal({
+        title: `인벤토리를 수정하였습니다!`,
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error(`Error updating inventory:`, error);
     }
@@ -339,7 +368,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
     if (colorId && categoryId && size) {
       await inventoryUpdate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
   };
 
@@ -359,9 +390,9 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-
-      setShowModal(true);
-      setModalMessage(`상품 썸네일을 추가하였습니다.`);
+      swal({
+        title: `상품 썸네일을 추가하였습니다!`,
+      });
     } catch (error) {
       console.error(`Error submit thumbnail:`, error);
     }
@@ -383,27 +414,18 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           },
         }
       );
-
-      setShowModal(true);
-      setModalMessage(`상품 상세 이미지를 추가하였습니다.`);
+      swal({
+        title: `상품 상세 이미지를 추가하였습니다!`,
+      });
     } catch (error) {
       console.error(`Error submit thumbnail:`, error);
     }
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    modalClose();
-  };
-
   return (
     <div className="management-modal">
       {type === "update product" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>상품 수정</h2>
             <div className="update-product-info">
@@ -506,11 +528,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "color management" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>색상 관리</h2>
             <MdClose
@@ -545,11 +563,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "create product" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>상품 등록</h2>
             <MdClose
@@ -663,11 +677,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "delete product image" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>상품 이미지 삭제</h2>
             <MdClose
@@ -692,11 +702,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "create category" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>카테고리 관리</h2>
             <MdClose
@@ -754,11 +760,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "create inventory" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>인벤토리 생성</h2>
             <MdClose
@@ -830,11 +832,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "update inventory" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>인벤토리 수정</h2>
             <MdClose
@@ -892,11 +890,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
         </div>
       )}
       {type === "image management" && (
-        <div
-          className={`management-modal-container ${
-            showModal && "confirm-modal-active"
-          }`}
-        >
+        <div className={`management-modal-container`}>
           <div className="management-modal-top">
             <h2>상품 이미지 관리</h2>
             <MdClose
@@ -939,14 +933,6 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
               />
               <button onClick={handleImageDelete}>썸네일 이미지 삭제</button>
             </div>
-          </div>
-        </div>
-      )}
-      {showModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={() => closeModal()}>확인</button>
           </div>
         </div>
       )}

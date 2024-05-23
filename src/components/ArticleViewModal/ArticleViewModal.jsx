@@ -3,6 +3,7 @@ import "./ArticleViewModal.css";
 import { MdClose } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import axios from "axios";
+import swal from "sweetalert";
 
 function ArticleViewModal({
   modalType,
@@ -106,20 +107,27 @@ function ArticleViewModal({
   };
 
   const handleInquiryAnswerModalOpen = async (inquiryId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/${inquiryId}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("Authorization"),
-          },
-        }
-      );
-      setInquiryDetailData(response.data);
-      setSelectedInquiryId(inquiryId);
-      setInquiryAnswerModalOpen(true);
-    } catch (error) {
-      console.error(error);
+    const authorization = localStorage.getItem("Authorization");
+    if (authorization) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/${inquiryId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setInquiryDetailData(response.data);
+        setSelectedInquiryId(inquiryId);
+        setInquiryAnswerModalOpen(true);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      swal({
+        title: "접근 권한이 없습니다!",
+      });
     }
   };
 
@@ -157,7 +165,9 @@ function ArticleViewModal({
         console.error(error);
       }
     } else {
-      alert("답변 내용을 입력하지 않으셨습니다.");
+      swal({
+        title: "답변 내용을 입력하지 않으셨습니다.",
+      });
       setInquiryAnswerModalOpen(false);
     }
   };
@@ -166,7 +176,9 @@ function ArticleViewModal({
     <>
       <div
         className={`article-view-modal ${reviewAnswerModalOpen && "ram-open"} ${
-          inquiryAnswerModalOpen && "iam-open"
+          modalType === "adminInquiry" && inquiryAnswerModalOpen
+            ? "iam-open"
+            : ""
         }`}
       >
         <div className="product-info-section">
@@ -390,68 +402,70 @@ function ArticleViewModal({
         </button>
       </div>
 
-      <div
-        className={`inquiry-answer-modal ${
-          inquiryAnswerModalOpen && "iam-open"
-        }`}
-      >
-        <div className="modal-title">
-          <MdClose
-            onClick={() => inquiryAnswerModalClose()}
-            className="close-modal"
-          />
-          <span>문의 글</span>
-        </div>
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="iam-detail-content">
-            <div className="iam-detail-content-wrapper">
-              <div className="iam-detail-content-writer">
-                <span className="iam-key">작성자</span>
-                <span className="iam-value">{inquiryDetailData.name}</span>
-              </div>
-              <div className="iam-detail-content-type">
-                <span className="iam-key">문의 유형</span>
-                <span className="iam-value">
-                  {inquiryDetailData.inquiryType}
-                </span>
-              </div>
-              <div className="iam-detail-content-date">
-                <span className="iam-key">작성일</span>
-                <span className="iam-value">
-                  {inquiryDetailData.createdAt.substring(0, 10)}
-                </span>
-              </div>
-            </div>
-            <div className="iam-detail-content-title">
-              <span className="iam-key">글 제목</span>
-              <span className="iam-value">
-                {inquiryDetailData.inquiryTitle}
-              </span>
-            </div>
-            <div className="iam-detail-content-content">
-              <span className="iam-key">내용</span>
-              <span className="iam-value">
-                {inquiryDetailData.inquiryContent}
-              </span>
-            </div>
-          </div>
-        )}
-        <span className="iam-input-title">문의 답변</span>
-        <div className="iam-input-cover">
-          <textarea
-            value={inquiryAnswerContent}
-            onChange={(e) => setInquiryAnswerContent(e.target.value)}
-          />
-        </div>
-        <button
-          className="submit-btn"
-          onClick={() => handleInquiryAnswerSubmitBtn(selectedInquiryId)}
+      {modalType === "adminInquiry" && (
+        <div
+          className={`inquiry-answer-modal ${
+            inquiryAnswerModalOpen && "iam-open"
+          }`}
         >
-          답변 등록
-        </button>
-      </div>
+          <div className="modal-title">
+            <MdClose
+              onClick={() => inquiryAnswerModalClose()}
+              className="close-modal"
+            />
+            <span>문의 글</span>
+          </div>
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <div className="iam-detail-content">
+              <div className="iam-detail-content-wrapper">
+                <div className="iam-detail-content-writer">
+                  <span className="iam-key">작성자</span>
+                  <span className="iam-value">{inquiryDetailData.name}</span>
+                </div>
+                <div className="iam-detail-content-type">
+                  <span className="iam-key">문의 유형</span>
+                  <span className="iam-value">
+                    {inquiryDetailData.inquiryType}
+                  </span>
+                </div>
+                <div className="iam-detail-content-date">
+                  <span className="iam-key">작성일</span>
+                  <span className="iam-value">
+                    {inquiryDetailData.createdAt.substring(0, 10)}
+                  </span>
+                </div>
+              </div>
+              <div className="iam-detail-content-title">
+                <span className="iam-key">글 제목</span>
+                <span className="iam-value">
+                  {inquiryDetailData.inquiryTitle}
+                </span>
+              </div>
+              <div className="iam-detail-content-content">
+                <span className="iam-key">내용</span>
+                <span className="iam-value">
+                  {inquiryDetailData.inquiryContent}
+                </span>
+              </div>
+            </div>
+          )}
+          <span className="iam-input-title">문의 답변</span>
+          <div className="iam-input-cover">
+            <textarea
+              value={inquiryAnswerContent}
+              onChange={(e) => setInquiryAnswerContent(e.target.value)}
+            />
+          </div>
+          <button
+            className="submit-btn"
+            onClick={() => handleInquiryAnswerSubmitBtn(selectedInquiryId)}
+          >
+            답변 등록
+          </button>
+        </div>
+      )}
     </>
   );
 }
