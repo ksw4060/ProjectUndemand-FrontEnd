@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import "./Inventory.css";
 import axios from "axios";
 import ManagementModal from "./ManagementModal.jsx";
+import swal from "sweetalert";
 
 function Inventory() {
   const location = useLocation();
@@ -11,8 +12,6 @@ function Inventory() {
   const [selectedProductData, setSelectedProductData] = useState([]);
   const [managementModalOpen, setManagementModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const fetchAllInvensData = async () => {
@@ -56,8 +55,11 @@ function Inventory() {
           },
         }
       );
-      setShowModal(true);
-      setModalMessage(`인벤토리를 삭제하였습니다.`);
+      swal({
+        title: "인벤토리를 삭제하였습니다!",
+      }).then(() => {
+        window.location.reload();
+      });
     } catch (error) {
       console.error(error);
     }
@@ -69,11 +71,6 @@ function Inventory() {
 
   const closeManagementModal = () => {
     setManagementModalOpen(false);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    window.location.reload();
   };
 
   return (
@@ -146,14 +143,6 @@ function Inventory() {
           modalClose={closeManagementModal}
           type={modalType}
         ></ManagementModal>
-      )}
-      {showModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={() => closeModal()}>확인</button>
-          </div>
-        </div>
       )}
     </div>
   );

@@ -11,6 +11,7 @@ import { MdOutlineShoppingBag } from "react-icons/md";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
+import swal from "sweetalert";
 
 function ProductDetailPage({ isLoggedin, memberId }) {
   let { productId } = useParams();
@@ -152,6 +153,8 @@ function ProductDetailPage({ isLoggedin, memberId }) {
       .filter((item) => item.color === color)
       .map((item) => item.size);
     setSizes(filteredSizes);
+    setSelectedSize(null);
+    setSelectedInvenId(null);
   };
 
   const handleSizeClick = (size) => {
@@ -172,6 +175,17 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     return availableInventory ? true : false;
   };
 
+  const handleSearchInvenId = () => {
+    if (selectedColor && selectedSize) {
+      const searchInventory = productInventory.find(
+        (item) => item.color === selectedColor && item.size === selectedSize
+      );
+      if (searchInventory) {
+        setSelectedInvenId(searchInventory.inventoryId);
+      }
+    }
+  };
+
   const handleCartSubmit = async () => {
     if (isLoggedin) {
       await axios
@@ -188,13 +202,36 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           }
         )
         .then((response) => {
-          alert(`장바구니에 상품을 담았습니다!`);
+          swal({
+            title: `장바구니에 상품을 담았습니다!`,
+            text: `장바구니로 이동하시겠어요?`,
+            icon: "success",
+            buttons: {
+              cancel: "취소",
+              navigate: "확인",
+            },
+          }).then((value) => {
+            switch (value) {
+              case "navigate":
+                navigate("/cart");
+                break;
+
+              default:
+                break;
+            }
+          });
         })
         .catch((error) => {
-          alert(error.response.data);
+          if (error.response.data === `For input string: "null"`) {
+            swal({
+              title: "모든 옵션을 선택해 주세요!",
+            });
+          }
         });
     } else {
-      alert("로그인 후 이용 가능해요!");
+      swal({
+        title: "로그인 후 이용 가능해요!",
+      });
     }
   };
 
@@ -234,9 +271,10 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (type === "review") {
       if (isLoggedin) {
         if (pHistories.length === 0) {
-          alert(
-            "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!"
-          );
+          swal({
+            title:
+              "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!",
+          });
           setReviewWritingAndInquiryPostingModalOpen(false);
         } else {
           const allReviewsTrue = pHistories.every(
@@ -244,21 +282,33 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           );
 
           if (allReviewsTrue) {
-            if (
-              window.confirm(
-                "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요. 리뷰 수정 페이지로 이동할까요?"
-              )
-            ) {
-              setReviewWritingAndInquiryPostingModalOpen(false);
-              navigate("/user/review");
-            }
+            swal({
+              title: "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요!",
+              text: "내 리뷰 페이지로 이동할까요?",
+              icon: "info",
+              buttons: {
+                cancel: "취소",
+                navigate: "확인",
+              },
+            }).then((value) => {
+              switch (value) {
+                case "navigate":
+                  navigate("/user/mypage/review");
+                  break;
+
+                default:
+                  break;
+              }
+            });
           } else {
             setModalType(type);
             setReviewWritingAndInquiryPostingModalOpen(true);
           }
         }
       } else {
-        alert("로그인 후 이용 가능해요!");
+        swal({
+          title: "로그인 후 이용 가능해요!",
+        });
       }
     } else {
       setModalType(type);
@@ -268,17 +318,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
 
   const closeArticleSubmitModal = () => {
     setReviewWritingAndInquiryPostingModalOpen(false);
-  };
-
-  const handleSearchInvenId = () => {
-    if (selectedColor && selectedSize) {
-      const searchInventory = productInventory.find(
-        (item) => item.color === selectedColor && item.size === selectedSize
-      );
-      if (searchInventory) {
-        setSelectedInvenId(searchInventory.inventoryId);
-      }
-    }
   };
 
   useEffect(() => {

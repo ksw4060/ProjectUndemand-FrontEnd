@@ -16,6 +16,7 @@ import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
+import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
@@ -264,7 +265,7 @@ function App() {
               />
             }
           />
-          {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
+          <Route path="/user/mypage/review" element={<MyReviewPage />} />
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route

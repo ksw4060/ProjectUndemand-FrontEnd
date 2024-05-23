@@ -3,6 +3,7 @@ import { MdClose } from "react-icons/md";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import "./ReviewUpdateModal.css";
 import axios from "axios";
+import swal from "sweetalert";
 
 function ReviewUpdateModal({
   reviewId,
@@ -12,8 +13,6 @@ function ReviewUpdateModal({
 }) {
   const [reviewContent, setReviewContent] = useState("");
   const [rating, setRating] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
 
   const handleReviewUpdate = async () => {
     try {
@@ -24,8 +23,11 @@ function ReviewUpdateModal({
           rating: rating,
         }
       );
-      setModalMessage(`상품 구매 후기를 수정 하였습니다`);
-      setShowModal(true);
+      swal({
+        title: "상품 구매 후기를 수정 하였습니다!",
+      }).then(() => {
+        modalClose();
+      });
       updateReviewData();
     } catch (error) {
       console.error(error.response.data);
@@ -36,22 +38,15 @@ function ReviewUpdateModal({
     if (reviewContent && rating) {
       await handleReviewUpdate();
     } else {
-      alert("모든 입력란을 작성해 주세요.");
+      swal({
+        title: "모든 입력란을 작성해 주세요!",
+      });
     }
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    modalClose();
   };
 
   return (
     <div className="review-u-modal">
-      <div
-        className={`review-u-modal-wrapper ${
-          showModal && "comfirm-modal-active"
-        }`}
-      >
+      <div className={`review-u-modal-wrapper`}>
         <div className="review-u-modal-top">
           <h2>리뷰 수정</h2>
           <h3>상품에 대한 리뷰를 수정해 주세요</h3>
@@ -89,14 +84,6 @@ function ReviewUpdateModal({
           </button>
         </div>
       </div>
-      {showModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={closeModal}>확인</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

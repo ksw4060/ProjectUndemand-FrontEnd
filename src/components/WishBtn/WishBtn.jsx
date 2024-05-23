@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "./WishBtn.css";
+import swal from "sweetalert";
 
 const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
   const [isWishlist, setIsWishlist] = useState(false);
@@ -66,7 +67,9 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
         console.error(error.response.data);
       }
     } else {
-      alert("로그인 후 이용 가능해요!");
+      swal({
+        title: "로그인 후 이용 가능해요!",
+      });
     }
   };
 
