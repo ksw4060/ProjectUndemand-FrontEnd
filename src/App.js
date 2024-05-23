@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
@@ -20,11 +19,14 @@ import Footer from "./components/Footer/Footer.jsx";
 import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
 import axios from "axios";
+import "react-image-crop/dist/ReactCrop.css";
 
 function App() {
   const [categoryData, setCategoryData] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
+  // 프로필 데이터를 갱신(useEffect) 하는 기준
+  const [profileImageChange, setProfileImageChange] = useState(null);
   const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
@@ -55,25 +57,26 @@ function App() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // 로컬 스토리지에서 Authorization 토큰 가져오기
         const authorization = localStorage.getItem("Authorization");
-        // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
           `http://localhost:8080/api/v1/profile/${memberId}`,
           {
             headers: {
-              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+              Authorization: authorization,
             },
           }
         );
         setProfileData(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchProfileData();
-  }, [memberId]);
+    if (memberId) {
+      fetchProfileData();
+    }
+  }, [memberId, profileImageChange, navigate]);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -93,6 +96,7 @@ function App() {
     if (accessToken) {
       setIsLoggedin(true);
       setMemberId(localStorage.getItem("memberId"));
+      setProfileImageChange(localStorage.getItem("ProfileImageChange"));
     } else {
       setIsLoggedin(false);
       setMemberId("");
@@ -234,7 +238,7 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
-            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
+            // 2024.05.04 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
           />
         </div>
@@ -261,10 +265,11 @@ function App() {
                 isLoggedin={isLoggedin}
                 memberId={memberId}
                 profileData={profileData}
+                setProfileData={setProfileData}
+                setProfileImageChange={setProfileImageChange} // 추가
               />
             }
           />
-          {/* <Route path="/user/mypage/review" element={<MyReviewPage />} /> */}
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route

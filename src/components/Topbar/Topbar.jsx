@@ -16,6 +16,13 @@ function Topbar({
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
+  const profileImageUrl =
+    profileData && profileData.profileImgPath
+      ? `http://localhost:8080${profileData.profileImgPath.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      : "https://defaultst.imweb.me/common/img/default_profile.png";
   const categoryLinks = [
     {
       to: "/products/BEST",
@@ -72,7 +79,7 @@ function Topbar({
 
     // 로컬 스토리지에서 Authorization 값 제거
     localStorage.removeItem("Authorization");
-
+    localStorage.removeItem("profileImageChange");
     localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
@@ -190,19 +197,7 @@ function Topbar({
                             ? `Hello, ${profileData.nickname}!`
                             : `Hello, ODD!`}
                         </span>
-                        <img
-                          //   src={
-                          //     profileData && profileData.profileImgPath
-                          //       ? profileData.profileImgPath
-                          //       : "https://defaultst.imweb.me/common/img/default_profile.png"
-                          //   }
-                          src={
-                            profileData && profileData.profileImgPath
-                              ? `http://localhost:8080${profileData.profileImgPath}`
-                              : "https://defaultst.imweb.me/common/img/default_profile.png"
-                          }
-                          alt="Profile img"
-                        />
+                        <img src={profileImageUrl} alt="Profile img" />
                       </Link>
                     </li>
                     <li className="wishlist-btn">
@@ -341,19 +336,7 @@ function Topbar({
                       ? `Hello, ${profileData.nickname}!`
                       : `Hello, ODD!`}
                   </span>
-                  <img
-                    // src={
-                    //   profileData && profileData.profileImgPath
-                    //     ? profileData.profileImgPath
-                    //     : "https://defaultst.imweb.me/common/img/default_profile.png"
-                    // }
-                    src={
-                      profileData && profileData.profileImgPath
-                        ? `http://localhost:8080${profileData.profileImgPath}`
-                        : "https://defaultst.imweb.me/common/img/default_profile.png"
-                    }
-                    alt="Profile img"
-                  />
+                  <img src={profileImageUrl} alt="Profile img" />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">

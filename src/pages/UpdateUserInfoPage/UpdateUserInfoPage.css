@@ -43,6 +43,7 @@
   margin-top: 50px;
 }
 
+/* 프로필 수정 페이지, 프로필 이미지 위의 수정버튼 박스 */
 .user-info-input-container > div {
   width: 100%;
 
@@ -52,6 +53,11 @@
   align-items: center;
 
   margin-bottom: 10px;
+}
+
+/* 프로필 이미지 컨테이너 */
+.account-img-container {
+  height: 70px;
 }
 
 .profile-img-container {
@@ -64,14 +70,6 @@
   border-bottom: 1px solid rgb(210, 210, 210);
 
   margin-bottom: 20px;
-}
-
-.profile-image-edit-container img {
-  width: 350px;
-  height: 350px;
-
-  object-fit: cover;
-  border-radius: 50%;
 }
 
 .user-info-input-container > div > span {
@@ -129,7 +127,7 @@
 }
 
 /* 계정 비활성화 버튼 */
-.account-delete-container {
+.account-checkbox-container {
   width: 100%;
   height: 60px;
 
@@ -140,22 +138,22 @@
   /* margin-bottom: 20px; */
 }
 
-.account-delete {
+.account-checkbox {
   width: 70%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgb(210, 210, 210);
-  border-bottom: 1px solid rgb(210, 210, 210);
+  /* border-top: 1px solid rgb(210, 210, 210); */
+  /* border-bottom: 1px solid rgb(210, 210, 210); */
 }
 
-.account-delete > span {
+.account-checkbox > span {
   font-size: 17px;
   font-weight: bold;
 }
 
-.account-delete > button {
+.account-checkbox > button {
   width: 80px;
   height: 40px;
   border-radius: 20px;
@@ -163,16 +161,6 @@
   font-size: 16px;
   color: rgb(34, 34, 34);
   background-color: rgb(255, 255, 255);
-}
-
-/* 프로필 이미지 컨테이너 */
-.account-img-container {
-  width: 100%;
-  height: 90px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .account-img {
@@ -214,7 +202,7 @@
 }
 
 .uui-submit-btn {
-  width: 80px;
+  width: 150px;
   height: 40px;
 
   border-radius: 20px;
@@ -237,14 +225,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  margin-bottom: 20px;
 }
 
-.profile-edit-image {
+.profile-image-edit-container img {
   width: 400px;
   height: 400px;
+
+  object-fit: cover;
   border-radius: 50%;
-  padding: 5px;
-  margin-top: 20px;
 }
 
 #profile-image-modal-box {
@@ -358,6 +348,8 @@
 
   color: rgb(34, 34, 34);
   background-color: rgb(255, 255, 255);
+
+  z-index: 103;
 }
 /* 버튼 CSS 끝 */
 
@@ -373,7 +365,7 @@
 .modal-profile-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  /* object-fit: contain; */
   background-color: transparent;
 }
 
@@ -391,4 +383,41 @@
 .modal-cropped-profile-image {
   width: 90%;
   height: 90%;
+}
+
+.show-cropped-image-btn {
+  width: 80px;
+  height: 40px;
+
+  border-radius: 20px;
+  border: 0.1px solid rgb(210, 210, 210);
+  font-size: 16px;
+  color: rgb(34, 34, 34);
+  background-color: rgb(255, 255, 255);
+
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+
+  z-index: 103;
+}
+
+.Profile-image-edit-btn {
+  position: absolute;
+  bottom: 0.75rem; /* assuming the base font size is 16px */
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: fit-content;
+  padding: 0.35rem;
+  border-radius: 9999px; /* assuming you want a circle */
+  background-color: #2d3748; /* or any other shade of gray you prefer */
+  border-width: 1px;
+  border-style: solid;
+  border-color: #718096; /* or any other shade of gray you prefer */
+}
+
+.Profile-image-edit-btn:hover {
+  background-color: #4a5568; /* or any other shade of gray you prefer */
 }

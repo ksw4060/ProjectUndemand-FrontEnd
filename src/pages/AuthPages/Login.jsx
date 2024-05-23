@@ -54,10 +54,12 @@ const Login = () => {
       const email = response.data.email;
 
       if (parseInt(response.status) === 200) {
-        // 기존에 저장된 Authorization 토큰과 refreshToken과 memberId 를 삭제합니다.
+        // 기존에 저장된 Authorization 토큰과 refreshToken, memberId, profileImageChange 를 삭제합니다.
         localStorage.removeItem("Authorization");
         localStorage.removeItem("memberId");
+        localStorage.removeItem("profileImageChange");
         deleteCookie("refreshToken");
+
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
         document.cookie = `refreshToken=${refreshToken}; path=/; Secure; SameSite=Lax`;
@@ -75,6 +77,17 @@ const Login = () => {
 
         const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
+        // 로컬 스토리지에 ProfileImageChange 업데이트
+        const now = new Date();
+        const formattedDate = `${now.getFullYear()}-${String(
+          now.getMonth() + 1
+        ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+          now.getHours()
+        ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
+          2,
+          "0"
+        )}:${String(now.getSeconds()).padStart(2, "0")}`;
+        localStorage.setItem("profileImageChange", formattedDate);
 
         setTimeout(() => {
           window.location.replace("/");

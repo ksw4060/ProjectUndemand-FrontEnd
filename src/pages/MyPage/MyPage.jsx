@@ -5,6 +5,8 @@ import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPa
 import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
 import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
 import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
+import Profile from "../UpdateUserInfoPage/Profile.jsx";
+import { PasswordCheckPage } from "../PasswordCheckPage/PasswordCheckPage.jsx";
 import "./MyPage.css";
 
 function MyPage(myPageProps) {
@@ -12,6 +14,8 @@ function MyPage(myPageProps) {
   const isLoggedin = myPageProps.isLoggedin;
   const memberId = myPageProps.memberId;
   const profileData = myPageProps.profileData;
+  const setProfileImageChange = myPageProps.setProfileImageChange;
+  const setProfileData = myPageProps.setProfileData;
 
   useEffect(() => {
     console.log(selectedPage);
@@ -32,6 +36,9 @@ function MyPage(myPageProps) {
           </span>
           <span onClick={() => setSelectedPage("my review")}>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
+          </span>
+          <span onClick={() => setSelectedPage("my test Profile")}>
+            <Link to="/user/mypage/testprofile">test Profile</Link>
           </span>
         </div>
       </div>
@@ -64,6 +71,12 @@ function MyPage(myPageProps) {
           element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />}
         />
         <Route
+          path="/password-check"
+          element={
+            <PasswordCheckPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
           path="/update-info"
           element={
             <UpdateUserInfoPage
@@ -72,15 +85,22 @@ function MyPage(myPageProps) {
               profileData={profileData}
             />
           }
-        ></Route>
+        />
+        <Route
+          path="/testprofile"
+          element={
+            <Profile
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+              profileData={profileData}
+              setProfileData={setProfileData}
+              setProfileImageChange={setProfileImageChange} // 추가
+            />
+          }
+        />
       </Routes>
     </div>
   );
 }
 
 export { MyPage };
-// my-page-grid-container
-// my-page-profile
-// my-page-sale-datas
-// my-page-menu
-// my-page-content

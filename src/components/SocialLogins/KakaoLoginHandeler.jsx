@@ -40,11 +40,11 @@ const KakaoLoginHandeler = () => {
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
       if (parseInt(response.status) === 200) {
-        // ----------- 24.04.26 로그인 시, 쿠키스토리지 refresh 가 휘발되는 문제 발생 --------------
-        // 기존에 저장된 Authorization 토큰과 refreshToken을 삭제합니다.
+        // 기존에 저장된 Authorization 토큰과 refreshToken, memberId, profileImageChange 를 삭제합니다.
         localStorage.removeItem("Authorization");
+        localStorage.removeItem("memberId");
+        localStorage.removeItem("profileImageChange");
         deleteCookie("refreshToken");
-        // console.log(`deleteCookie("refreshToken") 을 하고 있는지 체크`);
 
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
@@ -63,14 +63,22 @@ const KakaoLoginHandeler = () => {
 
         const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
+        // 로컬 스토리지에 ProfileImageChange 업데이트
+        const now = new Date();
+        const formattedDate = `${now.getFullYear()}-${String(
+          now.getMonth() + 1
+        ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+          now.getHours()
+        ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
+          2,
+          "0"
+        )}:${String(now.getSeconds()).padStart(2, "0")}`;
+        localStorage.setItem("profileImageChange", formattedDate);
 
         // Delay of 1 second before navigating to home page
         setTimeout(() => {
           window.location.replace("/");
         }, 300);
-        // setTimeout(() => {
-        //   alert(response.data.email + "님, 반갑습니다.");
-        // }, 1500);
       }
     } catch (error) {
       console.error("로그인 실패 : ", error.response);

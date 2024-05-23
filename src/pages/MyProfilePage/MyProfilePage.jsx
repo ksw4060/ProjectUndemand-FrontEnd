@@ -6,8 +6,13 @@ import "./MyProfilePage.css";
 function MyProfilePage({ isLoggedin, memberId, profileData }) {
   //   const [profileData, setProfileData] = useState(null);
 
-  console.log("로그인여부 : ", isLoggedin);
-  console.log("프로필 데이터 : ", profileData);
+  const profileImageUrl =
+    profileData && profileData.profileImgPath
+      ? `http://localhost:8080${profileData.profileImgPath.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      : "https://defaultst.imweb.me/common/img/default_profile.png";
 
   const statusToKorean = (status) => {
     return status ? "True" : "False";
@@ -26,11 +31,7 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
         <div className="profile-container">
           <div className="profile-image-container">
             <img
-              src={
-                profileData && profileData.profileImgPath
-                  ? `http://localhost:8080${profileData.profileImgPath}`
-                  : "https://defaultst.imweb.me/common/img/default_profile.png"
-              }
+              src={profileImageUrl}
               alt="프로필 이미지"
               className="profile-image"
             />
