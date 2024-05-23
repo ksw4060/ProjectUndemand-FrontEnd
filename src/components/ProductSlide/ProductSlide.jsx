@@ -66,12 +66,12 @@ function ProductSlide({ products, sectionTitle }) {
                 <Link to={`/product/${product.productId}`}>
                   {product.productName}
                 </Link>
-                {product.isDiscount && (
+                {product.isDiscount === true && (
                   <Link
                     to={`/product/${product.productId}`}
                   >{`${product.discountRate}% 할인 중`}</Link>
                 )}
-                {product.isRecommend && (
+                {product.isRecommend === true && (
                   <Link to={`/product/${product.productId}`}>추천상품!</Link>
                 )}
                 <Link

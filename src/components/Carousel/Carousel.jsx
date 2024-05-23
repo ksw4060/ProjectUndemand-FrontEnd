@@ -95,21 +95,59 @@ const Carousel = () => {
       ) : (
         <div className="carousel-img-wrap">
           {newArrs.map((newArr, index) => (
-            <img
-              src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${newArr.productThumbnails}`}
-              alt={index}
-              key={index}
+            <div
               style={{
                 transform: `translateX(-${currentIdx * 100}%)`,
                 transition: `${carouselTransition}`,
               }}
               className={`carousel-img-card ${
-                index === currentIdx - 1 || index === currentIdx + 1
-                  ? "side-img"
-                  : "current-img"
+                index === currentIdx ? "current-img" : "side-img"
               }`}
-              onClick={() => navigate(`/product/${newArr.productId}`)}
-            />
+              key={index}
+            >
+              <img
+                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${newArr.productThumbnails}`}
+                alt={index}
+                className={`carousel-img`}
+                onClick={() => navigate(`/product/${newArr.productId}`)}
+              />
+              <div className="carousel-text">
+                <span
+                  className="carousel-text-pd-name"
+                  onClick={() => navigate(`/product/${newArr.productId}`)}
+                >
+                  {newArr.productName}
+                </span>
+                <span
+                  className="carousel-text-pd-type"
+                  onClick={() => navigate(`/product/${newArr.productId}`)}
+                >
+                  {newArr.productType}
+                </span>
+                {newArr.isDiscount === true && (
+                  <span
+                    className="carousel-text-pd-discount"
+                    onClick={() => navigate(`/product/${newArr.productId}`)}
+                  >
+                    {`${newArr.discountRate}% 할인 중`}
+                  </span>
+                )}
+                {newArr.isRecommend === true && (
+                  <span
+                    className="carousel-text-pd-recommend"
+                    onClick={() => navigate(`/product/${newArr.productId}`)}
+                  >
+                    추천 상품!
+                  </span>
+                )}
+                <span
+                  className="carousel-text-pd-price"
+                  onClick={() => navigate(`/product/${newArr.productId}`)}
+                >
+                  {`${newArr.price} 원`}
+                </span>
+              </div>
+            </div>
           ))}
         </div>
       )}
