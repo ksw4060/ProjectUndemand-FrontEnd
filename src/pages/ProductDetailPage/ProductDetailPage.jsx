@@ -77,7 +77,12 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (isLoggedin === true) {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
         );
         const paymentHistories = response.data.filter(
           (paymentHistory) => paymentHistory.product === product.productName
@@ -577,6 +582,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                     productInquiryData={productInquiryData}
                     product={product}
                     thumbnailImage={thumbnailImages[0]}
+                    memberId={memberId}
                   ></ArticleViewModal>
                 )}
                 {reviewWritingAndInquiryPostingModalOpen && (
