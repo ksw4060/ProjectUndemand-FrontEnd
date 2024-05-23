@@ -13,6 +13,14 @@
     overflow-y: auto;
 }
 
+.article-view-modal.ram-open {
+    filter: blur(1px) brightness(0.7);
+}
+
+.article-view-modal.iam-open {
+    filter: blur(1px) brightness(0.7);
+}
+
 .product-info-section {
     width: 100%;
     display: flex;
@@ -169,7 +177,7 @@
 .review-section {
     width: 70%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: flex-start;
     border-bottom: 1.5px solid rgb(210, 210, 210);
     margin-top: 30px;
@@ -184,12 +192,11 @@
 }
 
 .modal-review-box {
-    width: 60%;
+    width: 65%;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
     align-items: flex-start;
-    margin-left: 60px;
 }
 
 .star-rate {
@@ -200,6 +207,88 @@
     font-size: 13px;
     color: rgb(150, 150, 150);
     margin-top: 30px;
+}
+
+.article-answer-btn-container {
+    width: 20%;
+    height: 40px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.article-answer-btn {
+    width: 100px;
+    height: 35px;
+    border-radius: 25px;
+    border: none;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(34, 34, 34);
+    cursor: pointer;
+}
+
+.review-answer-modal {
+    width: 660px;
+    height: 390px;
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19);
+    z-index: 2000;
+    padding: 40px 60px;
+}
+
+.review-answer-modal.ram-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.modal-title > span {
+    font-size: 30px;
+}
+
+.ram-input-cover {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgb(99, 99, 99);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.ram-input-cover > textarea {
+    width: 100%;
+    height: 100%;
+    border-width: 0px;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+    font-size: 16px;
+}
+
+.review-answer-modal > .submit-btn {
+    margin-top: 40px;
 }
 
 .inquiry-title-section {
@@ -322,6 +411,7 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1.5px solid rgb(210, 210, 210);
+    cursor: pointer;
     margin-top: 30px;
     padding-bottom: 10px;
 }
@@ -343,4 +433,114 @@
     height: 50px;
     object-fit: cover;
     object-position: center;
+}
+
+.inquiry-answer-modal {
+    width: 660px;
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 40px 60px;
+}
+
+.inquiry-answer-modal.iam-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+.iam-detail-content {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-size: 16px;
+}
+
+.iam-detail-content > div {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 60px;
+}
+
+.iam-detail-content > div > span:first-child {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.iam-detail-content > div > span:last-child {
+    font-size: 17px;
+}
+
+.iam-detail-content > .iam-detail-content-wrapper {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.iam-detail-content-wrapper > div {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.iam-detail-content-wrapper > div > span:first-child {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.iam-detail-content-wrapper > div > span:last-child {
+    font-size: 17px;
+}
+
+.iam-input-title {
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.iam-input-cover {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1.5px solid rgb(99, 99, 99);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.iam-input-cover > textarea {
+    width: 100%;
+    height: 100%;
+    border-width: 0px;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+    font-size: 16px;
+}
+
+.inquiry-answer-modal > .submit-btn {
+    margin-top: 40px;
 }
