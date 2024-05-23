@@ -135,7 +135,7 @@ function CartPage({ memberId, isLoggedin }) {
             return (
               <div key={cartProduct.cartId} className="cart-middle">
                 <img
-                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
                   alt={cartProduct.productName}
                   className="cart-img"
                 />

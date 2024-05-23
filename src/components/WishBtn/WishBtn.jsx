@@ -14,7 +14,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
     if (isLoggedin === true) {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/wishlist/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${memberId}`,
           {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
@@ -40,7 +40,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
       try {
         if (!isWishlist) {
           const response = await axios.post(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${productId}/${memberId}`,
             null,
             {
               headers: {
@@ -52,7 +52,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
           setIsWishlist(true);
         } else {
           const response = await axios.delete(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${productId}/${memberId}`,
             {
               headers: {
                 Authorization: localStorage.getItem("Authorization"),

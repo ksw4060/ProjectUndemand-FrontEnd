@@ -18,7 +18,7 @@ function Inventory() {
     const fetchAllInvensData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/inventory"
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`
         );
         const productInven = response.data.filter(
           (inven) => parseInt(inven.productId) === parseInt(productId)
@@ -49,7 +49,7 @@ function Inventory() {
   const deleteInventory = async (inventoryId) => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/v1/inventory/${inventoryId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory/${inventoryId}`,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),

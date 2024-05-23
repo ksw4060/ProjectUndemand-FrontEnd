@@ -45,7 +45,7 @@
 }
 
 .carousel-img-wrap {
-    width: 70%;
+    width: 80%;
     height: 660px;
     display: flex;
     flex-wrap: nowrap;
@@ -53,17 +53,70 @@
 }
 
 .carousel-img-card {
-    width: 100%;
+    width: 90%;
     height: 100%;
     display: flex;
+    justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
     object-fit: cover;
     object-position: center;
+    background-color: rgba(240, 240, 240, 1);
+    border-radius: 25px;
+}
+
+.carousel-img {
+    width: 480px;
+    height: 100%;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+    cursor: pointer;
+}
+
+.carousel-text {
+    width: 940px;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px 0px;
+}
+
+.carousel-text>span {
+    cursor: pointer;
+}
+
+.carousel-text-pd-name {
+    font-size: 70px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.carousel-text-pd-type {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.carousel-text-pd-discount {
+    font-size: 40px;
+    color: rgb(222, 189, 255);
+}
+
+.carousel-text-pd-recommend {
+    font-size: 40px;
+}
+
+.carousel-text-pd-price {
+    font-size: 25px;
+    margin-top: 30px;
+}
+
+.carousel-img-card.current-img {
+    margin: 0% 5%;
 }
 
 .carousel-img-card.side-img {
     height: 90%;
     opacity: 0.3;
-    padding: 0% 5%;
 }

@@ -58,7 +58,7 @@ function ProductSlide({ products, sectionTitle }) {
               }}
             >
               <img
-                src={`http://localhost:8080${product.productThumbnails[0]}`}
+                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                 alt={product.productName}
                 className={`product-card-img`}
               />
@@ -66,12 +66,12 @@ function ProductSlide({ products, sectionTitle }) {
                 <Link to={`/product/${product.productId}`}>
                   {product.productName}
                 </Link>
-                {product.isDiscount && (
+                {product.isDiscount === true && (
                   <Link
                     to={`/product/${product.productId}`}
                   >{`${product.discountRate}% 할인 중`}</Link>
                 )}
-                {product.isRecommend && (
+                {product.isRecommend === true && (
                   <Link to={`/product/${product.productId}`}>추천상품!</Link>
                 )}
                 <Link

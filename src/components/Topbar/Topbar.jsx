@@ -9,8 +9,6 @@ function Topbar({
   processedCategoryData,
   processedMUCategoryData,
   handleConditionSelect,
-  handleCategoryOptionSelect,
-  handleSubcategoryOptionSelect,
   isLoggedin,
   profileData,
 }) {
@@ -90,6 +88,22 @@ function Topbar({
   const handleBurgerBtnClick = () => {
     setIsBurgerClicked((prevState) => !prevState);
     setIsMenuVisible((prevState) => !prevState);
+  };
+
+  const handleCategoryOptionSelect = (parentCategory) => {
+    localStorage.setItem("selectedCategoryOption", parentCategory.name);
+    localStorage.removeItem("selectedSubCategoryOption");
+    localStorage.setItem("parentCategoryId", parentCategory.categoryId);
+    localStorage.removeItem("childCategoryId");
+    localStorage.removeItem("topMenuClicked");
+    setIsMenuVisible(false);
+  };
+
+  const handleSubcategoryOptionSelect = (childCategory) => {
+    localStorage.setItem("selectedSubCategoryOption", childCategory.name);
+    localStorage.setItem("childCategoryId", childCategory.categoryId);
+    localStorage.removeItem("topMenuClicked");
+    setIsMenuVisible(false);
   };
 
   return (

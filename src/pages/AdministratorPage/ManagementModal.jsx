@@ -34,7 +34,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const parentCategoryCreate = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v1/categorys/parent",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys/parent`,
         {
           name: parentCategoryName,
         },
@@ -64,7 +64,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const childCategoryCreate = async () => {
     try {
       await axios.post(
-        `http://localhost:8080/api/v1/categorys/child/${parentId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys/child/${parentId}`,
         {
           name: childCategoryName,
         },
@@ -94,7 +94,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const handleDeleteCategoryBtn = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/v1/categorys/${delCategoryId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys/${delCategoryId}`,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
@@ -130,12 +130,16 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
       formData.append("thumbnail_images", thumbnailImageFile);
       formData.append("content_images", contentImageFile);
 
-      await axios.post("http://localhost:8080/api/v1/products/new", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem("Authorization"),
-        },
-      });
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/new`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
       setShowModal(true);
       setModalMessage(`상품을 등록하였습니다.`);
     } catch (error) {
@@ -162,7 +166,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const imageDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/thumbnail/delete/${thumbnailId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/delete/${thumbnailId}`,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
@@ -187,7 +191,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const productUpdate = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/v1/products/${selectedProductData.productId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${selectedProductData.productId}`,
         {
           productName: productName,
           productType: productType,
@@ -222,7 +226,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const colorCreate = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/color/new`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/color/new`,
         {
           color: color,
         },
@@ -250,7 +254,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const colorDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/color/${colorId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/color/${colorId}`,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
@@ -275,7 +279,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const inventoryCreate = async () => {
     try {
       await axios.post(
-        `http://localhost:8080/api/v1/inventory/new`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory/new`,
         {
           productId: selectedProductData,
           colorId: colorId,
@@ -310,7 +314,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
   const inventoryUpdate = async () => {
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/inventory/${selectedProductData.inventoryId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory/${selectedProductData.inventoryId}`,
         {
           categoryId: categoryId,
           additionalStock: additionalStock,
@@ -346,7 +350,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
       formData.append("image", thumbnailImageFile);
 
       await axios.post(
-        "http://localhost:8080/api/v1/thumbnail/upload",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/upload`,
         formData,
         {
           headers: {
@@ -370,7 +374,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
       formData.append("image", contentImageFile);
 
       await axios.post(
-        "http://localhost:8080/api/v1/product/image/upload",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/product/image/upload`,
         formData,
         {
           headers: {
@@ -404,7 +408,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
             <h2>상품 수정</h2>
             <div className="update-product-info">
               <img
-                src={`http://localhost:8080${selectedProductData.productThumbnails[0]}`}
+                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${selectedProductData.productThumbnails[0]}`}
                 alt=""
                 className="update-product-img-info"
               />
