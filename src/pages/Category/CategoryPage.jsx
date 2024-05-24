@@ -23,6 +23,7 @@ function CategoryPage({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   profileData,
+  cartProducts,
 }) {
   const { condition } = useParams();
   const [urlCondition, setUrlCondition] = useState(condition.split("-")[0]);
@@ -333,6 +334,7 @@ function CategoryPage({
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
+                  <p className="cart-count">{cartProducts.length}</p>
                 </Link>
               </li>
               <li className="hello-user">
