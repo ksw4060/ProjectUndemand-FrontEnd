@@ -14,7 +14,6 @@ function MyPage(myPageProps) {
   const isLoggedin = myPageProps.isLoggedin;
   const memberId = myPageProps.memberId;
   const profileData = myPageProps.profileData;
-  const setProfileImageChange = myPageProps.setProfileImageChange;
   const setProfileData = myPageProps.setProfileData;
 
   useEffect(() => {
@@ -83,6 +82,7 @@ function MyPage(myPageProps) {
               isLoggedin={isLoggedin}
               memberId={memberId}
               profileData={profileData}
+              setProfileData={setProfileData}
             />
           }
         />
@@ -94,7 +94,6 @@ function MyPage(myPageProps) {
               memberId={memberId}
               profileData={profileData}
               setProfileData={setProfileData}
-              setProfileImageChange={setProfileImageChange} // 추가
             />
           }
         />

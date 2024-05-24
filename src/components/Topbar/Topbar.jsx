@@ -13,12 +13,14 @@ function Topbar({
   handleSubcategoryOptionSelect,
   isLoggedin,
   profileData,
+  profileImage,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
+  const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
+    profileData && profileImage
+      ? `http://localhost:8080${ProfileImageSrc.replace(
           "src/main/resources/static/",
           ""
         )}`
@@ -79,7 +81,7 @@ function Topbar({
 
     // 로컬 스토리지에서 Authorization 값 제거
     localStorage.removeItem("Authorization");
-    localStorage.removeItem("profileImageChange");
+    localStorage.removeItem("ProfileImage");
     localStorage.removeItem("memberId");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");

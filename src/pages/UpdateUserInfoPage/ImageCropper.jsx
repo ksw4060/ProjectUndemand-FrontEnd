@@ -108,20 +108,10 @@ const ImageCropper = ({
         }
       );
 
+      console.log("ImagePath : " + profileResponse.data.profileImgPath);
+      localStorage.setItem("ProfileImage", profileResponse.data.profileImgPath);
       // 프로필 데이터 업데이트
       setProfileData(profileResponse.data);
-
-      // 로컬 스토리지에 ProfileImageChange 업데이트
-      localStorage.removeItem("profileImageChange");
-      const now = new Date();
-      const formattedDate = `${now.getFullYear()}-${String(
-        now.getMonth() + 1
-      ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
-        now.getHours()
-      ).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(
-        now.getSeconds()
-      ).padStart(2, "0")}`;
-      localStorage.setItem("profileImageChange", formattedDate);
 
       // 프로필 이미지 변경 후 모달 닫기
       closeModal();

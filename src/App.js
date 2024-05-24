@@ -26,7 +26,7 @@ function App() {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
   // 프로필 데이터를 갱신(useEffect) 하는 기준
-  const [profileImageChange, setProfileImageChange] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
   const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
@@ -67,7 +67,10 @@ function App() {
           }
         );
         setProfileData(response.data);
+        setProfileImage(response.data.profileImgPath);
         console.log(response.data);
+        // 로컬 스토리지에 ProfileImage 저장
+        localStorage.setItem("ProfileImage", response.data.profileImgPath);
       } catch (error) {
         console.error(error);
       }
@@ -76,7 +79,7 @@ function App() {
     if (memberId) {
       fetchProfileData();
     }
-  }, [memberId, profileImageChange, navigate]);
+  }, [memberId]);
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -96,7 +99,7 @@ function App() {
     if (accessToken) {
       setIsLoggedin(true);
       setMemberId(localStorage.getItem("memberId"));
-      setProfileImageChange(localStorage.getItem("ProfileImageChange"));
+      //   setProfileImage(localStorage.getItem("ProfileImage"));
     } else {
       setIsLoggedin(false);
       setMemberId("");
@@ -240,6 +243,7 @@ function App() {
             isLoggedin={isLoggedin}
             // 2024.05.04 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
+            profileImage={profileImage}
           />
         </div>
       ) : (
@@ -266,7 +270,7 @@ function App() {
                 memberId={memberId}
                 profileData={profileData}
                 setProfileData={setProfileData}
-                setProfileImageChange={setProfileImageChange} // 추가
+                profileImage={profileImage}
               />
             }
           />

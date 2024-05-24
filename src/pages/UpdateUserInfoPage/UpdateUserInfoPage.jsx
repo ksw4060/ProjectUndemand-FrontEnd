@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import ProfileImageModal from "./ProfileImageModal";
 import "./UpdateUserInfoPage.css";
+import PencilIcon from "./PencilIcon";
+import Modal from "./Modal";
+import "./Profile.css";
 
-const UpdateUserInfoPage = ({ profileData, memberId }) => {
+const UpdateUserInfoPage = ({
+  profileData,
+  memberId,
+  setProfileData,
+  setProfileImageChange,
+}) => {
   const [crop, setCrop] = useState({
     unit: "%",
     x: 25,
@@ -14,27 +22,36 @@ const UpdateUserInfoPage = ({ profileData, memberId }) => {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  //   const [showModal, setShowModal] = useState(false);
   const [showCroppedImage, setShowCroppedImage] = useState(false);
   const [error, setError] = useState("");
+  const avatarUrl = useRef(
+    "https://avatarfiles.alphacoders.com/161/161002.jpg"
+  );
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const updateAvatar = (imgSrc) => {
+    avatarUrl.current = imgSrc;
+  };
+  const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
+    profileData && ProfileImageSrc
+      ? `http://localhost:8080${ProfileImageSrc.replace(
           "src/main/resources/static/",
           ""
         )}`
       : "https://defaultst.imweb.me/common/img/default_profile.png";
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-    console.log("프로필 이미지 수정 modal 버튼을 클릭했습니다.");
-  };
+  //   const handleOpenModal = () => {
+  //     setShowModal(true);
+  //     console.log("프로필 이미지 수정 modal 버튼을 클릭했습니다.");
+  //   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setShowCroppedImage(false);
-    console.log("프로필 이미지 수정 modal 닫기.");
-  };
+  //   const handleCloseModal = () => {
+  //     setShowModal(false);
+  //     setShowCroppedImage(false);
+  //     console.log("프로필 이미지 수정 modal 닫기.");
+  //   };
 
   const onClickApplyProfileImage = async () => {
     try {
@@ -83,8 +100,8 @@ const UpdateUserInfoPage = ({ profileData, memberId }) => {
       </div>
 
       <div className="user-info-input-container">
-        <div className="account-img-container">
-          <div className="account-img">
+        <div className="account-img-container profile-container">
+          {/* <div className="account-img">
             <span>프로필 이미지</span>
             <button onClick={handleOpenModal} id="profile-img-open">
               변경하기
@@ -106,6 +123,29 @@ const UpdateUserInfoPage = ({ profileData, memberId }) => {
               onClickApplyProfileImage={onClickApplyProfileImage}
               showCroppedImage={showCroppedImage}
               setShowCroppedImage={setShowCroppedImage}
+            />
+          )} */}
+          <div className="avatar-wrapper">
+            <img src={profileImageUrl} alt="Avatar" className="avatar" />
+            {/* <img src={avatarUrl.current} alt="Avatar" className="avatar" /> */}
+            <button
+              className="change-photo-button"
+              title="Change photo"
+              onClick={() => setModalOpen(true)}
+            >
+              <PencilIcon />
+            </button>
+          </div>
+          <h2 className="profile-name">Mack Aroney</h2>
+          <p className="profile-title">Software Engineer</p>
+          {modalOpen && (
+            <Modal
+              memberId={memberId}
+              profileData={profileData}
+              setProfileData={setProfileData}
+              setProfileImageChange={setProfileImageChange} // 추가
+              updateAvatar={updateAvatar}
+              closeModal={() => setModalOpen(false)}
             />
           )}
         </div>

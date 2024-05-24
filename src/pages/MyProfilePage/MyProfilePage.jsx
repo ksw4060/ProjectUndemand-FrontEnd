@@ -6,9 +6,10 @@ import "./MyProfilePage.css";
 function MyProfilePage({ isLoggedin, memberId, profileData }) {
   //   const [profileData, setProfileData] = useState(null);
 
+  const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
+    profileData && ProfileImageSrc
+      ? `http://localhost:8080${ProfileImageSrc.replace(
           "src/main/resources/static/",
           ""
         )}`

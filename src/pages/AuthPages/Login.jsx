@@ -51,7 +51,6 @@ const Login = () => {
       // 응답에서 JSON 형식의 데이터를 추출
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
-      const email = response.data.email;
 
       if (parseInt(response.status) === 200) {
         // 기존에 저장된 Authorization 토큰과 refreshToken, memberId, profileImageChange 를 삭제합니다.
@@ -77,17 +76,6 @@ const Login = () => {
 
         const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
-        // 로컬 스토리지에 ProfileImageChange 업데이트
-        const now = new Date();
-        const formattedDate = `${now.getFullYear()}-${String(
-          now.getMonth() + 1
-        ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
-          now.getHours()
-        ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
-          2,
-          "0"
-        )}:${String(now.getSeconds()).padStart(2, "0")}`;
-        localStorage.setItem("profileImageChange", formattedDate);
 
         setTimeout(() => {
           window.location.replace("/");
