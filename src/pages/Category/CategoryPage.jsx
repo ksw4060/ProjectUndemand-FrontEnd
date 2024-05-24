@@ -8,6 +8,7 @@ import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import { IoMdSearch } from "react-icons/io";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import axios from "axios";
+import swal from "sweetalert";
 
 function CategoryPage({
   isLoggedin,
@@ -22,6 +23,7 @@ function CategoryPage({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   profileData,
+  cartProducts,
 }) {
   const { condition } = useParams();
   const [urlCondition, setUrlCondition] = useState(condition.split("-")[0]);
@@ -92,7 +94,7 @@ function CategoryPage({
         const keyword = searchString || "";
 
         const response = await axios.get(
-          `http://localhost:8080/api/v1/products`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/products`,
           {
             params: {
               size: pageSize,
@@ -126,9 +128,13 @@ function CategoryPage({
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
-      alert("첫번째 페이지입니다.");
+      swal({
+        title: "첫번째 페이지입니다.",
+      });
     } else if (direction === 1 && currentPage === memoizedTotalPageSize - 1) {
-      alert("마지막 페이지입니다.");
+      swal({
+        title: "마지막 페이지입니다.",
+      });
     } else {
       setCurrentPage(currentPage + direction);
     }
@@ -281,7 +287,9 @@ function CategoryPage({
     const authorization = localStorage.getItem("Authorization");
 
     if (!authorization) {
-      alert("경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.");
+      swal({
+        title: "경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.",
+      });
       return; // 로그아웃을 진행하지 않고 함수 종료
     }
 
@@ -326,6 +334,7 @@ function CategoryPage({
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
+                  <p className="cart-count">{cartProducts.length}</p>
                 </Link>
               </li>
               <li className="hello-user">
@@ -755,7 +764,7 @@ function CategoryPage({
                     }`}
                   >
                     <img
-                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                       alt={product.productName}
                       className={`img-section ${
                         isFilterClicked && "filter-active-img"
@@ -798,7 +807,7 @@ function CategoryPage({
                 memoizedProductsData.map((product, index) => (
                   <div key={index} className={`product-card`}>
                     <img
-                      src={`http://localhost:8080${product.productThumbnails[0]}`}
+                      src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
                       alt={product.productName}
                       className={`img-section`}
                     />
@@ -814,7 +823,7 @@ function CategoryPage({
                         )}
                         {product.isRecommend && (
                           <Link to={`/product/${product.productId}`}>
-                            추천상품
+                            추천상품!
                           </Link>
                         )}
                       </div>

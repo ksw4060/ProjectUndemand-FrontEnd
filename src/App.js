@@ -15,6 +15,7 @@ import { PaymentPage } from "./pages/PaymentPage/PaymentPage.jsx";
 import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
+import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
@@ -23,6 +24,7 @@ import "react-image-crop/dist/ReactCrop.css";
 
 function App() {
   const [categoryData, setCategoryData] = useState([]);
+  const [cartProducts, setCartProducts] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
   // 프로필 데이터를 갱신(useEffect) 하는 기준
@@ -59,7 +61,7 @@ function App() {
       try {
         const authorization = localStorage.getItem("Authorization");
         const response = await axios.get(
-          `http://localhost:8080/api/v1/profile/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
           {
             headers: {
               Authorization: authorization,
@@ -76,8 +78,25 @@ function App() {
       }
     };
 
+    const fetchCartData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setCartProducts(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (memberId) {
       fetchProfileData();
+      fetchCartData();
     }
   }, [memberId]);
 
@@ -85,7 +104,7 @@ function App() {
     const fetchCategoryData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/categorys"
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys`
         );
         setCategoryData(response.data);
       } catch (error) {
@@ -241,7 +260,9 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
-            // 2024.05.04 회원 프로필 데이터를 위해 profileData 추가
+            cartProducts={cartProducts}
+            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
+            // 2024.05.23 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
             profileImage={profileImage}
           />
@@ -274,6 +295,7 @@ function App() {
               />
             }
           />
+          <Route path="/user/mypage/review" element={<MyReviewPage />} />
           <Route path="/inquiry" element={<InquiryPage />} />
           <Route path="/inquiry/:inquiryId" element={<InquiryDetailPage />} />
           <Route
@@ -292,18 +314,30 @@ function App() {
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
                 profileData={profileData}
+                cartProducts={cartProducts}
               />
             }
           />
           <Route
             path="/product/:productId"
             element={
-              <ProductDetailPage isLoggedin={isLoggedin} memberId={memberId} />
+              <ProductDetailPage
+                isLoggedin={isLoggedin}
+                memberId={memberId}
+                setCartProducts={setCartProducts}
+              />
             }
           />
           <Route
             path="/cart"
-            element={<CartPage memberId={memberId} isLoggedin={isLoggedin} />}
+            element={
+              <CartPage
+                memberId={memberId}
+                isLoggedin={isLoggedin}
+                cartProducts={cartProducts}
+                setCartProducts={setCartProducts}
+              />
+            }
           />
           <Route path="/cart/order" element={<PaymentPage />} />
           <Route path="/cart/order/done" element={<ReceiptPage />} />

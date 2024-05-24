@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
+import swal from "sweetalert";
 
 function Topbar({
   isMenuVisible,
@@ -9,9 +10,8 @@ function Topbar({
   processedCategoryData,
   processedMUCategoryData,
   handleConditionSelect,
-  handleCategoryOptionSelect,
-  handleSubcategoryOptionSelect,
   isLoggedin,
+  cartProducts,
   profileData,
   profileImage,
 }) {
@@ -75,7 +75,9 @@ function Topbar({
     const authorization = localStorage.getItem("Authorization");
 
     if (!authorization) {
-      alert("경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.");
+      swal({
+        title: "경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.",
+      });
       return; // 로그아웃을 진행하지 않고 함수 종료
     }
 
@@ -99,6 +101,22 @@ function Topbar({
   const handleBurgerBtnClick = () => {
     setIsBurgerClicked((prevState) => !prevState);
     setIsMenuVisible((prevState) => !prevState);
+  };
+
+  const handleCategoryOptionSelect = (parentCategory) => {
+    localStorage.setItem("selectedCategoryOption", parentCategory.name);
+    localStorage.removeItem("selectedSubCategoryOption");
+    localStorage.setItem("parentCategoryId", parentCategory.categoryId);
+    localStorage.removeItem("childCategoryId");
+    localStorage.removeItem("topMenuClicked");
+    setIsMenuVisible(false);
+  };
+
+  const handleSubcategoryOptionSelect = (childCategory) => {
+    localStorage.setItem("selectedSubCategoryOption", childCategory.name);
+    localStorage.setItem("childCategoryId", childCategory.categoryId);
+    localStorage.removeItem("topMenuClicked");
+    setIsMenuVisible(false);
   };
 
   return (
@@ -204,7 +222,7 @@ function Topbar({
                     </li>
                     <li className="wishlist-btn">
                       <Link
-                        to="/wishlist"
+                        to="/my-wish-list"
                         onClick={() => {
                           setIsBurgerClicked(false);
                           setIsMenuVisible(false);
@@ -329,6 +347,7 @@ function Topbar({
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
+                  <p className="cart-count">{cartProducts.length}</p>
                 </Link>
               </li>
               <li className="hello-user">
@@ -345,7 +364,7 @@ function Topbar({
                     <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">Wish List</Link>
+                    <Link to="/user/mypage/my-wish-list">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>

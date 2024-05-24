@@ -4,6 +4,8 @@ import "./AllProducts.css";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import axios from "axios";
 import ManagementModal from "./ManagementModal.jsx";
+import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
+import swal from "sweetalert";
 
 function AllProducts() {
   const pageSize = 10;
@@ -14,15 +16,18 @@ function AllProducts() {
   const [currentPage, setCurrentPage] = useState(0);
   const [visiblePages, setVisiblePages] = useState([]);
   const [totalPageSize, setTotalPageSize] = useState(0);
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
+  const [productReviewData, setProductReviewData] = useState([]);
+  const [productInfo, setProductInfo] = useState([]);
+  const [reviewAndInquiryModalOpen, setReviewAndInquiryModalOpen] =
+    useState(false);
+  const [productInquiryData, setProductInquiryData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllProductsData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/products",
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/products`,
           {
             params: {
               size: pageSize,
@@ -44,13 +49,19 @@ function AllProducts() {
 
   const deleteProduct = async (productId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/products/${productId}`, {
-        headers: {
-          Authorization: localStorage.getItem("Authorization"),
-        },
+      await axios.delete(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${productId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+        }
+      );
+      swal({
+        title: "상품을 삭제하였습니다!",
+      }).then(() => {
+        window.location.reload();
       });
-      setShowModal(true);
-      setModalMessage(`상품을 삭제하였습니다.`);
     } catch (error) {
       console.error(error);
     }
@@ -58,9 +69,13 @@ function AllProducts() {
 
   const handlePageChange = (direction) => {
     if (direction === -1 && currentPage === 0) {
-      alert("첫번째 페이지입니다.");
+      swal({
+        title: "첫번째 페이지입니다.",
+      });
     } else if (direction === 1 && currentPage === totalPageSize - 1) {
-      alert("마지막 페이지입니다.");
+      swal({
+        title: "마지막 페이지입니다.",
+      });
     } else {
       setCurrentPage(currentPage + direction);
     }
@@ -95,9 +110,43 @@ function AllProducts() {
     setManagementModalOpen(false);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    window.location.reload();
+  const openArticleViewModal = async (product, modalType) => {
+    if (modalType === "adminReview") {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/review/product/${product.productId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setProductReviewData(response.data);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    } else if (modalType === "adminInquiry") {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/list/${product.productId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setProductInquiryData(response.data);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    }
+    setProductInfo(product);
+    setModalType(modalType);
+    setReviewAndInquiryModalOpen(true);
+  };
+
+  const closeArticleViewModal = () => {
+    setReviewAndInquiryModalOpen(false);
   };
 
   return (
@@ -118,7 +167,7 @@ function AllProducts() {
         <div key={product.productId} className="admin-page-pd-container">
           <div className="admin-page-pd-img-container">
             <img
-              src={`http://localhost:8080${product.productThumbnails[0]}`}
+              src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
               alt={`상품 이미지`}
             />
           </div>
@@ -137,52 +186,66 @@ function AllProducts() {
               <span>{`추천 여부: ${product.isRecommend}`}</span>
             </div>
             <span>{`상품 가격: ${product.price}`}</span>
-          </div>
-          <div className="pd-created-info-container">
             <span>{`생성일: ${product.createdAt.substring(0, 10)}`}</span>
-            <div className="admin-page-pd-btn-container">
-              <button
-                className="admin-page-pd-btn"
-                onClick={() =>
-                  navigate(`/admin/inventory`, {
-                    state: {
-                      productName: product.productName,
-                      productId: product.productId,
-                    },
-                  })
-                }
-              >
-                인벤토리
-              </button>
-              <button
-                className="admin-page-pd-btn"
-                onClick={() => {
-                  openManagementModal();
-                  setSelectedProductData(product);
-                  setModalType("image management");
-                }}
-              >
-                상품 이미지
-              </button>
-              <button
-                className="admin-page-pd-btn"
-                onClick={() => {
-                  openManagementModal();
-                  setSelectedProductData(product);
-                  setModalType("update product");
-                }}
-              >
-                상품 수정
-              </button>
-              <button
-                className="admin-page-pd-btn"
-                onClick={() => {
-                  deleteProduct(product.productId);
-                }}
-              >
-                상품 삭제
-              </button>
-            </div>
+          </div>
+          <div className="admin-page-pd-btn-container">
+            <button
+              className="admin-page-pd-btn"
+              onClick={() =>
+                navigate(`/admin/inventory`, {
+                  state: {
+                    productName: product.productName,
+                    productId: product.productId,
+                  },
+                })
+              }
+            >
+              인벤토리
+            </button>
+            <button
+              className="admin-page-pd-btn"
+              onClick={() => {
+                openManagementModal();
+                setSelectedProductData(product);
+                setModalType("image management");
+              }}
+            >
+              상품 이미지
+            </button>
+            <button
+              className="admin-page-pd-btn"
+              onClick={() => {
+                openManagementModal();
+                setSelectedProductData(product);
+                setModalType("update product");
+              }}
+            >
+              상품 수정
+            </button>
+            <button
+              className="admin-page-pd-btn"
+              onClick={() => {
+                deleteProduct(product.productId);
+              }}
+            >
+              상품 삭제
+            </button>
+            <button
+              className="admin-page-pd-btn"
+              onClick={() => {
+                openArticleViewModal(product, "adminReview");
+              }}
+            >
+              리뷰 관리
+            </button>
+            <button
+              className="admin-page-pd-btn"
+              onClick={() => {
+                openArticleViewModal(product, "adminInquiry");
+              }}
+            >
+              Q&A 관리
+            </button>
           </div>
         </div>
       ))}
@@ -218,13 +281,15 @@ function AllProducts() {
           }`}
         />
       </div>
-      {showModal && (
-        <div className="confirm-modal">
-          <div className="confirm-modal-content">
-            <p>{modalMessage}</p>
-            <button onClick={() => closeModal()}>확인</button>
-          </div>
-        </div>
+      {reviewAndInquiryModalOpen && (
+        <ArticleViewModal
+          modalType={modalType}
+          modalClose={closeArticleViewModal}
+          productReviewData={productReviewData}
+          productInquiryData={productInquiryData}
+          product={productInfo}
+          thumbnailImage={productInfo.productThumbnails[0]}
+        ></ArticleViewModal>
       )}
     </div>
   );

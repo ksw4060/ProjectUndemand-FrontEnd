@@ -11,8 +11,9 @@ import { MdOutlineShoppingBag } from "react-icons/md";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
+import swal from "sweetalert";
 
-function ProductDetailPage({ isLoggedin, memberId }) {
+function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
   let { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
@@ -43,14 +44,14 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProduct = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/products/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${productId}`
       );
       if (response.status === 200) {
         setProduct(response.data);
         setLoading(false);
       }
       const invenResponse = await axios.get(
-        `http://localhost:8080/api/v1/inventory`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`
       );
       const invenResData = invenResponse.data;
       const filteredInventory = invenResData.filter(
@@ -65,7 +66,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchThumbnail = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/thumbnail/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${productId}`
       );
       setThumbnailImages(response.data);
     } catch (error) {
@@ -77,7 +78,12 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (isLoggedin === true) {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/paymenthistory/${memberId}`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
         );
         const paymentHistories = response.data.filter(
           (paymentHistory) => paymentHistory.product === product.productName
@@ -100,7 +106,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProductReviewData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/review/product/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/product/${productId}`
       );
       setProductReviewData(response.data);
     } catch (error) {
@@ -111,7 +117,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   const fetchProductInquiryData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/inquiry/list/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/list/${productId}`
       );
       setProductInquiryData(response.data);
     } catch (error) {
@@ -147,6 +153,8 @@ function ProductDetailPage({ isLoggedin, memberId }) {
       .filter((item) => item.color === color)
       .map((item) => item.size);
     setSizes(filteredSizes);
+    setSelectedSize(null);
+    setSelectedInvenId(null);
   };
 
   const handleSizeClick = (size) => {
@@ -167,11 +175,38 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     return availableInventory ? true : false;
   };
 
+  const handleSearchInvenId = () => {
+    if (selectedColor && selectedSize) {
+      const searchInventory = productInventory.find(
+        (item) => item.color === selectedColor && item.size === selectedSize
+      );
+      if (searchInventory) {
+        setSelectedInvenId(searchInventory.inventoryId);
+      }
+    }
+  };
+
   const handleCartSubmit = async () => {
+    const fetchCartData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setCartProducts(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (isLoggedin) {
       await axios
         .post(
-          `http://localhost:8080/api/v1/cart/add/${selectedInvenId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/add/${selectedInvenId}`,
           {
             memberId: memberId,
             quantity: quantity,
@@ -183,13 +218,37 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           }
         )
         .then((response) => {
-          alert(`장바구니에 상품을 담았습니다!`);
+          swal({
+            title: `장바구니에 상품을 담았습니다!`,
+            text: `장바구니로 이동하시겠어요?`,
+            icon: "success",
+            buttons: {
+              cancel: "취소",
+              navigate: "확인",
+            },
+          }).then((value) => {
+            switch (value) {
+              case "navigate":
+                navigate("/cart");
+                break;
+
+              default:
+                break;
+            }
+          });
+          fetchCartData();
         })
         .catch((error) => {
-          alert(error.response.data);
+          if (error.response.data === `For input string: "null"`) {
+            swal({
+              title: "모든 옵션을 선택해 주세요!",
+            });
+          }
         });
     } else {
-      alert("로그인 후 이용 가능해요!");
+      swal({
+        title: "로그인 후 이용 가능해요!",
+      });
     }
   };
 
@@ -229,9 +288,10 @@ function ProductDetailPage({ isLoggedin, memberId }) {
     if (type === "review") {
       if (isLoggedin) {
         if (pHistories.length === 0) {
-          alert(
-            "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!"
-          );
+          swal({
+            title:
+              "구매하지 않은 상품입니다. 상품 구매 후 리뷰를 작성할 수 있어요!",
+          });
           setReviewWritingAndInquiryPostingModalOpen(false);
         } else {
           const allReviewsTrue = pHistories.every(
@@ -239,21 +299,33 @@ function ProductDetailPage({ isLoggedin, memberId }) {
           );
 
           if (allReviewsTrue) {
-            if (
-              window.confirm(
-                "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요. 리뷰 수정 페이지로 이동할까요?"
-              )
-            ) {
-              setReviewWritingAndInquiryPostingModalOpen(false);
-              navigate("/user/review");
-            }
+            swal({
+              title: "이미 해당 상품의 모든 옵션에 대해 리뷰를 남기셨어요!",
+              text: "내 리뷰 페이지로 이동할까요?",
+              icon: "info",
+              buttons: {
+                cancel: "취소",
+                navigate: "확인",
+              },
+            }).then((value) => {
+              switch (value) {
+                case "navigate":
+                  navigate("/user/mypage/review");
+                  break;
+
+                default:
+                  break;
+              }
+            });
           } else {
             setModalType(type);
             setReviewWritingAndInquiryPostingModalOpen(true);
           }
         }
       } else {
-        alert("로그인 후 이용 가능해요!");
+        swal({
+          title: "로그인 후 이용 가능해요!",
+        });
       }
     } else {
       setModalType(type);
@@ -263,17 +335,6 @@ function ProductDetailPage({ isLoggedin, memberId }) {
 
   const closeArticleSubmitModal = () => {
     setReviewWritingAndInquiryPostingModalOpen(false);
-  };
-
-  const handleSearchInvenId = () => {
-    if (selectedColor && selectedSize) {
-      const searchInventory = productInventory.find(
-        (item) => item.color === selectedColor && item.size === selectedSize
-      );
-      if (searchInventory) {
-        setSelectedInvenId(searchInventory.inventoryId);
-      }
-    }
   };
 
   useEffect(() => {
@@ -321,7 +382,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                   return (
                     <li key={index} className="thumbnail-img">
                       <img
-                        src={`http://localhost:8080${thumbnailImage}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${thumbnailImage}`}
                         alt="Thumbnail"
                         onClick={() => setSelectedThumbnail(thumbnailImage)}
                       />
@@ -331,7 +392,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
               </ul>
               <div className="hero-img-container">
                 <img
-                  src={`http://localhost:8080${
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${
                     selectedThumbnail !== undefined
                       ? selectedThumbnail
                       : thumbnailImages[0]
@@ -504,7 +565,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                             </div>
                             {tableRow.reviewImgPaths.length > 0 && (
                               <img
-                                src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
                                 alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
                                 className="detail-page-review-img"
                               />
@@ -577,6 +638,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                     productInquiryData={productInquiryData}
                     product={product}
                     thumbnailImage={thumbnailImages[0]}
+                    memberId={memberId}
                   ></ArticleViewModal>
                 )}
                 {reviewWritingAndInquiryPostingModalOpen && (
@@ -602,7 +664,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                     return (
                       <li key={index} className="detail-img">
                         <img
-                          src={`http://localhost:8080${contentImage}`}
+                          src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${contentImage}`}
                           alt=""
                         />
                       </li>

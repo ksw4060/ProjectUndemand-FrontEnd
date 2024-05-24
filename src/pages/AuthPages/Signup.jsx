@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
+import swal from "sweetalert";
 
 const Signup = () => {
   // 로그인 시 주소창 접근 제한
@@ -96,7 +97,10 @@ const Signup = () => {
         // console.log("성공! 회원 id: " + data.id);
         navigate("/login"); // 로그인 성공시 홈으로 이동합니다.
         setTimeout(() => {
-          alert("회원가입을 환영합니다 ^^ 가입하신 이메일로 인증해주시고, 로그인 해주세요.");
+          swal({
+            title:
+              "회원가입을 환영합니다 ^^ 가입하신 이메일로 인증해주시고, 로그인 해주세요.",
+          });
         }, 1000);
       }
       // response.status 가 201 이 아닌 상황에서의 예외처리도 생각 해야합니다.
@@ -104,7 +108,9 @@ const Signup = () => {
       console.error("회원 가입 실패 : ", error.response.data);
       // 클라이언트에게 경고 메세지를 띄워주는 자바스크립트 코드
       var message = " 은 이미 가입된 이메일입니다. \n 로그인 해주세요. ";
-      window.alert(email + message);
+      swal({
+        title: email + message,
+      });
     }
   };
 

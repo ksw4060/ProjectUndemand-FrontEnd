@@ -39,6 +39,32 @@ body {
   margin-bottom: 30px;
 }
 
+.swal-title:not(:last-child) {
+  font-size: 23px;
+  margin-bottom: 30px;
+}
+
+.swal-text {
+  font-size: 21px;
+  margin-bottom: 30px;
+}
+
+.swal-footer {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(240, 240, 240);
+  overflow: hidden;
+}
+
+.swal-button {
+  background-color: rgb(34, 34, 34);
+  color: rgb(255, 255, 255);
+}
+
+.swal-button:not([disabled]):hover {
+  background-color: rgb(34, 34, 34);
+}
+
 @media (max-width: 1400px) {
   .Bottom-section {
     width: 100%;

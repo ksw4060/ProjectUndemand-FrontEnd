@@ -50,7 +50,7 @@ function PaymentPage() {
     const handleFetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/cart/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
           {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
@@ -79,7 +79,7 @@ function PaymentPage() {
   async function completeOrder() {
     try {
       const response = await axiosInstance.post(
-        "http://localhost:8080/api/v1/order/done",
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/order/done`,
         {
           postCode: postCode,
           address: address,
@@ -105,7 +105,7 @@ function PaymentPage() {
     window.IMP.init("imp04081725");
     window.IMP.request_pay(
       {
-        pg: "html5_inicis",
+        pg: "kicc",
         pay_method: orderInfo.payMethod,
         merchant_uid: orderInfo.merchantUid,
         name: orderInfo.productName,
@@ -119,7 +119,7 @@ function PaymentPage() {
         if (rsp.success) {
           axios
             .post(
-              `http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`,
+              `${process.env.REACT_APP_BACKEND_BASE_URL}/order/payment/${rsp.imp_uid}`,
               {
                 memberId: orderInfo.memberId,
                 orderId: orderInfo.orderId,
@@ -234,33 +234,33 @@ function PaymentPage() {
                   <span>결제 수단 선택</span>
                   <div className="payment-option-select">
                     <button
-                      onClick={() => setPayMethod("CARD")}
+                      onClick={() => setPayMethod("card")}
                       className={`option-pay-method ${
-                        payMethod === "CARD" ? "selected-pay-method" : ""
+                        payMethod === "card" ? "selected-pay-method" : ""
                       }`}
                     >
                       카드
                     </button>
                     <button
-                      onClick={() => setPayMethod("TRANS")}
+                      onClick={() => setPayMethod("trans")}
                       className={`option-pay-method ${
-                        payMethod === "TRANS" ? "selected-pay-method" : ""
+                        payMethod === "trans" ? "selected-pay-method" : ""
                       }`}
                     >
                       계좌이체
                     </button>
                     <button
-                      onClick={() => setPayMethod("VBANK")}
+                      onClick={() => setPayMethod("vbank")}
                       className={`option-pay-method ${
-                        payMethod === "VBANK" ? "selected-pay-method" : ""
+                        payMethod === "vbank" ? "selected-pay-method" : ""
                       }`}
                     >
                       가상계좌
                     </button>
                     <button
-                      onClick={() => setPayMethod("PHONE")}
+                      onClick={() => setPayMethod("phone")}
                       className={`option-pay-method ${
-                        payMethod === "PHONE" ? "selected-pay-method" : ""
+                        payMethod === "phone" ? "selected-pay-method" : ""
                       }`}
                     >
                       휴대폰 결제
@@ -301,7 +301,7 @@ function PaymentPage() {
             {cartProducts.map((cartProduct) => (
               <div key={cartProduct.cartId} className="cart-product">
                 <img
-                  src={`http://localhost:8080${cartProduct.productThumbnail}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
                   alt=""
                 />
                 <div className="cart-product-info">

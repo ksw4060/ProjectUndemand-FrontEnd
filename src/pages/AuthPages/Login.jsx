@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../css/Signup.css";
 import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
+import swal from "sweetalert";
 // import { type } from "@testing-library/user-event/dist/type/index.js";
 
 const Login = () => {
@@ -82,7 +83,9 @@ const Login = () => {
         }, 300);
       }
     } catch (error) {
-      alert("가입되지 않은 이메일 이거나, 이메일 인증이 되지 않았습니다.");
+      swal({
+        title: "가입되지 않은 이메일 이거나, 이메일 인증이 되지 않았습니다.",
+      });
       console.error("로그인 실패 : ", error.response);
     }
   };

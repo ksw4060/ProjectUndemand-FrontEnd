@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "./WishBtn.css";
+import swal from "sweetalert";
 
 const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
   const [isWishlist, setIsWishlist] = useState(false);
@@ -14,7 +15,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
     if (isLoggedin === true) {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/wishlist/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${memberId}`,
           {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
@@ -40,7 +41,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
       try {
         if (!isWishlist) {
           const response = await axios.post(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${productId}/${memberId}`,
             null,
             {
               headers: {
@@ -52,7 +53,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
           setIsWishlist(true);
         } else {
           const response = await axios.delete(
-            `http://localhost:8080/api/v1/wishlist/${productId}/${memberId}`,
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${productId}/${memberId}`,
             {
               headers: {
                 Authorization: localStorage.getItem("Authorization"),
@@ -66,7 +67,9 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
         console.error(error.response.data);
       }
     } else {
-      alert("로그인 후 이용 가능해요!");
+      swal({
+        title: "로그인 후 이용 가능해요!",
+      });
     }
   };
 
