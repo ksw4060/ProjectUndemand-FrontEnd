@@ -5,11 +5,13 @@
 }
 
 .avatar {
-  width: 150px; /* equivalent to w-[150px] */
-  height: 150px; /* equivalent to h-[150px] */
+  width: 400px; /* equivalent to w-[150px] */
+  height: 400px; /* equivalent to h-[150px] */
   border-radius: 50%; /* equivalent to rounded-full */
   border-width: 2px; /* equivalent to border-2 */
   border-color: #cbd5e0; /* equivalent to border-gray-400 */
+
+  /* padding: 20px; */
 }
 
 .change-photo-button {
@@ -50,12 +52,8 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(
-    17,
-    24,
-    39,
-    0.75
-  ); /* equivalent to bg-gray-900 bg-opacity-75 */
+  /* background-color: rgba(255, 255, 255, 0.75); */
+  background-color: rgba(17, 24, 39, 0.75);
   backdrop-filter: blur(10px); /* equivalent to backdrop-blur-sm */
   transition: all 0.3s;
 }
@@ -82,7 +80,8 @@
   max-width: 80%; /* equivalent to sm:w-[80%] */
   min-height: 60vh; /* equivalent to min-h-[60vh] */
   border-radius: 1rem; /* equivalent to rounded-2xl */
-  background-color: #2d3748; /* equivalent to bg-gray-800 */
+  background-color: #ffffff; /* equivalent to bg-gray-800 */
+  /* background-color: #2d3748; equivalent to bg-gray-800 */
   color: #f1f5f9; /* equivalent to text-slate-100 */
   text-align: left;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* equivalent to shadow-xl */
@@ -101,15 +100,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #9ca3af; /* equivalent to text-gray-400 */
+
+  color: #000000; /* equivalent to text-gray-400 */
   background-color: transparent;
+
   position: absolute;
   top: 0.5rem; /* equivalent to top-2 */
   right: 0.5rem; /* equivalent to right-2 */
 }
 
 .close-button:hover {
-  background-color: #374151; /* equivalent to hover:bg-gray-700 */
+  background-color: #dfdfdf; /* equivalent to hover:bg-gray-700 */
 }
 
 .close-button:focus {
@@ -126,6 +127,7 @@
 .file-input {
   display: block;
   width: 100%;
+
   font-size: 0.875rem; /* equivalent to text-sm */
   color: #94a3b8; /* equivalent to text-slate-500 */
 }
@@ -136,12 +138,12 @@
   border-radius: 9999px; /* equivalent to file:rounded-full */
   border: none; /* equivalent to file:border-0 */
   font-size: 0.75rem; /* equivalent to file:text-xs */
-  background-color: #374151; /* equivalent to file:bg-gray-700 */
-  color: #38bdf8; /* equivalent to file:text-sky-300 */
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .file-input::-webkit-file-upload-button:hover {
-  background-color: #4b5563; /* equivalent to hover:file:bg-gray-600 */
+  background-color: #202429; /* equivalent to hover:file:bg-gray-600 */
 }
 
 .error-message {
@@ -156,17 +158,18 @@
 }
 
 .crop-button {
-  color: #ffffff; /* equivalent to text-white */
   font-family: monospace; /* equivalent to font-mono */
   font-size: 0.75rem; /* equivalent to text-xs */
   padding: 0.5rem 1rem; /* equivalent to py-2 px-4 */
   border-radius: 1rem; /* equivalent to rounded-2xl */
   margin-top: 1rem; /* equivalent to mt-4 */
-  background-color: #0ea5e9; /* equivalent to bg-sky-500 */
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .crop-button:hover {
-  background-color: #0284c7; /* equivalent to hover:bg-sky-600 */
+  color: #000000;
+  background-color: #ffffff;
 }
 
 .preview-canvas {

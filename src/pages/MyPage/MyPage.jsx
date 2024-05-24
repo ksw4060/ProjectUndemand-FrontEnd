@@ -36,9 +36,6 @@ function MyPage(myPageProps) {
           <span onClick={() => setSelectedPage("my review")}>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
           </span>
-          <span onClick={() => setSelectedPage("my test Profile")}>
-            <Link to="/user/mypage/testprofile">test Profile</Link>
-          </span>
         </div>
       </div>
       <Routes>
@@ -79,17 +76,6 @@ function MyPage(myPageProps) {
           path="/update-info"
           element={
             <UpdateUserInfoPage
-              isLoggedin={isLoggedin}
-              memberId={memberId}
-              profileData={profileData}
-              setProfileData={setProfileData}
-            />
-          }
-        />
-        <Route
-          path="/testprofile"
-          element={
-            <Profile
               isLoggedin={isLoggedin}
               memberId={memberId}
               profileData={profileData}

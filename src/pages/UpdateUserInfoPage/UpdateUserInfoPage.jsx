@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import ProfileImageModal from "./ProfileImageModal";
 import "./UpdateUserInfoPage.css";
 import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
@@ -25,6 +24,9 @@ const UpdateUserInfoPage = ({
   //   const [showModal, setShowModal] = useState(false);
   const [showCroppedImage, setShowCroppedImage] = useState(false);
   const [error, setError] = useState("");
+  const [isEditingGender, setIsEditingGender] = useState(false);
+  const [isEditingAge, setIsEditingAge] = useState(false);
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
   const avatarUrl = useRef(
     "https://avatarfiles.alphacoders.com/161/161002.jpg"
   );
@@ -84,15 +86,88 @@ const UpdateUserInfoPage = ({
     }
   };
 
-  const UserInfoInput = ({ label, type }) => (
-    <div className="uii-container">
-      <span>{label}</span>
-      <div className="uii-cover">
-        <input type={type} />
+  const UserInfo = ({ label, data, onEdit }) => (
+    <div className="profile-info-container">
+      <div className="profile-checkbox">
+        <div className="userinfo-checkbox">
+          <span>{label}</span>
+          <span>{data || "없음"}</span>
+        </div>
+        <button className="profile-info-edit-btn" onClick={onEdit}>
+          수정
+        </button>
       </div>
     </div>
   );
 
+  const UserInfoInput = ({ label, type, data, onConfirm }) => (
+    <div className="profile-info-container">
+      <div className="profile-checkbox">
+        <div className="uii-container">
+          <span>{label}</span>
+          <div className="uii-cover">
+            <input type={type} defaultValue={data} />
+          </div>
+        </div>
+        <button className="profile-info-confirm-btn" onClick={onConfirm}>
+          확인
+        </button>
+      </div>
+    </div>
+  );
+
+  const UserDataFormat = ({
+    label,
+    type,
+    data,
+    onEdit,
+    onConfirm,
+    isEditing,
+  }) => (
+    <div className="profile-info-data-container">
+      {isEditing ? (
+        <UserInfoInput
+          label={label}
+          type={type}
+          data={data}
+          onConfirm={onConfirm}
+        />
+      ) : (
+        <UserInfo label={label} type={type} data={data} onEdit={onEdit} />
+      )}
+    </div>
+  );
+
+  const handleEditGender = () => {
+    setIsEditingGender(true);
+  };
+
+  const handleConfirmGender = () => {
+    setIsEditingGender(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const handleEditAge = () => {
+    setIsEditingAge(true);
+  };
+
+  const handleConfirmAge = () => {
+    setIsEditingAge(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const handleEditNickname = () => {
+    setIsEditingNickname(true);
+  };
+
+  const handleConfirmNickname = () => {
+    setIsEditingNickname(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const nickname = profileData?.member?.nickname || "없음";
+  const memberAges = profileData?.memberAges || "없음";
+  const gender = profileData?.member_gender || "없음";
   return (
     <div className="update-user-info-page">
       <div className="update-user-info-page-title">
@@ -100,34 +175,9 @@ const UpdateUserInfoPage = ({
       </div>
 
       <div className="user-info-input-container">
-        <div className="account-img-container profile-container">
-          {/* <div className="account-img">
-            <span>프로필 이미지</span>
-            <button onClick={handleOpenModal} id="profile-img-open">
-              변경하기
-            </button>
-          </div>
-          {showModal && (
-            <ProfileImageModal
-              showModal={showModal}
-              setShowModal={setShowModal}
-              selectedFile={selectedFile}
-              setSelectedFile={setSelectedFile}
-              crop={crop}
-              setCrop={setCrop}
-              croppedImageUrl={croppedImageUrl}
-              setCroppedImageUrl={setCroppedImageUrl}
-              error={error}
-              setError={setError}
-              memberId={memberId}
-              onClickApplyProfileImage={onClickApplyProfileImage}
-              showCroppedImage={showCroppedImage}
-              setShowCroppedImage={setShowCroppedImage}
-            />
-          )} */}
+        <div className="profile-container">
           <div className="avatar-wrapper">
             <img src={profileImageUrl} alt="Avatar" className="avatar" />
-            {/* <img src={avatarUrl.current} alt="Avatar" className="avatar" /> */}
             <button
               className="change-photo-button"
               title="Change photo"
@@ -143,31 +193,46 @@ const UpdateUserInfoPage = ({
               memberId={memberId}
               profileData={profileData}
               setProfileData={setProfileData}
-              setProfileImageChange={setProfileImageChange} // 추가
               updateAvatar={updateAvatar}
               closeModal={() => setModalOpen(false)}
             />
           )}
         </div>
-        <div className="profile-image-edit-container">
-          <img
-            src={profileImageUrl}
-            alt="프로필 이미지"
-            className="profile-edit-image"
+        <div className="user-info-container">
+          <UserDataFormat
+            label="성별"
+            type="text"
+            data={gender}
+            onEdit={handleEditGender}
+            onConfirm={handleConfirmGender}
+            isEditing={isEditingGender}
+          />
+          <UserDataFormat
+            label="연령대"
+            type="text"
+            data={memberAges}
+            onEdit={handleEditAge}
+            onConfirm={handleConfirmAge}
+            isEditing={isEditingAge}
+          />
+          <UserDataFormat
+            label="닉네임"
+            type="text"
+            data={nickname}
+            onEdit={handleEditNickname}
+            onConfirm={handleConfirmNickname}
+            isEditing={isEditingNickname}
           />
         </div>
-        <UserInfoInput label="비밀번호" type="password" />
-        <UserInfoInput label="비밀번호 확인" type="password" />
-        <UserInfoInput label="닉네임" type="text" />
       </div>
-      <div className="account-checkbox-container">
-        <div className="account-checkbox">
+      <div className="profile-info-container">
+        <div className="account-activate">
           <span>계정 비활성화</span>
           <button>비활성화</button>
         </div>
       </div>
-      <div className="account-checkbox-container">
-        <div className="account-checkbox">
+      <div className="profile-info-container">
+        <div className="account-activate">
           <span>휴대폰 인증</span>
           <button>인증하기</button>
         </div>
