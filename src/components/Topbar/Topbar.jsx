@@ -11,6 +11,7 @@ function Topbar({
   processedMUCategoryData,
   handleConditionSelect,
   isLoggedin,
+  cartProducts,
   profileData,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
@@ -224,7 +225,7 @@ function Topbar({
                     </li>
                     <li className="wishlist-btn">
                       <Link
-                        to="/wishlist"
+                        to="/my-wish-list"
                         onClick={() => {
                           setIsBurgerClicked(false);
                           setIsMenuVisible(false);
@@ -349,6 +350,7 @@ function Topbar({
               <li>
                 <Link to="/cart">
                   <MdOutlineShoppingBag />
+                  <p className="cart-count">{cartProducts.length}</p>
                 </Link>
               </li>
               <li className="hello-user">
@@ -377,7 +379,7 @@ function Topbar({
                     <Link to="/user/mypage">My Page</Link>
                   </li>
                   <li className="wishlist-btn">
-                    <Link to="/wishlist">Wish List</Link>
+                    <Link to="/user/mypage/my-wish-list">Wish List</Link>
                   </li>
                   <li>
                     <Link to="/inquiry">Q&A</Link>

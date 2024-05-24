@@ -24,6 +24,7 @@ import axios from "axios";
 
 function App() {
   const [categoryData, setCategoryData] = useState([]);
+  const [cartProducts, setCartProducts] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
   const [profileData, setProfileData] = useState(null);
@@ -73,7 +74,24 @@ function App() {
       }
     };
 
+    const fetchCartData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setCartProducts(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchProfileData();
+    fetchCartData();
   }, [memberId]);
 
   useEffect(() => {
@@ -235,6 +253,7 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
+            cartProducts={cartProducts}
             // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
             profileData={profileData}
           />
@@ -284,18 +303,30 @@ function App() {
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
                 profileData={profileData}
+                cartProducts={cartProducts}
               />
             }
           />
           <Route
             path="/product/:productId"
             element={
-              <ProductDetailPage isLoggedin={isLoggedin} memberId={memberId} />
+              <ProductDetailPage
+                isLoggedin={isLoggedin}
+                memberId={memberId}
+                setCartProducts={setCartProducts}
+              />
             }
           />
           <Route
             path="/cart"
-            element={<CartPage memberId={memberId} isLoggedin={isLoggedin} />}
+            element={
+              <CartPage
+                memberId={memberId}
+                isLoggedin={isLoggedin}
+                cartProducts={cartProducts}
+                setCartProducts={setCartProducts}
+              />
+            }
           />
           <Route path="/cart/order" element={<PaymentPage />} />
           <Route path="/cart/order/done" element={<ReceiptPage />} />

@@ -13,7 +13,7 @@ import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmi
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 import swal from "sweetalert";
 
-function ProductDetailPage({ isLoggedin, memberId }) {
+function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
   let { productId } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
@@ -187,6 +187,22 @@ function ProductDetailPage({ isLoggedin, memberId }) {
   };
 
   const handleCartSubmit = async () => {
+    const fetchCartData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+          }
+        );
+        setCartProducts(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     if (isLoggedin) {
       await axios
         .post(
@@ -220,6 +236,7 @@ function ProductDetailPage({ isLoggedin, memberId }) {
                 break;
             }
           });
+          fetchCartData();
         })
         .catch((error) => {
           if (error.response.data === `For input string: "null"`) {

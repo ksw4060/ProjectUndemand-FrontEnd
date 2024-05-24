@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
 import axios from "axios";
@@ -10,10 +10,9 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 import swal from "sweetalert";
 
-function CartPage({ memberId, isLoggedin }) {
+function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
   const navigate = useNavigate();
   const axiosInstance = axios.create({ withCredentials: true }); // 결제 로직에서 중요한 녀석입니다. 삭제 금지.
-  const [cartProducts, setCartProducts] = useState([]);
 
   useEffect(() => {
     const fetchCart = async () => {
