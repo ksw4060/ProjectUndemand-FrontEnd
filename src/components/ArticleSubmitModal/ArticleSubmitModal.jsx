@@ -42,7 +42,7 @@ function ArticleSubmitModal({
       formData.append("images", imageFile);
 
       const response = await axios.post(
-        `http://localhost:8080/api/v1/review/new/${paymentId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/new/${paymentId}`,
         formData,
         {
           headers: {
@@ -76,7 +76,7 @@ function ArticleSubmitModal({
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/v1/members/${memberId}`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/members/${memberId}`
         );
         setNickName(response.data.nickname);
         setUserEmail(response.data.email);
@@ -112,7 +112,7 @@ function ArticleSubmitModal({
 
     await axios
       .post(
-        `http://localhost:8080/api/v1/inquiry/new/${productId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/new/${productId}`,
         requestData
       )
       .then((response) => {

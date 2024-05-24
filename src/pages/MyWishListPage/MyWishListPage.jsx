@@ -39,7 +39,7 @@ function MyWishListPage({ isLoggedin, memberId }) {
         {wishLists.map((wishItem) => (
           <div key={wishItem.wishListId} className="my-wish-product-card">
             <img
-              src={`http://localhost:8080${wishItem.productThumbnails[0]}`}
+              src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${wishItem.productThumbnails[0]}`}
               alt={`찜한 상품 이미지`}
             />
             <div className="my-wish-product-info">

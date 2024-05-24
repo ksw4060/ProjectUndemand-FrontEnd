@@ -23,7 +23,7 @@ const TokenRefreshComponent = () => {
     const accessTokenGenerator = async () => {
       try {
         const response = await axios.post(
-          `http://localhost:8080/api/v1/reissue/access`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/reissue/access`,
           { refreshToken: refreshToken },
           {
             headers: {

@@ -220,7 +220,7 @@ function UpdateUserInfoPage({ isLoggedin, memberId, profileData }) {
           <img
             src={
               profileData && profileData.profileImgPath
-                ? `http://localhost:8080${profileData.profileImgPath}`
+                ? `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileData.profileImgPath}`
                 : "https://defaultst.imweb.me/common/img/default_profile.png"
             }
             alt="프로필 이미지"

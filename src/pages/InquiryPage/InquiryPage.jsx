@@ -17,7 +17,7 @@ function InquiryPage() {
     const fetchInquiryData = async () => {
       try {
         const inquiryResponse = await axios.get(
-          `http://localhost:8080/api/v1/inquiry`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry`
         );
         setInquiryData(inquiryResponse.data);
         setInquiryDataLength(inquiryResponse.data.length);

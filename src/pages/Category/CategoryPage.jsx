@@ -821,7 +821,7 @@ function CategoryPage({
                         )}
                         {product.isRecommend && (
                           <Link to={`/product/${product.productId}`}>
-                            추천상품
+                            추천상품!
                           </Link>
                         )}
                       </div>

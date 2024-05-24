@@ -60,7 +60,7 @@ function App() {
         const authorization = localStorage.getItem("Authorization");
         // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
-          `http://localhost:8080/api/v1/profile/${memberId}`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
           {
             headers: {
               Authorization: authorization, // 토큰을 Authorization 헤더에 추가
@@ -80,7 +80,7 @@ function App() {
     const fetchCategoryData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v1/categorys"
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys`
         );
         setCategoryData(response.data);
       } catch (error) {
