@@ -17,7 +17,7 @@ function ReviewUpdateModal({
   const handleReviewUpdate = async () => {
     try {
       await axios.put(
-        `http://localhost:8080/api/v1/review/${reviewId}/${memberId}`,
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/${reviewId}/${memberId}`,
         {
           reviewContent: reviewContent,
           rating: rating,

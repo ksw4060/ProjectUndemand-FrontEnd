@@ -159,7 +159,7 @@ function MyReviewPage() {
               <div className="review-product">
                 {thumbnailImages[index] ? (
                   <img
-                    src={`http://localhost:8080${thumbnailImages[index]}`}
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${thumbnailImages[index]}`}
                     alt={`상품명: ${tableRow.productName}`}
                   />
                 ) : (
@@ -181,7 +181,7 @@ function MyReviewPage() {
                   </div>
                 </div>
                 <img
-                  src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
                   alt={`상품명 ${tableRow.productName}의 ${index}번 리뷰`}
                 />
               </div>

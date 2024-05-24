@@ -5,7 +5,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 
 function ProductSlide({ products, sectionTitle }) {
   const sectionType = sectionTitle.split(" ")[0];
-  const sectionTypeLowercase = sectionType.toLowerCase();
+  const sectionTypeUpperCase = sectionType.toUpperCase();
   const imgListLength = 7;
   const [currentIdx, setCurrentIdx] = useState(0);
   const [carouselTransition, setCarouselTransition] = useState(
@@ -93,7 +93,7 @@ function ProductSlide({ products, sectionTitle }) {
           onClick={() => slideNext()}
         />
       </div>
-      <Link to={`/${sectionTypeLowercase}`} className="link-btn">
+      <Link to={`/products/${sectionTypeUpperCase}`} className="link-btn">
         Click Here to More View
       </Link>
     </section>

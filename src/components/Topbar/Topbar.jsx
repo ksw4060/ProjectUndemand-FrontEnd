@@ -215,7 +215,7 @@ function Topbar({
                           //   }
                           src={
                             profileData && profileData.profileImgPath
-                              ? `http://localhost:8080${profileData.profileImgPath}`
+                              ? `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileData.profileImgPath}`
                               : "https://defaultst.imweb.me/common/img/default_profile.png"
                           }
                           alt="Profile img"
@@ -366,7 +366,7 @@ function Topbar({
                     // }
                     src={
                       profileData && profileData.profileImgPath
-                        ? `http://localhost:8080${profileData.profileImgPath}`
+                        ? `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileData.profileImgPath}`
                         : "https://defaultst.imweb.me/common/img/default_profile.png"
                     }
                     alt="Profile img"

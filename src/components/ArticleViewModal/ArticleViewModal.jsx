@@ -183,7 +183,7 @@ function ArticleViewModal({
       >
         <div className="product-info-section">
           <img
-            src={`http://localhost:8080${thumbnailImage}`}
+            src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${thumbnailImage}`}
             alt={product.productName}
             className="img-info"
           />
@@ -244,7 +244,7 @@ function ArticleViewModal({
               productReviewData.map((tableRow, index) => (
                 <div key={tableRow.reviewId} className="review-section">
                   <img
-                    src={`http://localhost:8080${tableRow.reviewImgPaths[0]}`}
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
                     alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
                   />
                   <div className="modal-review-box">
