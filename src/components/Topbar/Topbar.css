@@ -297,12 +297,16 @@
     }
 
     .topbar-navbar-narrow {
-        width: 30%;
+        width: 10%;
         height: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-top: 10px;
+    }
+
+    .topbar-navbar-narrow.mobile-loggedin {
+        width: 23%;
     }
 
     .topbar-navbar-narrow>a {
@@ -383,5 +387,21 @@
 
     .burger-menu-drop {
         display: flex;
+    }
+
+    .mobile-loggedin-cart-btn {
+        position: relative;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+}
+
+@media (max-width: 700px) {
+    .topbar-logo {
+        height: 90px;
     }
 }

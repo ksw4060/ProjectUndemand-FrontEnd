@@ -1,97 +1,149 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import "swiper/css/effect-cards";
 import "./ProductSlide.css";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { Pagination, Navigation, EffectCards } from "swiper/modules";
 
 function ProductSlide({ products, sectionTitle }) {
   const sectionType = sectionTitle.split(" ")[0];
   const sectionTypeUpperCase = sectionType.toUpperCase();
-  const imgListLength = 7;
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [carouselTransition, setCarouselTransition] = useState(
-    "all 300ms ease-in-out"
-  );
-
-  const slidePrev = () => {
-    const prevIdx = currentIdx - 1;
-    setCurrentIdx(prevIdx);
-
-    if (prevIdx === -1) {
-      moveToNthSlide(imgListLength - 1);
-    }
-
-    setCarouselTransition("all 300ms ease-in-out");
+  const [swiper, setSwiper] = useState();
+  const navigate = useNavigate();
+  const handlePrev = () => {
+    swiper?.slidePrev();
   };
-
-  const slideNext = () => {
-    const nextIdx = currentIdx + 1;
-    setCurrentIdx(nextIdx);
-
-    if (nextIdx === imgListLength) {
-      moveToNthSlide(0);
-    }
-
-    setCarouselTransition("all 300ms ease-in-out");
+  const handleNext = () => {
+    swiper?.slideNext();
   };
+  const [isWidth, setIsWidth] = useState(false);
 
-  const moveToNthSlide = (n) => {
-    setTimeout(() => {
-      setCarouselTransition("");
-      setCurrentIdx(n);
-    }, 250);
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsWidth(window.innerWidth <= 700);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <section className="product-slide">
       <div className="small-title">
         <h1>{sectionTitle}</h1>
       </div>
-      <div className="products-box">
-        <div className="product-slide-ul">
-          {products.map((product) => (
-            <div
-              className="ps-product-card"
-              key={product.productId}
-              style={{
-                transform: `translateX(-${currentIdx * 100}%)`,
-                transition: `${carouselTransition}`,
-              }}
-            >
-              <img
-                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
-                alt={product.productName}
-                className={`product-card-img`}
-              />
-              <div className="product-small-info">
-                <Link to={`/product/${product.productId}`}>
-                  {product.productName}
-                </Link>
-                {product.isDiscount === true && (
-                  <Link
-                    to={`/product/${product.productId}`}
-                  >{`${product.discountRate}% 할인 중`}</Link>
-                )}
-                {product.isRecommend === true && (
-                  <Link to={`/product/${product.productId}`}>추천상품!</Link>
-                )}
-                <Link
-                  to={`/product/${product.productId}`}
-                  className="product-price"
-                >
-                  {`${product.price} 원`}
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-        <FaChevronLeft
-          className="product-slide-left-arrow"
-          onClick={() => slidePrev()}
-        />
-        <FaChevronRight
-          className="product-slide-right-arrow"
-          onClick={() => slideNext()}
-        />
+      <div className="product-slide-container">
+        {isWidth === false && (
+          <Swiper
+            slidesPerView={"auto"}
+            spaceBetween={20}
+            pagination={{
+              clickable: true,
+            }}
+            navigation={true}
+            onSwiper={(e) => {
+              setSwiper(e);
+            }}
+            modules={[Pagination, Navigation]}
+          >
+            {products.map((product) => (
+              <SwiperSlide
+                key={product.productId}
+                onClick={() => navigate(`/product/${product.productId}`)}
+              >
+                <div className="product-slide-card-container">
+                  <img
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
+                    alt={product.productName}
+                    className={`product-card-img`}
+                  />
+                  <div className="product-small-info">
+                    <div className="pd-name-discount-recommend-wrapper">
+                      <Link to={`/product/${product.productId}`}>
+                        {product.productName}
+                      </Link>
+                      {product.isDiscount === true && (
+                        <Link
+                          to={`/product/${product.productId}`}
+                        >{`${product.discountRate}% 할인 중`}</Link>
+                      )}
+                      {product.isRecommend === true && (
+                        <Link to={`/product/${product.productId}`}>
+                          추천상품!
+                        </Link>
+                      )}
+                    </div>
+                    <Link
+                      to={`/product/${product.productId}`}
+                      className="product-price"
+                    >
+                      {`${product.price} 원`}
+                    </Link>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+        {isWidth === true && (
+          <Swiper
+            effect={"cards"}
+            grabCursor={true}
+            navigation={true}
+            onSwiper={(e) => {
+              setSwiper(e);
+            }}
+            modules={[EffectCards, Navigation]}
+          >
+            {products.map((product) => (
+              <SwiperSlide
+                key={product.productId}
+                onClick={() => navigate(`/product/${product.productId}`)}
+              >
+                <div className="product-slide-card-container">
+                  <img
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.productThumbnails[0]}`}
+                    alt={product.productName}
+                    className={`product-card-img`}
+                  />
+                  <div className="product-small-info">
+                    <div className="pd-name-discount-recommend-wrapper">
+                      <Link to={`/product/${product.productId}`}>
+                        {product.productName}
+                      </Link>
+                      {product.isDiscount === true && (
+                        <Link
+                          to={`/product/${product.productId}`}
+                        >{`${product.discountRate}% 할인 중`}</Link>
+                      )}
+                      {product.isRecommend === true && (
+                        <Link to={`/product/${product.productId}`}>
+                          추천상품!
+                        </Link>
+                      )}
+                    </div>
+                    <Link
+                      to={`/product/${product.productId}`}
+                      className="product-price"
+                    >
+                      {`${product.price} 원`}
+                    </Link>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+        <div className="swiper-button-prev" onClick={handlePrev}></div>
+        <div className="swiper-button-next" onClick={handleNext}></div>
       </div>
       <Link to={`/products/${sectionTypeUpperCase}`} className="link-btn">
         Click Here to More View
