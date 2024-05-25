@@ -1,122 +1,90 @@
-.carousel-container {
+.swiper {
+    width: 100%;
+    height: 540px;
+    background-color: rgb(34, 34, 34);
+    --swiper-theme-color: rgb(255, 255, 255);
+}
+
+.swiper-button-prev {
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: var(--swiper-navigation-sides-offset, 150px);
+    transform: translateY(-30%);
+}
+
+.swiper-button-next {
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    right: var(--swiper-navigation-sides-offset, 150px);
+    transform: translateY(-30%);
+}
+
+.swiper-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.swiper-wrapper>.swiper-slide {
+    width: 360px;
+    height: 480px;
+    border-radius: 18px;
+    /* -webkit-box-reflect: below 30px linear-gradient(transparent, rgba(0,0,0,0), rgba(0,0,0,0.3)); */
+}
+
+.carousel-card-container {
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: relative;
-    overflow: hidden;
-}
-
-.prev-btn {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50px;
-    transform: translateY(-50%);
-    font-size: 25px;
-    font-weight: bold;
-    border: none;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0);
-    cursor: pointer;
-}
-
-.next-btn {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    right: 50px;
-    transform: translateY(-50%);
-    font-size: 25px;
-    font-weight: bold;
-    border: none;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0);
-    cursor: pointer;
-}
-
-.carousel-img-wrap {
-    width: 80%;
-    height: 660px;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-}
-
-.carousel-img-card {
-    width: 90%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    object-fit: cover;
-    object-position: center;
-    background-color: rgba(240, 240, 240, 1);
-    border-radius: 25px;
+    border-radius: 18px;
 }
 
 .carousel-img {
-    width: 480px;
+    width: 100%;
     height: 100%;
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-    cursor: pointer;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 18px;
 }
 
 .carousel-text {
-    width: 940px;
-    height: 100%;
+    width: 100%;
+    height: 150px;
     display: flex;
     flex-flow: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    padding: 15px 0px;
-}
-
-.carousel-text>span {
-    cursor: pointer;
+    position: absolute;
+    bottom: -0.5px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(34, 34, 34, 0.5);
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    padding: 13px;
 }
 
 .carousel-text-pd-name {
-    font-size: 70px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.carousel-text-pd-type {
-    font-size: 40px;
-    margin-bottom: 10px;
+    font-size: 30px;
+    margin-bottom: 13px;
 }
 
 .carousel-text-pd-discount {
-    font-size: 40px;
+    font-size: 25px;
     color: rgb(222, 189, 255);
+    margin-bottom: 8px;
 }
 
 .carousel-text-pd-recommend {
-    font-size: 40px;
-}
-
-.carousel-text-pd-price {
     font-size: 25px;
-    margin-top: 30px;
+    color: rgb(222, 189, 255);
 }
 
-.carousel-img-card.current-img {
-    margin: 0% 5%;
-}
-
-.carousel-img-card.side-img {
-    height: 90%;
-    opacity: 0.3;
+@media (max-width: 1100px) {
+    .swiper-button-prev {
+        left: var(--swiper-navigation-sides-offset, -28px);
+    }
+    
+    .swiper-button-next {
+        right: var(--swiper-navigation-sides-offset, -28px);
+    }
 }

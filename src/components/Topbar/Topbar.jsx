@@ -125,16 +125,24 @@ function Topbar({
         <Link to="/">
           <img src="/ODD_LOGO_FULL.png" alt="ODD Logo" />
         </Link>
-        <div className="topbar-navbar-narrow">
-          <Link
-            to="/cart"
-            onClick={() => {
-              setIsBurgerClicked(false);
-              setIsMenuVisible(false);
-            }}
-          >
-            <MdOutlineShoppingBag />
-          </Link>
+        <div
+          className={`topbar-navbar-narrow ${
+            isLoggedin === true ? "mobile-loggedin" : ""
+          }`}
+        >
+          {isLoggedin && (
+            <Link
+              to="/cart"
+              onClick={() => {
+                setIsBurgerClicked(false);
+                setIsMenuVisible(false);
+              }}
+              className="mobile-loggedin-cart-btn"
+            >
+              <MdOutlineShoppingBag />
+              <p className="cart-count">{cartProducts.length}</p>
+            </Link>
+          )}
           <MdOutlineMenu
             className="burger-menu-btn"
             onClick={() => handleBurgerBtnClick()}
