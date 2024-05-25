@@ -19,8 +19,8 @@ function Topbar({
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
   const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && profileImage
-      ? `http://localhost:8080${ProfileImageSrc.replace(
+    profileData && profileData.profileImgPath
+      ? `http://localhost:8080${profileData.profileImgPath.replace(
           "src/main/resources/static/",
           ""
         )}`

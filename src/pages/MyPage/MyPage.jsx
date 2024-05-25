@@ -5,7 +5,6 @@ import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPa
 import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
 import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
 import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
-import Profile from "../UpdateUserInfoPage/Profile.jsx";
 import { PasswordCheckPage } from "../PasswordCheckPage/PasswordCheckPage.jsx";
 import "./MyPage.css";
 

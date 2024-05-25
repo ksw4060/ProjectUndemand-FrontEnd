@@ -37,12 +37,16 @@ const UpdateUserInfoPage = ({
   };
   const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && ProfileImageSrc
-      ? `http://localhost:8080${ProfileImageSrc.replace(
+    profileData && profileData.profileImgPath
+      ? `${
+          process.env.REACT_APP_BACKEND_URL_FOR_IMG
+        }${profileData.profileImgPath.replace(
           "src/main/resources/static/",
           ""
         )}`
       : "https://defaultst.imweb.me/common/img/default_profile.png";
+  console.log(profileImageUrl);
+  console.log(profileData);
 
   //   const handleOpenModal = () => {
   //     setShowModal(true);
@@ -186,8 +190,6 @@ const UpdateUserInfoPage = ({
               <PencilIcon />
             </button>
           </div>
-          <h2 className="profile-name">Mack Aroney</h2>
-          <p className="profile-title">Software Engineer</p>
           {modalOpen && (
             <Modal
               memberId={memberId}

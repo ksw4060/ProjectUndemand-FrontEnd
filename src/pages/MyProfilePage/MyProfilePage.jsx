@@ -8,8 +8,8 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
 
   const ProfileImageSrc = localStorage.getItem("ProfileImage");
   const profileImageUrl =
-    profileData && ProfileImageSrc
-      ? `http://localhost:8080${ProfileImageSrc.replace(
+    profileData && profileData.profileImgPath
+      ? `http://localhost:8080${profileData.profileImgPath.replace(
           "src/main/resources/static/",
           ""
         )}`

@@ -1,12 +1,10 @@
-/* ------- Profile.jsx 에 정의된 클래스  ------- */
-
 .avatar-wrapper {
   position: relative;
 }
 
 .avatar {
-  width: 400px; /* equivalent to w-[150px] */
-  height: 400px; /* equivalent to h-[150px] */
+  width: 400px; /* equivalent to w-[400px] */
+  height: 400px; /* equivalent to h-[400px] */
   border-radius: 50%; /* equivalent to rounded-full */
   border-width: 2px; /* equivalent to border-2 */
   border-color: #cbd5e0; /* equivalent to border-gray-400 */
