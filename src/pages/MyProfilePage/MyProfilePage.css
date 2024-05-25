@@ -1,5 +1,6 @@
 .my-profile-page {
   width: 70%;
+  height: 100%;
 
   display: flex;
   flex-flow: column;
@@ -11,6 +12,8 @@
 
 .my-profile-page-title {
   width: 100%;
+  height: 70px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,40 +26,31 @@
 
 .short-my-profile {
   width: 100%;
-  height: 500px;
+  height: 900px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
 }
 
 .profile-container {
-  width: 800px;
-  height: 450px;
+  /* width: 100%;
+  height: 100%;
+
   display: flex;
   justify-content: center;
-  /* justify-content: flex-start; */
   align-items: center;
+  flex-direction: column; */
 }
 
 .profile-image-container {
-  width: 350px;
+  width: 100%;
   height: 400px;
 
-  margin-left: 2%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.profile-image {
-  width: 300px;
-  height: 300px;
-  background-color: rgb(210, 210, 210);
-  border-radius: 50%;
-
-  padding: 5px;
-  /* margin-top: 20px; */
+  margin-top: 50px;
 }
 
 .name-joined-container {
@@ -68,7 +62,6 @@
   align-items: flex-start;
 
   padding: 40px;
-  margin-left: 50px;
 }
 
 .user-joined-date-info {
@@ -222,8 +215,15 @@
   padding-top: 10px;
 }
 
-.profile-image-container > img {
-  max-width: 100%;
+.profile-image-container img {
+  width: 400px;
+  height: 400px;
+
+  object-fit: cover;
+  border-radius: 50%;
+
+  padding: 5px;
+  margin-top: 20px;
 }
 
 .left-section,

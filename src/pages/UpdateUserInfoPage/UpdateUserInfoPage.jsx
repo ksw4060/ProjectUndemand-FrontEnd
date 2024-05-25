@@ -1,79 +1,72 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./UpdateUserInfoPage.css";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
+import PencilIcon from "./PencilIcon";
+import Modal from "./Modal";
+import "./Profile.css";
 
-function UpdateUserInfoPage({ isLoggedin, memberId, profileData }) {
-  let [src, setSrc] = useState(null);
+const UpdateUserInfoPage = ({
+  profileData,
+  memberId,
+  setProfileData,
+  setProfileImageChange,
+}) => {
   const [crop, setCrop] = useState({
     unit: "%",
-    x: 10,
-    y: 10,
-    width: 80,
-    height: 80,
+    x: 25,
+    y: 25,
+    width: 50,
+    height: 50,
+    aspect: 1,
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [croppedImageUrl, setCroppedImageUrl] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  //   const [showModal, setShowModal] = useState(false);
+  const [showCroppedImage, setShowCroppedImage] = useState(false);
   const [error, setError] = useState("");
+  const [isEditingGender, setIsEditingGender] = useState(false);
+  const [isEditingAge, setIsEditingAge] = useState(false);
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const avatarUrl = useRef(
+    "https://avatarfiles.alphacoders.com/161/161002.jpg"
+  );
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const fileInputRef = useRef();
-  const imageRef = useRef();
-  const imageButtonRef = useRef();
-
-  const handleOpenModal = () => {
-    setShowModal(true);
-    console.log("프로필 이미지 수정 modal 버튼을 클릭했습니다.");
+  const updateAvatar = (imgSrc) => {
+    avatarUrl.current = imgSrc;
   };
+  const ProfileImageSrc = localStorage.getItem("ProfileImage");
+  const profileImageUrl =
+    profileData && ProfileImageSrc
+      ? `http://localhost:8080${ProfileImageSrc.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      : "https://defaultst.imweb.me/common/img/default_profile.png";
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    console.log("프로필 이미지 수정 modal 닫기.");
-  };
+  //   const handleOpenModal = () => {
+  //     setShowModal(true);
+  //     console.log("프로필 이미지 수정 modal 버튼을 클릭했습니다.");
+  //   };
 
-  const readImageFile = (file) => {
-    const reader = new FileReader();
-    reader.onerror = handleFileError;
-    reader.onload = () => {
-      console.log("File read successfully");
-      setSrc(reader.result);
-    };
-    reader.readAsDataURL(file);
-    setSelectedFile(file);
-  };
-
-  const onSelectFile = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      console.log("Selected file:", file);
-      readImageFile(file);
-    } else {
-      console.log("No file selected");
-    }
-  };
-
-  const handleFileError = (event) => {
-    setError("파일을 읽는 중 오류가 발생했습니다.");
-    console.error("파일을 읽는 중 오류가 발생했습니다:", event.target.error);
-  };
-
-  const onCropChange = (crop) => setCrop(crop);
-
-  const onCropComplete = (crop) => makeClientCrop(crop);
-
-  const onImageLoaded = (image) => (imageRef.current = image);
+  //   const handleCloseModal = () => {
+  //     setShowModal(false);
+  //     setShowCroppedImage(false);
+  //     console.log("프로필 이미지 수정 modal 닫기.");
+  //   };
 
   const onClickApplyProfileImage = async () => {
     try {
-      if (!selectedFile) {
-        setError("파일이 선택되지 않았습니다.");
+      if (!croppedImageUrl) {
+        setError("이미지가 선택되지 않았습니다.");
         return;
       }
 
       const authorization = localStorage.getItem("Authorization");
       const formData = new FormData();
-      formData.append("imageFile", selectedFile);
+      const response = await fetch(croppedImageUrl);
+      const blob = await response.blob();
+      formData.append("imageFile", blob, "croppedImage.jpeg");
 
       await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/image/${memberId}`,
@@ -93,113 +86,88 @@ function UpdateUserInfoPage({ isLoggedin, memberId, profileData }) {
     }
   };
 
-  const makeClientCrop = async (crop) => {
-    if (imageRef.current && crop.width && crop.height) {
-      const croppedImageUrl = getCroppedImg(imageRef.current, crop);
-      setCroppedImageUrl(croppedImageUrl);
-    }
-  };
-
-  const getCroppedImg = (image, crop) => {
-    const canvas = document.createElement("canvas");
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext("2d");
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height
-    );
-
-    const dataUrl = canvas.toDataURL("image/jpeg");
-    return dataUrl;
-  };
-
-  useEffect(() => {
-    if (imageButtonRef.current) {
-      if (showModal) {
-        imageButtonRef.current.classList.add("active");
-      } else {
-        imageButtonRef.current.classList.remove("active");
-      }
-    }
-  }, [showModal]);
-
-  useEffect(() => {
-    console.log("src changed:", src);
-    setSrc(src);
-  }, [src]);
-
-  const ProfileImageModal = () => (
-    <div id="profile-image-modal-box" ref={imageButtonRef}>
-      <div className="profile-image-modal-content">
-        <div className="profile-image-modal-content-top">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={onSelectFile}
-            ref={fileInputRef}
-          />
-          <span className="close" onClick={handleCloseModal}>
-            &times;
-          </span>
+  const UserInfo = ({ label, data, onEdit }) => (
+    <div className="profile-info-container">
+      <div className="profile-checkbox">
+        <div className="userinfo-checkbox">
+          <span>{label}</span>
+          <span>{data || "없음"}</span>
         </div>
+        <button className="profile-info-edit-btn" onClick={onEdit}>
+          수정
+        </button>
+      </div>
+    </div>
+  );
 
-        <div className="profile-image-modal-content-middle">
-          <div className="crop-container">
-            {src && (
-              <ReactCrop
-                src={src}
-                crop={crop}
-                onImageLoaded={onImageLoaded}
-                onComplete={onCropComplete}
-                onChange={onCropChange}
-                className="modal-profile-image"
-              />
-            )}
-            {error && <p className="error-message">{error}</p>}
-            {croppedImageUrl && (
-              <div className="image-preview-container">
-                <img
-                  alt="Preview"
-                  src={croppedImageUrl}
-                  className="image-preview"
-                  style={{ width: "80%", height: "80%" }}
-                />
-              </div>
-            )}
+  const UserInfoInput = ({ label, type, data, onConfirm }) => (
+    <div className="profile-info-container">
+      <div className="profile-checkbox">
+        <div className="uii-container">
+          <span>{label}</span>
+          <div className="uii-cover">
+            <input type={type} defaultValue={data} />
           </div>
         </div>
-        <div className="profile-image-modal-content-bottom">
-          <button
-            onClick={onClickApplyProfileImage}
-            className="apply-profile-image-btn"
-          >
-            Apply
-          </button>
-        </div>
+        <button className="profile-info-confirm-btn" onClick={onConfirm}>
+          확인
+        </button>
       </div>
     </div>
   );
 
-  const UserInfoInput = ({ label, type = "text" }) => (
-    <div className="uii-container">
-      <span>{label}</span>
-      <div className="uii-cover">
-        <input type={type} />
-      </div>
+  const UserDataFormat = ({
+    label,
+    type,
+    data,
+    onEdit,
+    onConfirm,
+    isEditing,
+  }) => (
+    <div className="profile-info-data-container">
+      {isEditing ? (
+        <UserInfoInput
+          label={label}
+          type={type}
+          data={data}
+          onConfirm={onConfirm}
+        />
+      ) : (
+        <UserInfo label={label} type={type} data={data} onEdit={onEdit} />
+      )}
     </div>
   );
 
+  const handleEditGender = () => {
+    setIsEditingGender(true);
+  };
+
+  const handleConfirmGender = () => {
+    setIsEditingGender(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const handleEditAge = () => {
+    setIsEditingAge(true);
+  };
+
+  const handleConfirmAge = () => {
+    setIsEditingAge(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const handleEditNickname = () => {
+    setIsEditingNickname(true);
+  };
+
+  const handleConfirmNickname = () => {
+    setIsEditingNickname(false);
+    // 추가로 데이터 저장 로직을 여기에 추가할 수 있습니다.
+  };
+
+  const nickname = profileData?.member?.nickname || "없음";
+  const memberAges = profileData?.memberAges || "없음";
+  const gender = profileData?.member_gender || "없음";
   return (
     <div className="update-user-info-page">
       <div className="update-user-info-page-title">
@@ -207,47 +175,73 @@ function UpdateUserInfoPage({ isLoggedin, memberId, profileData }) {
       </div>
 
       <div className="user-info-input-container">
-        <div className="account-img-container">
-          <div className="account-img">
-            <span>프로필 이미지</span>
-            <button onClick={handleOpenModal} id="profile-img-open">
-              수정
+        <div className="profile-container">
+          <div className="avatar-wrapper">
+            <img src={profileImageUrl} alt="Avatar" className="avatar" />
+            <button
+              className="change-photo-button"
+              title="Change photo"
+              onClick={() => setModalOpen(true)}
+            >
+              <PencilIcon />
             </button>
           </div>
-          {showModal && <ProfileImageModal />}
+          <h2 className="profile-name">Mack Aroney</h2>
+          <p className="profile-title">Software Engineer</p>
+          {modalOpen && (
+            <Modal
+              memberId={memberId}
+              profileData={profileData}
+              setProfileData={setProfileData}
+              updateAvatar={updateAvatar}
+              closeModal={() => setModalOpen(false)}
+            />
+          )}
         </div>
-        <div className="profile-image-edit-container">
-          <img
-            src={
-              profileData && profileData.profileImgPath
-                ? `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileData.profileImgPath}`
-                : "https://defaultst.imweb.me/common/img/default_profile.png"
-            }
-            alt="프로필 이미지"
-            className="profile-edit-image"
+        <div className="user-info-container">
+          <UserDataFormat
+            label="성별"
+            type="text"
+            data={gender}
+            onEdit={handleEditGender}
+            onConfirm={handleConfirmGender}
+            isEditing={isEditingGender}
+          />
+          <UserDataFormat
+            label="연령대"
+            type="text"
+            data={memberAges}
+            onEdit={handleEditAge}
+            onConfirm={handleConfirmAge}
+            isEditing={isEditingAge}
+          />
+          <UserDataFormat
+            label="닉네임"
+            type="text"
+            data={nickname}
+            onEdit={handleEditNickname}
+            onConfirm={handleConfirmNickname}
+            isEditing={isEditingNickname}
           />
         </div>
-        <UserInfoInput label="비밀번호" type="password" />
-        <UserInfoInput label="비밀번호 확인" type="password" />
-        <UserInfoInput label="닉네임" type="text" />
-        {/* <div className="uii-birth-day-container">
-          <span>닉네임</span>
-          <div className="uii-cover">
-            <span>{`2024/01/01`}</span>
-          </div>
-        </div> */}
       </div>
-      <div className="account-delete-container">
-        <div className="account-delete">
+      <div className="profile-info-container">
+        <div className="account-activate">
           <span>계정 비활성화</span>
           <button>비활성화</button>
         </div>
       </div>
+      <div className="profile-info-container">
+        <div className="account-activate">
+          <span>휴대폰 인증</span>
+          <button>인증하기</button>
+        </div>
+      </div>
       <div className="uui-btn-container">
-        <button className="uui-submit-btn">저장</button>
+        <button className="uui-submit-btn">저장하기</button>
       </div>
     </div>
   );
-}
+};
 
 export { UpdateUserInfoPage };

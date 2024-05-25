@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "./MyReviewPage.css";
+import { useNavigate } from "react-router-dom";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import ReviewUpdateModal from "../../components/ReviewUpdateModal/ReviewUpdateModal";
 import axios from "axios";
+import "./MyReviewPage.css";
 
-function MyReviewPage() {
+function MyReviewPage({ isLoggedin, memberId }) {
   const [selectedReviewSortOption, setSelectedReviewSortOption] =
     useState("최신순");
   const [selectedInquirySortOption, setSelectedInquirySortOption] =
@@ -19,7 +20,16 @@ function MyReviewPage() {
   const [rUModalOpen, setRUModalOpen] = useState(false);
   const [selectedRId, setSelectedRId] = useState(null);
   const [thumbnailImages, setThumbnailImages] = useState([]);
-  const memberId = 1;
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoggedin) {
+      alert("로그인을 하지 않았을 때에는 나의 리뷰를 볼 수 없습니다");
+      navigate("http://localhost:3000");
+    }
+    console.log("로그인 상태 : " + isLoggedin);
+  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const fetchProductReviewData = async () => {

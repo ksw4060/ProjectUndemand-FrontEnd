@@ -52,13 +52,14 @@ const Login = () => {
       // 응답에서 JSON 형식의 데이터를 추출
       const accessToken = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
-      const email = response.data.email;
 
       if (parseInt(response.status) === 200) {
-        // 기존에 저장된 Authorization 토큰과 refreshToken과 memberId 를 삭제합니다.
+        // 기존에 저장된 Authorization 토큰과 refreshToken, memberId, profileImageChange 를 삭제합니다.
         localStorage.removeItem("Authorization");
         localStorage.removeItem("memberId");
+        localStorage.removeItem("profileImageChange");
         deleteCookie("refreshToken");
+
         // 서버에서 받아온 Authorization 토큰과 refreshToken을 브라우저에 저장합니다.
         localStorage.setItem("Authorization", "Bearer " + accessToken);
         document.cookie = `refreshToken=${refreshToken}; path=/; Secure; SameSite=Lax`;

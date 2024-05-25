@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
@@ -21,12 +20,15 @@ import Footer from "./components/Footer/Footer.jsx";
 import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
 import axios from "axios";
+import "react-image-crop/dist/ReactCrop.css";
 
 function App() {
   const [categoryData, setCategoryData] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
+  // 프로필 데이터를 갱신(useEffect) 하는 기준
+  const [profileImage, setProfileImage] = useState(null);
   const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
@@ -57,18 +59,20 @@ function App() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // 로컬 스토리지에서 Authorization 토큰 가져오기
         const authorization = localStorage.getItem("Authorization");
-        // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
           {
             headers: {
-              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+              Authorization: authorization,
             },
           }
         );
         setProfileData(response.data);
+        setProfileImage(response.data.profileImgPath);
+        console.log(response.data);
+        // 로컬 스토리지에 ProfileImage 저장
+        localStorage.setItem("ProfileImage", response.data.profileImgPath);
       } catch (error) {
         console.error(error);
       }
@@ -90,8 +94,10 @@ function App() {
       }
     };
 
-    fetchProfileData();
-    fetchCartData();
+    if (memberId) {
+      fetchProfileData();
+      fetchCartData();
+    }
   }, [memberId]);
 
   useEffect(() => {
@@ -112,6 +118,7 @@ function App() {
     if (accessToken) {
       setIsLoggedin(true);
       setMemberId(localStorage.getItem("memberId"));
+      //   setProfileImage(localStorage.getItem("ProfileImage"));
     } else {
       setIsLoggedin(false);
       setMemberId("");
@@ -255,7 +262,9 @@ function App() {
             isLoggedin={isLoggedin}
             cartProducts={cartProducts}
             // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
+            // 2024.05.23 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
+            profileImage={profileImage}
           />
         </div>
       ) : (
@@ -281,6 +290,8 @@ function App() {
                 isLoggedin={isLoggedin}
                 memberId={memberId}
                 profileData={profileData}
+                setProfileData={setProfileData}
+                profileImage={profileImage}
               />
             }
           />
