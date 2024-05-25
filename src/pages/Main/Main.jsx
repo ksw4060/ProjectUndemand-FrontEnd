@@ -82,12 +82,12 @@ const Main = () => {
   return (
     <div className="contents-body">
       <Carousel />
-      <ProductSlide products={mainBest} sectionTitle="Best Products" />
       <ProductSlide products={mainNew} sectionTitle="New Products" />
       <ProductSlide
         products={mainRecommend}
         sectionTitle="Recommend Products"
       />
+      <ProductSlide products={mainBest} sectionTitle="Best Products" />
     </div>
   );
 };
