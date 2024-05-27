@@ -5,26 +5,7 @@ import PencilIcon from "./PencilIcon";
 import Modal from "./Modal";
 import "./Profile.css";
 
-const UpdateUserInfoPage = ({
-  profileData,
-  memberId,
-  setProfileData,
-  setProfileImageChange,
-}) => {
-  const [crop, setCrop] = useState({
-    unit: "%",
-    x: 25,
-    y: 25,
-    width: 50,
-    height: 50,
-    aspect: 1,
-  });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [croppedImageUrl, setCroppedImageUrl] = useState(null);
-  //   const [showModal, setShowModal] = useState(false);
-  const [showCroppedImage, setShowCroppedImage] = useState(false);
-  const [error, setError] = useState("");
-
+const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
   const [isEditingGender, setIsEditingGender] = useState(false);
   const [isEditingAge, setIsEditingAge] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -52,37 +33,6 @@ const UpdateUserInfoPage = ({
       : "https://defaultst.imweb.me/common/img/default_profile.png";
   //   console.log(profileImageUrl);
   //   console.log(profileData);
-
-  const onClickApplyProfileImage = async () => {
-    try {
-      if (!croppedImageUrl) {
-        setError("이미지가 선택되지 않았습니다.");
-        return;
-      }
-
-      const authorization = localStorage.getItem("Authorization");
-      const formData = new FormData();
-      const response = await fetch(croppedImageUrl);
-      const blob = await response.blob();
-      formData.append("imageFile", blob, "croppedImage.jpeg");
-
-      await axios.post(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/image/${memberId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: authorization,
-          },
-        }
-      );
-
-      console.log("프로필 이미지 변경 요청이 성공적으로 전송되었습니다.");
-    } catch (error) {
-      setError("프로필 이미지 변경 요청 중 오류가 발생했습니다.");
-      console.error("프로필 이미지 변경 요청 중 오류가 발생했습니다:", error);
-    }
-  };
 
   // Common UserInfo Component
   const UserInfo = ({ label, data, onEdit }) => (
@@ -303,7 +253,7 @@ const UpdateUserInfoPage = ({
 
   const nickname = profileData?.member?.nickname || "없음";
   const memberAges = profileData?.memberAges || "없음";
-  const gender = profileData?.member_gender || "없음";
+  const gender = profileData?.memberGender || "없음";
 
   return (
     <div className="update-user-info-page">
