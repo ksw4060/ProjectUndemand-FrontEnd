@@ -1,8 +1,8 @@
-.avatar-wrapper {
+.profile-image-wrapper {
   position: relative;
 }
 
-.avatar {
+.profile-image {
   width: 400px; /* equivalent to w-[400px] */
   height: 400px; /* equivalent to h-[400px] */
   border-radius: 50%; /* equivalent to rounded-full */
@@ -12,21 +12,26 @@
   /* padding: 20px; */
 }
 
+/* 프로필 이미지 편집 버튼 */
 .change-photo-button {
   position: absolute;
-  bottom: -0.75rem; /* equivalent to -bottom-3 */
+  bottom: -0.5rem; /* 프로필 이미지 편집 버튼의 위아래 위치 조정 */
+
   left: 0;
   right: 0;
+
   margin: auto;
   width: fit-content;
-  padding: 0.35rem; /* equivalent to p-[.35rem] */
+  padding: 0.35rem;
+
   border-radius: 50%; /* equivalent to rounded-full */
   background-color: #ffffff; /* changed to white */
+
   border: 1px solid #4a5568; /* equivalent to border-gray-600 */
 }
 
 .change-photo-button:hover {
-  background-color: #e5e7eb; /* light gray for hover effect */
+  background-color: #d9dbdf; /* light gray for hover effect */
 }
 
 .profile-name {

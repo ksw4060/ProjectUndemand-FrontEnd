@@ -20,7 +20,7 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
             },
           }
         );
-
+        console.log(response.data);
         setPaymentHistory(response.data);
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);

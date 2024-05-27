@@ -56,7 +56,7 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
                 <span>{profileData.member.nickname || `없음`}</span>
               </div>
             </div>
-            <div className="profile-info-container">
+            {/* <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>이메일인증</span>
                 <span>
@@ -69,15 +69,15 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
                 <span>휴대폰 인증</span>
                 <span>{statusToKorean(profileData.member.phone)}</span>
               </div>
-            </div>
-            <div className="profile-info-container">
+            </div> */}
+            {/* <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>소셜 로그인</span>
                 <span>
                   {` ${profileData.member.social_type}` || `일반 로그인 멤버`}
                 </span>
               </div>
-            </div>
+            </div> */}
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>회원가입 날짜</span>

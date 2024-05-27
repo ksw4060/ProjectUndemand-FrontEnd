@@ -94,7 +94,7 @@
 
 .uii-cover {
   width: 100%;
-  height: 40px;
+  height: 38px;
 
   display: flex;
   justify-content: center;
@@ -484,4 +484,41 @@
 
 .Profile-image-edit-btn:hover {
   background-color: #4a5568; /* or any other shade of gray you prefer */
+}
+
+.form-select {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  font-family: "chaenil", sans-serif;
+
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-select:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-select[multiple],
+.form-select[size]:not([size="1"]) {
+  height: auto;
+}
+
+.form-select-sm {
+  padding: 0.25rem 1.5rem 0.25rem 0.5rem;
+  /* font-size: 0.875rem; */
+  border-radius: 0.25rem;
 }
