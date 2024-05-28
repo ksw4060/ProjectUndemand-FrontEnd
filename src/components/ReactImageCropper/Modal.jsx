@@ -1,6 +1,6 @@
 import CloseIcon from "./CloseIcon";
 import ImageCropper from "./ImageCropper";
-import "./Profile.css";
+import "../../pages/UpdateUserInfoPage/UpdateUserInfoPage.css";
 
 const Modal = ({
   updateAvatar,

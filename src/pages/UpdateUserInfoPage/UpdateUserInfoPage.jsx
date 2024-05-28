@@ -1,23 +1,26 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+// Component
+import PencilIcon from "../../components/ReactImageCropper/PencilIcon.jsx";
+import Modal from "../../components/ReactImageCropper/Modal.jsx";
+import { UserDataFormat } from "./UpdateUserInfoInputBox.jsx";
+// Css
 import "./UpdateUserInfoPage.css";
-import PencilIcon from "./PencilIcon";
-import Modal from "./Modal";
-import "./Profile.css";
+import "../../components/ReactImageCropper/ImageCropperModal.css";
 
 const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
   const [isEditingGender, setIsEditingGender] = useState(false);
   const [isEditingAge, setIsEditingAge] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
 
+  const genderRef = useRef(null);
+  const ageRef = useRef(null);
+  const nicknameRef = useRef(null);
+
   const avatarUrl = useRef(
     "https://avatarfiles.alphacoders.com/161/161002.jpg"
   );
   const [modalOpen, setModalOpen] = useState(false);
-
-  const genderRef = useRef(null);
-  const ageRef = useRef(null);
-  const nicknameRef = useRef(null);
 
   const updateAvatar = (imgSrc) => {
     avatarUrl.current = imgSrc;
@@ -31,127 +34,9 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
           ""
         )}`
       : "https://defaultst.imweb.me/common/img/default_profile.png";
-  //   console.log(profileImageUrl);
-  //   console.log(profileData);
-
-  // Common UserInfo Component
-  const UserInfo = ({ label, data, onEdit }) => (
-    <div className="profile-info-container">
-      <div className="profile-checkbox">
-        <div className="userinfo-checkbox">
-          <span>{label}</span>
-          <span>{data || "없음"}</span>
-        </div>
-        <button className="profile-info-edit-btn" onClick={onEdit}>
-          수정
-        </button>
-      </div>
-    </div>
-  );
-
-  const UserInfoInput = ({ label, type, data, onConfirm }) => (
-    <div className="profile-info-container">
-      <div className="profile-checkbox">
-        <div className="uii-container">
-          <span>{label}</span>
-          <div className="uii-cover">
-            <input type={type} defaultValue={data} ref={nicknameRef} />
-          </div>
-        </div>
-        <button className="profile-info-confirm-btn" onClick={onConfirm}>
-          확인
-        </button>
-      </div>
-    </div>
-  );
-
-  const UserAgeSelect = ({ label, data, onConfirm }) => (
-    <div className="profile-info-container">
-      <div className="profile-checkbox">
-        <div className="uii-container">
-          <span>{label}</span>
-          <select
-            className="form-select form-select-sm"
-            defaultValue={data}
-            ref={ageRef}
-          >
-            <option value="AGE_0_TO_10">0세 ~ 10세 이하</option>
-            <option value="TEENS">10대</option>
-            <option value="TWENTIES">20대</option>
-            <option value="THIRTIES">30대</option>
-            <option value="FORTIES_AND_ABOVE">40대 이상</option>
-          </select>
-        </div>
-        <button className="profile-info-confirm-btn" onClick={onConfirm}>
-          확인
-        </button>
-      </div>
-    </div>
-  );
-
-  const UserGenderSelect = ({ label, data, onConfirm }) => (
-    <div className="profile-info-container">
-      <div className="profile-checkbox">
-        <div className="uii-container">
-          <span>{label}</span>
-          <select
-            className="form-select form-select-sm"
-            defaultValue={data}
-            ref={genderRef}
-          >
-            <option value="MAN">MAN | 남자</option>
-            <option value="WOMAN">WOMAN | 여자</option>
-            <option value="ETC">ETC | 공통</option>
-          </select>
-        </div>
-        <button className="profile-info-confirm-btn" onClick={onConfirm}>
-          확인
-        </button>
-      </div>
-    </div>
-  );
-
-  // Refactored UserDataFormat to choose between different input components
-  const UserDataFormat = ({
-    label,
-    type,
-    data,
-    onEdit,
-    onConfirm,
-    isEditing,
-  }) => {
-    const renderInputComponent = () => {
-      switch (label) {
-        case "연령대":
-          return (
-            <UserAgeSelect label={label} data={data} onConfirm={onConfirm} />
-          );
-        case "성별":
-          return (
-            <UserGenderSelect label={label} data={data} onConfirm={onConfirm} />
-          );
-        default:
-          return (
-            <UserInfoInput
-              label={label}
-              type={type}
-              data={data}
-              onConfirm={onConfirm}
-            />
-          );
-      }
-    };
-
-    return (
-      <div className="profile-info-data-container">
-        {isEditing ? (
-          renderInputComponent()
-        ) : (
-          <UserInfo label={label} data={data} onEdit={onEdit} />
-        )}
-      </div>
-    );
-  };
+  // 프로필 이미지가 나오는지 체크하기 위해서, 콘솔로그 출력 [개발단계]
+  console.log(profileImageUrl);
+  // console.log(profileData);
 
   const handleEditGender = () => setIsEditingGender(true);
   const handleConfirmGender = async () => {
@@ -165,16 +50,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
         "Content-Type": "application/json",
       };
 
-      // Log the request details to the console
-      console.log("PUT Request URL:", url);
-      console.log("PUT Request Data:", data);
-      console.log("PUT Request Headers:", headers);
-
       const response = await axios.put(url, data, { headers });
-
-      // Log the response to the console
-      console.log("PUT Request Response:", response);
-
       setProfileData((prevData) => ({
         ...prevData,
         member_gender: newGender,
@@ -196,17 +72,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
         "Content-Type": "application/json",
       };
 
-      // Log the request details to the console
-      console.log("PUT Request URL:", url);
-      console.log("PUT Request Data:", data);
-      console.log("PUT Request Headers:", headers);
-
-      // Make the request and capture the response
       const response = await axios.put(url, data, { headers });
-
-      // Log the response to the console
-      console.log("PUT Request Response:", response);
-
       setProfileData((prevData) => ({
         ...prevData,
         memberAges: newAge,
@@ -228,17 +94,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
         "Content-Type": "application/json",
       };
 
-      // Log the request details to the console
-      console.log("PUT Request URL:", url);
-      console.log("PUT Request Data:", data);
-      console.log("PUT Request Headers:", headers);
-
-      // Make the request and capture the response
       const response = await axios.put(url, data, { headers });
-
-      // Log the response to the console
-      console.log("PUT Request Response:", response);
-
       setProfileData((prevData) => ({
         ...prevData,
         member: {
@@ -295,6 +151,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
             onEdit={handleEditGender}
             onConfirm={handleConfirmGender}
             isEditing={isEditingGender}
+            ref={genderRef}
           />
           <UserDataFormat
             label="연령대"
@@ -303,6 +160,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
             onEdit={handleEditAge}
             onConfirm={handleConfirmAge}
             isEditing={isEditingAge}
+            ref={ageRef}
           />
           <UserDataFormat
             label="닉네임"
@@ -311,6 +169,7 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
             onEdit={handleEditNickname}
             onConfirm={handleConfirmNickname}
             isEditing={isEditingNickname}
+            ref={nicknameRef}
           />
         </div>
       </div>

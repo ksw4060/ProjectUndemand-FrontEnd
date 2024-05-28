@@ -54,6 +54,16 @@ function CategoryPage({
   const [totalPageSize, setTotalPageSize] = useState(0);
 
   const navigate = useNavigate();
+  // Profile Image Url - CategoryPage [24.05.28 ksw]
+  const profileImageUrl =
+    profileData && profileData.profileImgPath
+      ? `${
+          process.env.REACT_APP_BACKEND_URL_FOR_IMG
+        }${profileData.profileImgPath.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      : "https://defaultst.imweb.me/common/img/default_profile.png";
 
   useEffect(() => {
     setUrlCondition(condition.split("-")[0]);
@@ -344,14 +354,7 @@ function CategoryPage({
                       ? `Hello, ${profileData.nickname}!`
                       : `Hello, ODD!`}
                   </span>
-                  <img
-                    src={
-                      profileData && profileData.profileImgPath
-                        ? profileData.profileImgPath
-                        : "https://defaultst.imweb.me/common/img/default_profile.png"
-                    }
-                    alt="Profile img"
-                  />
+                  <img src={profileImageUrl} alt="Profile img" />
                 </Link>
                 <ul className="user-dropdown-menu">
                   <li className="mypage-btn">
