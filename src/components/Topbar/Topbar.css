@@ -223,7 +223,7 @@
 
 .user-dropdown-menu {
   width: 170px;
-  height: 200px;
+  height: 240px;
   display: flex;
   flex-flow: column;
   justify-content: space-around;
@@ -306,7 +306,7 @@
     }
 
     .topbar-navbar-narrow.mobile-loggedin {
-        width: 20%;
+        width: 90px;
     }
 
   .topbar-navbar-narrow > a {

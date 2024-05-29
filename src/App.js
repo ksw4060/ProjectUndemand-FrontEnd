@@ -16,6 +16,8 @@ import { ReceiptPage } from "./pages/ReceiptPage/ReceiptPage.jsx";
 import { AdministratorPage } from "./pages/AdministratorPage/AdministratorPage.jsx";
 import { MyPage } from "./pages/MyPage/MyPage.jsx";
 import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
+import PrivateRoutes from "../src/components/Routes/PrivateRoutes.jsx";
+import AdminRoutes from "./components/Routes/AdminRoutes.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
 import "./App.css";
@@ -26,6 +28,7 @@ function App() {
   const [categoryData, setCategoryData] = useState([]);
   const [cartProducts, setCartProducts] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [memberRole, setMemberRole] = useState("");
   const [memberId, setMemberId] = useState("");
   // 프로필 데이터를 갱신(useEffect) 하는 기준
   const [profileImage, setProfileImage] = useState(null);
@@ -118,10 +121,12 @@ function App() {
     if (accessToken) {
       setIsLoggedin(true);
       setMemberId(localStorage.getItem("memberId"));
+      setMemberRole(localStorage.getItem("memberRole"));
       //   setProfileImage(localStorage.getItem("ProfileImage"));
     } else {
       setIsLoggedin(false);
       setMemberId("");
+      setMemberRole("");
     }
 
     channelTalkLoad();
@@ -265,6 +270,7 @@ function App() {
             // 2024.05.23 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
             profileImage={profileImage}
+            memberRole={memberRole}
           />
         </div>
       ) : (
@@ -328,20 +334,24 @@ function App() {
               />
             }
           />
-          <Route
-            path="/cart"
-            element={
-              <CartPage
-                memberId={memberId}
-                isLoggedin={isLoggedin}
-                cartProducts={cartProducts}
-                setCartProducts={setCartProducts}
-              />
-            }
-          />
-          <Route path="/cart/order" element={<PaymentPage />} />
-          <Route path="/cart/order/done" element={<ReceiptPage />} />
-          <Route path="/admin/*" element={<AdministratorPage />} />
+          <Route element={<PrivateRoutes isLoggedin={isLoggedin} />}>
+            <Route
+              path="/cart"
+              element={
+                <CartPage
+                  memberId={memberId}
+                  isLoggedin={isLoggedin}
+                  cartProducts={cartProducts}
+                  setCartProducts={setCartProducts}
+                />
+              }
+            />
+            <Route path="/cart/order" element={<PaymentPage />} />
+            <Route path="/cart/order/done" element={<ReceiptPage />} />
+            <Route element={<AdminRoutes memberRole={memberRole} />}>
+              <Route path="/admin/*" element={<AdministratorPage />} />
+            </Route>
+          </Route>
         </Routes>
       </div>
 
