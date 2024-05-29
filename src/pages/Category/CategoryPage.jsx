@@ -307,6 +307,7 @@ function CategoryPage({
     localStorage.removeItem("Authorization");
 
     localStorage.removeItem("memberId");
+    localStorage.removeItem("memberRole");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
 
