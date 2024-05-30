@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile, fetchProfileImage } from "./profileSlice";
 import Topbar from "./components/Topbar/Topbar.jsx";
 import ChannelTalk from "./ChannelTalk.js";
 import { Main } from "./pages/Main/Main.jsx";
@@ -27,9 +29,6 @@ function App() {
   const [cartProducts, setCartProducts] = useState([]);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberId, setMemberId] = useState("");
-  // 프로필 데이터를 갱신(useEffect) 하는 기준
-  const [profileImage, setProfileImage] = useState(null);
-  const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
@@ -44,6 +43,29 @@ function App() {
   const [isCategoryPage, setIsCategoryPage] = useState(false);
   const channelTalkPlugInKey = process.env.REACT_APP_CHANNELTALK_PLUGIN_KEY;
 
+  const dispatch = useDispatch();
+  const profileData = useSelector((state) => state.profile.profileData);
+  // 리덕스 상태에서 프로필 이미지 가져오기
+  const profileImage = useSelector((state) => state.profile.profileImage);
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+
+  useEffect(() => {
+    if (profileImage) {
+      setProfileImageUrl(
+        `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileImage.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      );
+      console.log(profileImageUrl);
+    } else {
+      setProfileImageUrl(
+        "https://defaultst.imweb.me/common/img/default_profile.png"
+      );
+      console.log(profileImageUrl);
+    }
+  }, [profileImage]);
+
   const channelTalkLoad = () => {
     ChannelTalk.loadScript();
     const channelTalkConfig = {
@@ -57,27 +79,14 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const authorization = localStorage.getItem("Authorization");
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
-          {
-            headers: {
-              Authorization: authorization,
-            },
-          }
-        );
-        setProfileData(response.data);
-        setProfileImage(response.data.profileImgPath);
-        console.log(response.data);
-        // 로컬 스토리지에 ProfileImage 저장
-        localStorage.setItem("ProfileImage", response.data.profileImgPath);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    if (memberId) {
+      // profileSlice.js 에 있는 프로필 및 이미지 비동기 함수로 데이터를 가져옵니다.
+      dispatch(fetchProfile(memberId));
+      dispatch(fetchProfileImage(memberId));
+    }
+  }, [memberId, dispatch]);
 
+  useEffect(() => {
     const fetchCartData = async () => {
       try {
         const response = await axios.get(
@@ -93,9 +102,7 @@ function App() {
         console.error(error);
       }
     };
-
     if (memberId) {
-      fetchProfileData();
       fetchCartData();
     }
   }, [memberId]);
@@ -118,7 +125,6 @@ function App() {
     if (accessToken) {
       setIsLoggedin(true);
       setMemberId(localStorage.getItem("memberId"));
-      //   setProfileImage(localStorage.getItem("ProfileImage"));
     } else {
       setIsLoggedin(false);
       setMemberId("");
@@ -261,10 +267,8 @@ function App() {
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
             cartProducts={cartProducts}
-            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
-            // 2024.05.23 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
-            profileImage={profileImage}
+            profileImageUrl={profileImageUrl}
           />
         </div>
       ) : (
@@ -290,8 +294,8 @@ function App() {
                 isLoggedin={isLoggedin}
                 memberId={memberId}
                 profileData={profileData}
-                setProfileData={setProfileData}
-                profileImage={profileImage}
+                profileImageUrl={profileImageUrl}
+                setProfileImageUrl={setProfileImageUrl}
               />
             }
           />
@@ -314,6 +318,7 @@ function App() {
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
                 profileData={profileData}
+                profileImageUrl={profileImageUrl}
                 cartProducts={cartProducts}
               />
             }

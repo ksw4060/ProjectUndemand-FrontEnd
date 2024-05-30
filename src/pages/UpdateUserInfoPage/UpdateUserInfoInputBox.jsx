@@ -83,55 +83,49 @@ export const UserGenderSelect = React.forwardRef(
   )
 );
 
-export const UserDataFormat = ({
-  label,
-  type,
-  data,
-  onEdit,
-  onConfirm,
-  isEditing,
-  ref,
-}) => {
-  const renderInputComponent = () => {
-    switch (label) {
-      case "연령대":
-        return (
-          <UserAgeSelect
-            label={label}
-            data={data}
-            onConfirm={onConfirm}
-            ref={ref}
-          />
-        );
-      case "성별":
-        return (
-          <UserGenderSelect
-            label={label}
-            data={data}
-            onConfirm={onConfirm}
-            ref={ref}
-          />
-        );
-      default:
-        return (
-          <UserInfoInput
-            label={label}
-            type={type}
-            data={data}
-            onConfirm={onConfirm}
-            ref={ref}
-          />
-        );
-    }
-  };
+export const UserDataFormat = React.forwardRef(
+  ({ label, type, data, onEdit, onConfirm, isEditing }, ref) => {
+    const renderInputComponent = () => {
+      switch (label) {
+        case "연령대":
+          return (
+            <UserAgeSelect
+              label={label}
+              data={data}
+              onConfirm={onConfirm}
+              ref={ref}
+            />
+          );
+        case "성별":
+          return (
+            <UserGenderSelect
+              label={label}
+              data={data}
+              onConfirm={onConfirm}
+              ref={ref}
+            />
+          );
+        default:
+          return (
+            <UserInfoInput
+              label={label}
+              type={type}
+              data={data}
+              onConfirm={onConfirm}
+              ref={ref}
+            />
+          );
+      }
+    };
 
-  return (
-    <div className="profile-info-data-container">
-      {isEditing ? (
-        renderInputComponent()
-      ) : (
-        <UserInfo label={label} data={data} onEdit={onEdit} />
-      )}
-    </div>
-  );
-};
+    return (
+      <div className="profile-info-data-container">
+        {isEditing ? (
+          renderInputComponent()
+        ) : (
+          <UserInfo label={label} data={data} onEdit={onEdit} />
+        )}
+      </div>
+    );
+  }
+);

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactCrop, {
   centerCrop,
@@ -7,119 +8,112 @@ import ReactCrop, {
 } from "react-image-crop";
 import setCanvasPreview from "./setCanvasPreview";
 import axios from "axios";
+import { fetchProfile, fetchProfileImage } from "../../profileSlice";
 import "../../pages/UpdateUserInfoPage/UpdateUserInfoPage.css";
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_INITIAL_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const ImageCropper = ({
-  closeModal,
-  updateAvatar,
   memberId,
   profileData,
-  setProfileData,
-  setProfileImageChange,
+  updateAvatar,
+  closeModal,
+  setProfileImageUrl,
 }) => {
-  const imgRef = useRef(null);
-  const previewCanvasRef = useRef(null);
-  const [imgSrc, setImgSrc] = useState("");
-  const [crop, setCrop] = useState();
-  const [croppedImageUrl, setCroppedImageUrl] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const imgRef = useRef(null); // 이미지 참조를 위한 useRef
+  const previewCanvasRef = useRef(null); // 캔버스 참조를 위한 useRef
+  const [imgSrc, setImgSrc] = useState(""); // 이미지 소스를 위한 상태
+  const [crop, setCrop] = useState(); // 크롭 상태
+  const [croppedImageUrl, setCroppedImageUrl] = useState(""); // 크롭된 이미지 URL 상태
+  const [error, setError] = useState(""); // 에러 메시지 상태
+  const [isFileTooLarge, setIsFileTooLarge] = useState(false); // 파일 크기 초과 여부 상태
+  const [initialFileTooLarge, setInitialFileTooLarge] = useState(false); // 최초 파일 크기 초과 여부 상태
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
+  const dispatch = useDispatch(); // 리덕스 디스패치를 위한 훅
 
+  // 파일 선택 핸들러
   const onSelectFile = (e) => {
-    // 파일 입력 이벤트에서 첫 번째 파일을 가져옴
-    const file = e.target.files?.[0];
-    // 파일이 없을 경우 함수 종료
+    const file = e.target.files?.[0]; // 첫 번째 파일을 가져옴
     if (!file) return;
 
-    // FileReader 객체 생성
-    const reader = new FileReader();
+    if (file.size > MAX_INITIAL_FILE_SIZE) {
+      setInitialFileTooLarge(true); // 최초 파일 크기가 5MB를 초과할 경우 상태 설정
+      return;
+    } else {
+      setInitialFileTooLarge(false); // 최초 파일 크기가 5MB 이하일 경우 상태 초기화
+    }
 
-    // 파일 읽기가 완료되었을 때 실행될 이벤트 리스너 추가
+    const reader = new FileReader(); // FileReader 객체 생성
+
     reader.addEventListener("load", () => {
-      // 새 이미지 객체 생성
       const imageElement = new Image();
-      // FileReader 결과를 문자열로 변환하여 이미지 소스 설정
       const imageUrl = reader.result?.toString() || "";
       imageElement.src = imageUrl;
 
-      // 이미지 로드가 완료되었을 때 실행될 이벤트 리스너 추가
       imageElement.addEventListener("load", (e) => {
-        // 이전 에러 메시지가 있다면 초기화
-        if (error) setError("");
+        if (error) setError(""); // 에러 초기화
 
-        // 이미지의 실제 크기 가져오기
         const { naturalWidth, naturalHeight } = e.currentTarget;
 
-        // 이미지 크기가 최소 크기보다 작은지 확인
         if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
-          // 에러 메시지 설정
           setError("Image must be at least 150 x 150 pixels.");
-          // 이미지 소스 초기화
           return setImgSrc("");
         }
       });
 
-      // 이미지 소스를 상태로 설정
-      setImgSrc(imageUrl);
+      setImgSrc(imageUrl); // 이미지 소스 설정
     });
 
-    // 파일을 Data URL 형식으로 읽기
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file); // 파일을 Data URL 형식으로 읽기
   };
 
+  // 이미지 로드 핸들러
   const onImageLoad = (e) => {
-    // 이벤트에서 현재 타겟의 너비와 높이를 가져옴
     const { width, height } = e.currentTarget;
-
-    // 최소 크기와 현재 이미지 너비를 이용하여 크롭 너비를 퍼센트로 계산
     const cropWidthInPercent = (MIN_DIMENSION / width) * 100;
 
-    // 지정된 비율로 크롭을 만들기 위해 makeAspectCrop 함수 호출
     const crop = makeAspectCrop(
       {
-        unit: "%", // 단위를 퍼센트로 설정
-        width: cropWidthInPercent, // 계산된 크롭 너비를 설정
+        unit: "%",
+        width: cropWidthInPercent,
       },
-      ASPECT_RATIO, // 지정된 비율을 사용
-      width, // 현재 이미지의 너비를 전달
-      height // 현재 이미지의 높이를 전달
+      ASPECT_RATIO,
+      width,
+      height
     );
 
-    // 만든 크롭을 이미지의 중심에 맞추기 위해 centerCrop 함수 호출
     const centeredCrop = centerCrop(crop, width, height);
-
-    // 상태 업데이트를 위해 크롭 설정
-    setCrop(centeredCrop);
+    setCrop(centeredCrop); // 크롭 상태 설정
   };
 
+  // 프로필 이미지 적용 핸들러
   const onClickApplyProfileImage = async () => {
     try {
-      // 크롭된 이미지 URL이 없는 경우 에러 메시지를 설정하고 함수 종료
       if (!croppedImageUrl) {
         setError("이미지가 선택되지 않았습니다.");
         return;
       }
 
-      // 로컬 스토리지에서 Authorization 토큰 가져오기
       const authorization = localStorage.getItem("Authorization");
       const formData = new FormData();
 
-      // 크롭된 이미지 URL을 통해 이미지 데이터를 가져옴
       const response = await fetch(croppedImageUrl);
       const blob = await response.blob();
 
-      // FormData 객체에 이미지 파일을 추가
+      // 크롭된 이미지 파일 정보를 콘솔에 출력
+      console.log("Blob 데이터:", blob);
       formData.append("imageFile", blob, "croppedImage.jpeg");
 
-      // 디버깅을 위한 콘솔 출력
-      console.log("ImageCropper Test : " + memberId);
-      console.log("ImageCropper Test : " + authorization);
+      // FormData 확인
+      for (const [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
 
       // 프로필 이미지 업로드 요청
-      await axios.post(
+      const uploadResponse = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/image/${memberId}`,
         formData,
         {
@@ -129,43 +123,45 @@ const ImageCropper = ({
           },
         }
       );
+      setProfileImageUrl(uploadResponse.data);
+      console.log("프로필 이미지 Path : ", uploadResponse.data);
 
-      // 프로필 이미지 변경 요청이 성공했음을 콘솔에 출력
-      console.log("프로필 이미지 변경 요청이 성공적으로 전송되었습니다.");
+      // 프로필 데이터와 이미지 다시 가져오기
+      dispatch(fetchProfile(memberId));
+      dispatch(fetchProfileImage(memberId));
 
-      // 프로필 데이터를 다시 가져오기 위한 요청
-      const profileResponse = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
-        {
-          headers: {
-            Authorization: authorization,
-          },
-        }
-      );
-
-      // 가져온 프로필 데이터를 상태에 설정
-      setProfileData(profileResponse.data);
-
-      // 프로필 이미지 변경 후 모달 닫기
-      closeModal();
-      navigate("/user/mypage/profile");
+      closeModal(); // 모달 닫기
+      navigate("/user/mypage/profile"); // 마이 페이지로 이동
     } catch (error) {
-      // 오류 발생 시 에러 메시지를 설정하고 콘솔에 출력
       setError("프로필 이미지 변경 요청 중 오류가 발생했습니다.");
       console.error("프로필 이미지 변경 요청 중 오류가 발생했습니다:", error);
+      console.error(
+        "에러 응답 데이터:",
+        error.response ? error.response.data : "없음"
+      );
     }
   };
 
-  // 이미지 크롭 및 데이터 URL 설정 함수 정의
-  const handleCropImage = () => {
+  // 이미지 크롭 및 데이터 URL 설정 함수
+  const handleCropImage = async () => {
     setCanvasPreview(
-      imgRef.current, // HTMLImageElement
-      previewCanvasRef.current, // HTMLCanvasElement
+      imgRef.current,
+      previewCanvasRef.current,
       convertToPixelCrop(crop, imgRef.current.width, imgRef.current.height)
     );
     const dataUrl = previewCanvasRef.current.toDataURL();
     console.log(dataUrl.substring(0, 100));
-    setCroppedImageUrl(dataUrl);
+    setCroppedImageUrl(dataUrl); // 크롭된 이미지 URL 설정
+
+    // 이미지 크기 확인
+    const response = await fetch(dataUrl);
+    const blob = await response.blob();
+    console.log("Cropped image size:", blob.size);
+    if (blob.size > MAX_FILE_SIZE) {
+      setIsFileTooLarge(true); // 파일 크기가 2MB를 초과할 경우 상태 설정
+    } else {
+      setIsFileTooLarge(false); // 파일 크기가 2MB 이하일 경우 상태 설정
+    }
   };
 
   return (
@@ -180,6 +176,12 @@ const ImageCropper = ({
         />
       </label>
       {error && <p className="error-message">{error}</p>}
+      {initialFileTooLarge && (
+        <p className="error-message">
+          파일 선택이 실패 했으며 5MB 이하의 이미지만 프로필 이미지로 설정할 수
+          있습니다.
+        </p>
+      )}
       {imgSrc && (
         <div className="cropper-container">
           <ReactCrop
@@ -201,7 +203,7 @@ const ImageCropper = ({
           <button className="crop-button" onClick={handleCropImage}>
             Crop Image
           </button>
-          {croppedImageUrl && (
+          {croppedImageUrl && !isFileTooLarge && (
             <button className="crop-button" onClick={onClickApplyProfileImage}>
               Apply Profile Image
             </button>

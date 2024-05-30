@@ -3,12 +3,11 @@ import ImageCropper from "./ImageCropper";
 import "../../pages/UpdateUserInfoPage/UpdateUserInfoPage.css";
 
 const Modal = ({
-  updateAvatar,
-  closeModal,
   memberId,
   profileData,
-  setProfileData,
-  setProfileImageChange,
+  updateAvatar,
+  closeModal,
+  setProfileImageUrl,
 }) => {
   return (
     <div
@@ -33,10 +32,9 @@ const Modal = ({
               <ImageCropper
                 memberId={memberId}
                 profileData={profileData}
-                setProfileData={setProfileData}
                 updateAvatar={updateAvatar}
                 closeModal={closeModal}
-                setProfileImageChange={setProfileImageChange} // 추가
+                setProfileImageUrl={setProfileImageUrl}
               />
             </div>
           </div>

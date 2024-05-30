@@ -1,14 +1,22 @@
 import React, { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 // Component
 import PencilIcon from "../../components/ReactImageCropper/PencilIcon.jsx";
 import Modal from "../../components/ReactImageCropper/Modal.jsx";
 import { UserDataFormat } from "./UpdateUserInfoInputBox.jsx";
+import { fetchProfile } from "../../profileSlice";
 // Css
 import "./UpdateUserInfoPage.css";
 import "../../components/ReactImageCropper/ImageCropperModal.css";
 
-const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
+const UpdateUserInfoPage = ({
+  isLoggedin,
+  memberId,
+  profileData,
+  profileImageUrl,
+  setProfileImageUrl,
+}) => {
   const [isEditingGender, setIsEditingGender] = useState(false);
   const [isEditingAge, setIsEditingAge] = useState(false);
   const [isEditingNickname, setIsEditingNickname] = useState(false);
@@ -22,21 +30,11 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
   );
   const [modalOpen, setModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
+
   const updateAvatar = (imgSrc) => {
     avatarUrl.current = imgSrc;
   };
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `${
-          process.env.REACT_APP_BACKEND_URL_FOR_IMG
-        }${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
-  // 프로필 이미지가 나오는지 체크하기 위해서, 콘솔로그 출력 [개발단계]
-  console.log(profileImageUrl);
-  // console.log(profileData);
 
   const handleEditGender = () => setIsEditingGender(true);
   const handleConfirmGender = async () => {
@@ -44,17 +42,14 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
     try {
       const newGender = genderRef.current.value;
       const url = `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}/gender`;
-      const data = newGender;
       const headers = {
         Authorization: localStorage.getItem("Authorization"),
         "Content-Type": "application/json",
       };
 
-      const response = await axios.put(url, data, { headers });
-      setProfileData((prevData) => ({
-        ...prevData,
-        member_gender: newGender,
-      }));
+      await axios.put(url, newGender, { headers });
+      dispatch(fetchProfile(memberId));
+      console.log("Gender Put Seccess");
     } catch (error) {
       console.error("Error updating gender:", error);
     }
@@ -66,17 +61,14 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
     try {
       const newAge = ageRef.current.value;
       const url = `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}/age`;
-      const data = newAge;
       const headers = {
         Authorization: localStorage.getItem("Authorization"),
         "Content-Type": "application/json",
       };
 
-      const response = await axios.put(url, data, { headers });
-      setProfileData((prevData) => ({
-        ...prevData,
-        memberAges: newAge,
-      }));
+      await axios.put(url, newAge, { headers });
+      dispatch(fetchProfile(memberId));
+      console.log("Age Put Seccess");
     } catch (error) {
       console.error("Error updating age:", error);
     }
@@ -88,20 +80,14 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
     try {
       const newNickname = nicknameRef.current.value;
       const url = `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}/nickname`;
-      const data = newNickname;
       const headers = {
         Authorization: localStorage.getItem("Authorization"),
         "Content-Type": "application/json",
       };
 
-      const response = await axios.put(url, data, { headers });
-      setProfileData((prevData) => ({
-        ...prevData,
-        member: {
-          ...prevData.member,
-          nickname: newNickname,
-        },
-      }));
+      await axios.put(url, newNickname, { headers });
+      dispatch(fetchProfile(memberId));
+      console.log("Nickname Put Seccess");
     } catch (error) {
       console.error("Error updating nickname:", error);
     }
@@ -137,9 +123,9 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
             <Modal
               memberId={memberId}
               profileData={profileData}
-              setProfileData={setProfileData}
               updateAvatar={updateAvatar}
               closeModal={() => setModalOpen(false)}
+              setProfileImageUrl={setProfileImageUrl}
             />
           )}
         </div>
@@ -185,9 +171,6 @@ const UpdateUserInfoPage = ({ profileData, memberId, setProfileData }) => {
           <button>인증하기</button>
         </div>
       </div>
-      {/* <div className="uui-btn-container">
-        <button className="uui-submit-btn">저장하기</button>
-      </div> */}
     </div>
   );
 };

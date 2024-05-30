@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
 import swal from "sweetalert";
+import { useSelector } from "react-redux";
 
 function Topbar({
   isMenuVisible,
@@ -13,18 +14,10 @@ function Topbar({
   isLoggedin,
   cartProducts,
   profileData,
-  profileImage,
+  profileImageUrl,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
-  const ProfileImageSrc = localStorage.getItem("ProfileImage");
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
   const categoryLinks = [
     {
       to: "/products/BEST",

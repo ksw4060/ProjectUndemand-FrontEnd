@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./MyProfilePage.css";
 
-function MyProfilePage({ isLoggedin, memberId, profileData }) {
-  //   const [profileData, setProfileData] = useState(null);
-
-  const ProfileImageSrc = localStorage.getItem("ProfileImage");
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
-
+function MyProfilePage({ isLoggedin, memberId, profileData, profileImageUrl }) {
   const statusToKorean = (status) => {
     return status ? "True" : "False";
   };
@@ -56,40 +44,12 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
                 <span>{profileData.member.nickname || `없음`}</span>
               </div>
             </div>
-            {/* <div className="profile-info-container">
-              <div className="profile-info profile-font-size-and-weight">
-                <span>이메일인증</span>
-                <span>
-                  {statusToKorean(profileData.member.is_certified_email)}
-                </span>
-              </div>
-            </div>
-            <div className="profile-info-container">
-              <div className="profile-info profile-font-size-and-weight">
-                <span>휴대폰 인증</span>
-                <span>{statusToKorean(profileData.member.phone)}</span>
-              </div>
-            </div> */}
-            {/* <div className="profile-info-container">
-              <div className="profile-info profile-font-size-and-weight">
-                <span>소셜 로그인</span>
-                <span>
-                  {` ${profileData.member.social_type}` || `일반 로그인 멤버`}
-                </span>
-              </div>
-            </div> */}
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>회원가입 날짜</span>
                 <span>{profileData.member.joined_at.substring(0, 10)}</span>
               </div>
             </div>
-            {/* <span className="user-name-info">
-              계정활성화여부 : {statusToKorean(profileData.member.is_active)}
-            </span>
-            <span className="user-name-info">
-              관리자여부 : {statusToKorean(profileData.member.is_admin)}
-            </span> */}
             <br />
             <div className="profile-navi-page">
               <Link to="/user/mypage/update-info">{`회원정보 수정하기`}</Link>

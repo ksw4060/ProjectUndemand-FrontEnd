@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { MyProfilePage } from "../MyProfilePage/MyProfilePage.jsx";
 import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPage.jsx";
 import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
@@ -8,31 +9,27 @@ import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx
 import { PasswordCheckPage } from "../PasswordCheckPage/PasswordCheckPage.jsx";
 import "./MyPage.css";
 
-function MyPage(myPageProps) {
-  const [selectedPage, setSelectedPage] = useState("my profile");
-  const isLoggedin = myPageProps.isLoggedin;
-  const memberId = myPageProps.memberId;
-  const profileData = myPageProps.profileData;
-  const setProfileData = myPageProps.setProfileData;
-
-  useEffect(() => {
-    console.log(selectedPage);
-  }, [selectedPage, myPageProps]);
-
+function MyPage({
+  isLoggedin,
+  memberId,
+  profileData,
+  profileImageUrl,
+  setProfileImageUrl,
+}) {
   return (
     <div className="my-page">
       <div className="my-page-navigator-container">
         <div className="my-page-navigator">
-          <span onClick={() => setSelectedPage("my profile")}>
+          <span>
             <Link to="/user/mypage/profile">프로필</Link>
           </span>
-          <span onClick={() => setSelectedPage("my payment history")}>
+          <span>
             <Link to="/user/mypage/payment-history">결제 내역</Link>
           </span>
-          <span onClick={() => setSelectedPage("my wish list")}>
+          <span>
             <Link to="/user/mypage/my-wish-list">찜 상품</Link>
           </span>
-          <span onClick={() => setSelectedPage("my review")}>
+          <span>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
           </span>
         </div>
@@ -46,6 +43,7 @@ function MyPage(myPageProps) {
               isLoggedin={isLoggedin}
               memberId={memberId}
               profileData={profileData}
+              profileImageUrl={profileImageUrl}
             />
           }
         />
@@ -78,7 +76,8 @@ function MyPage(myPageProps) {
               isLoggedin={isLoggedin}
               memberId={memberId}
               profileData={profileData}
-              setProfileData={setProfileData}
+              profileImageUrl={profileImageUrl}
+              setProfileImageUrl={setProfileImageUrl}
             />
           }
         />
