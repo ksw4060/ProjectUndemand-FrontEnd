@@ -77,6 +77,7 @@ const Login = () => {
 
         const payloadObject = JSON.parse(jsonPayload);
         localStorage.setItem("memberId", payloadObject.memberId);
+        localStorage.setItem("memberRole", payloadObject.role);
 
         setTimeout(() => {
           window.location.replace("/");

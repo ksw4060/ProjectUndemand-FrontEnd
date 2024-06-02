@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
 import swal from "sweetalert";
-import { useSelector } from "react-redux";
 
 function Topbar({
   isMenuVisible,
@@ -15,6 +14,8 @@ function Topbar({
   cartProducts,
   profileData,
   profileImageUrl,
+  profileImage,
+  memberRole,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
@@ -78,6 +79,7 @@ function Topbar({
     localStorage.removeItem("Authorization");
     localStorage.removeItem("ProfileImage");
     localStorage.removeItem("memberId");
+    localStorage.removeItem("memberRole");
     // 쿠키 스토리지에서 refreshToken 값 제거
     deleteCookie("refreshToken");
 
@@ -221,6 +223,19 @@ function Topbar({
                         <img src={profileImageUrl} alt="Profile img" />
                       </Link>
                     </li>
+                    {memberRole === "ADMIN" && (
+                      <li className="admin-page-btn">
+                        <Link
+                          to="/admin"
+                          onClick={() => {
+                            setIsBurgerClicked(false);
+                            setIsMenuVisible(false);
+                          }}
+                        >
+                          Admin Page
+                        </Link>
+                      </li>
+                    )}
                     <li className="wishlist-btn">
                       <Link
                         to="/my-wish-list"
@@ -361,6 +376,11 @@ function Topbar({
                   <img src={profileImageUrl} alt="Profile img" />
                 </Link>
                 <ul className="user-dropdown-menu">
+                  {memberRole === "ADMIN" && (
+                    <li className="admin-page-btn">
+                      <Link to="/admin">Admin Page</Link>
+                    </li>
+                  )}
                   <li className="mypage-btn">
                     <Link to="/user/mypage">My Page</Link>
                   </li>

@@ -496,6 +496,15 @@
     .logo-user-container>ul.userbox>li>a {
         font-size: 14px;
     }
+
+    .logo-user-container>ul.userbox>li:first-child>a {
+        font-size: 30px;
+    }
+
+    .logo-user-container>ul.userbox>li:first-child>a>.cart-count {
+        top: 7px;
+        right: -5px;
+    }
     
     .wrapper {
         width: 100%;

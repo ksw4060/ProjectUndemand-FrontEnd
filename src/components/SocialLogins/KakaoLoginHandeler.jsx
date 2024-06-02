@@ -61,7 +61,9 @@ const KakaoLoginHandeler = () => {
         );
 
         const payloadObject = JSON.parse(jsonPayload);
+
         localStorage.setItem("memberId", payloadObject.memberId);
+        localStorage.setItem("memberRole", payloadObject.role);
 
         // Delay of 1 second before navigating to home page
         setTimeout(() => {
