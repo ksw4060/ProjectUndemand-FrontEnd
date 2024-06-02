@@ -28,7 +28,7 @@ export const fetchProfileImage = createAsyncThunk(
   async (memberId, { rejectWithValue }) => {
     try {
       const authorization = localStorage.getItem("Authorization");
-      const response = await axios.get(
+      const getProfileImgResponse = await axios.get(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/image/${memberId}`,
         {
           headers: {
@@ -36,8 +36,23 @@ export const fetchProfileImage = createAsyncThunk(
           },
         }
       );
-      console.log(response.data);
-      return response.data;
+      console.log(getProfileImgResponse.data);
+
+      if (getProfileImgResponse.status === 200) {
+        const profileImage = getProfileImgResponse.data;
+        const profileImageUrl = `${
+          process.env.REACT_APP_BACKEND_URL_FOR_IMG
+        }${profileImage.replace("src/main/resources/static/", "")}`;
+        return getProfileImgResponse.data;
+      } else {
+        const profileImageUrl =
+          "https://defaultst.imweb.me/common/img/default_profile.png";
+        console.log(
+          "프로필 이미지 변경에 실패했습니다. status : " +
+            getProfileImgResponse.status
+        );
+        return getProfileImgResponse.data;
+      }
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

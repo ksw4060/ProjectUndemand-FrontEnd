@@ -49,20 +49,21 @@ function App() {
   const profileImage = useSelector((state) => state.profile.profileImage);
   const [profileImageUrl, setProfileImageUrl] = useState("");
 
+  // Blob 데이터를 URL로 변환하여 상태를 업데이트하는 useEffect
   useEffect(() => {
     if (profileImage) {
+      //   const imageUrl = URL.createObjectURL(profileImage);
+      console.log(profileImage);
       setProfileImageUrl(
         `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileImage.replace(
           "src/main/resources/static/",
           ""
         )}`
       );
-      console.log(profileImageUrl);
     } else {
       setProfileImageUrl(
         "https://defaultst.imweb.me/common/img/default_profile.png"
       );
-      console.log(profileImageUrl);
     }
   }, [profileImage]);
 
@@ -78,12 +79,19 @@ function App() {
     ChannelTalk.setAppearance("system");
   };
 
+  // 로그인 했을 때, 프로필 데이터와 이미지 다시 가져오기
   useEffect(() => {
-    if (memberId) {
-      // profileSlice.js 에 있는 프로필 및 이미지 비동기 함수로 데이터를 가져옵니다.
-      dispatch(fetchProfile(memberId));
-      dispatch(fetchProfileImage(memberId));
-    }
+    const fetchData = async () => {
+      if (memberId) {
+        // 프로필 데이터와 이미지 다시 가져오기
+        await Promise.all([
+          dispatch(fetchProfile(memberId)),
+          dispatch(fetchProfileImage(memberId)),
+        ]);
+      }
+    };
+
+    fetchData();
   }, [memberId, dispatch]);
 
   useEffect(() => {

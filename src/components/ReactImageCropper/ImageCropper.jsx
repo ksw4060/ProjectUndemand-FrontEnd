@@ -89,6 +89,8 @@ const ImageCropper = ({
     setCrop(centeredCrop); // 크롭 상태 설정
   };
 
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   // 프로필 이미지 적용 핸들러
   const onClickApplyProfileImage = async () => {
     try {
@@ -100,19 +102,17 @@ const ImageCropper = ({
       const authorization = localStorage.getItem("Authorization");
       const formData = new FormData();
 
+      // URL에서 Blob을 직접 사용
       const response = await fetch(croppedImageUrl);
       const blob = await response.blob();
+      console.log("Blob Size:", (blob.size / (1024 * 1024)).toFixed(2), "MB");
 
-      // 크롭된 이미지 파일 정보를 콘솔에 출력
-      console.log("Blob 데이터:", blob);
       formData.append("imageFile", blob, "croppedImage.jpeg");
 
-      // FormData 확인
       for (const [key, value] of formData.entries()) {
         console.log(key, value);
       }
 
-      // 프로필 이미지 업로드 요청
       const uploadResponse = await axios.post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/image/${memberId}`,
         formData,
@@ -123,15 +123,38 @@ const ImageCropper = ({
           },
         }
       );
-      setProfileImageUrl(uploadResponse.data);
+      const profileImage = uploadResponse.data;
+
+      if (uploadResponse.status === 200) {
+        setProfileImageUrl(
+          `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileImage.replace(
+            "src/main/resources/static/",
+            ""
+          )}`
+        );
+      } else {
+        setProfileImageUrl(
+          "https://defaultst.imweb.me/common/img/default_profile.png"
+        );
+        console.log(
+          "프로필 이미지 변경에 실패했습니다. status : " + uploadResponse.status
+        );
+      }
+
+      //   setProfileImageUrl(uploadResponse.data);
       console.log("프로필 이미지 Path : ", uploadResponse.data);
 
+      // 일정 시간 대기
+      await delay(1000); // 1초 대기
+
       // 프로필 데이터와 이미지 다시 가져오기
-      dispatch(fetchProfile(memberId));
-      dispatch(fetchProfileImage(memberId));
+      await Promise.all([
+        dispatch(fetchProfile(memberId)),
+        dispatch(fetchProfileImage(memberId)),
+      ]);
 
       closeModal(); // 모달 닫기
-      navigate("/user/mypage/profile"); // 마이 페이지로 이동
+      navigate("/"); // 마이 페이지로 이동
     } catch (error) {
       setError("프로필 이미지 변경 요청 중 오류가 발생했습니다.");
       console.error("프로필 이미지 변경 요청 중 오류가 발생했습니다:", error);
@@ -142,21 +165,53 @@ const ImageCropper = ({
     }
   };
 
-  // 이미지 크롭 및 데이터 URL 설정 함수
+  // 프로필 이미지 크롭 헨들러
   const handleCropImage = async () => {
     setCanvasPreview(
       imgRef.current,
       previewCanvasRef.current,
       convertToPixelCrop(crop, imgRef.current.width, imgRef.current.height)
     );
-    const dataUrl = previewCanvasRef.current.toDataURL();
-    console.log(dataUrl.substring(0, 100));
-    setCroppedImageUrl(dataUrl); // 크롭된 이미지 URL 설정
 
-    // 이미지 크기 확인
-    const response = await fetch(dataUrl);
-    const blob = await response.blob();
-    console.log("Cropped image size:", blob.size);
+    let quality = 0.8; // 초기 품질 설정
+    let blob;
+
+    do {
+      // Blob으로 이미지 품질 조정
+      const currentQuality = quality; // 루프 변수 캡처
+      blob = await new Promise((resolve) => {
+        previewCanvasRef.current.toBlob(
+          (blob) => resolve(blob),
+          "image/jpeg",
+          currentQuality
+        );
+      });
+
+      console.log(
+        "Current quality:",
+        quality,
+        "Size:",
+        (blob.size / (1024 * 1024)).toFixed(2),
+        "MB"
+      ); // MB 단위로 출력
+
+      if (blob.size > MAX_FILE_SIZE) {
+        quality -= 0.1; // 파일 크기가 너무 크면 품질 낮춤
+      }
+    } while (blob.size > MAX_FILE_SIZE && quality > 0);
+
+    console.log(
+      "Final quality:",
+      quality,
+      "Size:",
+      (blob.size / (1024 * 1024)).toFixed(2),
+      "MB"
+    );
+
+    const url = URL.createObjectURL(blob);
+    setCroppedImageUrl(url); // 크롭된 이미지 URL 설정
+    console.log(url);
+
     if (blob.size > MAX_FILE_SIZE) {
       setIsFileTooLarge(true); // 파일 크기가 2MB를 초과할 경우 상태 설정
     } else {
