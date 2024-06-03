@@ -297,8 +297,14 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/signup"
+            element={<Signup isLoggedin={isLoggedin} memberId={memberId} />}
+          />
+          <Route
+            path="/login"
+            element={<Login isLoggedin={isLoggedin} memberId={memberId} />}
+          />
           <Route
             path="/login/oauth2/code/kakao" //kakao_redirect_url
             element={<KakaoLoginHandeler />}

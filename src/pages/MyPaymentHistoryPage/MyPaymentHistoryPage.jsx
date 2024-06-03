@@ -1,9 +1,23 @@
 import React, { useEffect, useState } from "react";
-import "./MyPaymentHistoryPage.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import swal from "sweetalert";
+// CSS
+import "./MyPaymentHistoryPage.css";
 
 function MyPaymentHistoryPage({ memberId, isLoggedin }) {
   const [paymentHistory, setPaymentHistory] = useState([]);
+
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
+
+  useEffect(() => {
+    if (!isLoggedin) {
+      swal({
+        title: "로그인을 해주세요",
+      });
+      navigate("/login");
+    }
+  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {
@@ -20,7 +34,9 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
             },
           }
         );
+        console.log("===========paymenthistory api 시작============");
         console.log(response.data);
+        console.log("===========paymenthistory api 끝 ============");
         setPaymentHistory(response.data);
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);

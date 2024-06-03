@@ -2,13 +2,10 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../css/Signup.css";
+import "./Signup.css";
 import swal from "sweetalert";
 
-const Signup = () => {
-  // 로그인 시 주소창 접근 제한
-  const token = localStorage.getItem("access");
-
+const Signup = ({ isLoggedin, memberId }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
@@ -21,11 +18,16 @@ const Signup = () => {
   const [passwordCheckValid, setPasswordCheckValid] = useState(false);
   const [notAllow, setNotAllow] = useState(true);
 
+  // 로그인 시 회원가입 페이지 접근 제한
   useEffect(() => {
-    if (token) {
+    if (isLoggedin) {
+      swal({
+        title:
+          "이미 로그인을 한 상태에서, 회원가입 페이지 접근은 불가합니다. You cannot access the registration page while logged in.",
+      });
       navigate("/");
     }
-  }, [navigate, token]);
+  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const isAllValid =
@@ -120,10 +122,10 @@ const Signup = () => {
         <div className="title">PU 회원가입</div>
       </div>
       <div className="signup-box-middle">
-        <label htmlFor="email" className="inputTitle">
-          이메일 주소
-        </label>
         <div className="inputWrap">
+          <label htmlFor="email" className="inputTitle">
+            이메일 주소
+          </label>
           <input
             type="email"
             id="email"
@@ -137,10 +139,11 @@ const Signup = () => {
             <div>올바른 이메일을 입력해주세요.</div>
           )}
         </div>
-        <label htmlFor="nickname" className="inputTitle">
-          닉네임
-        </label>
+
         <div className="inputWrap">
+          <label htmlFor="nickname" className="inputTitle">
+            닉네임
+          </label>
           <input
             type="text"
             className="input"
@@ -154,10 +157,11 @@ const Signup = () => {
             <div>닉네임을 입력해주세요.</div>
           )}
         </div>
-        <label htmlFor="password" className="inputTitle">
-          비밀번호
-        </label>
+
         <div className="inputWrap">
+          <label htmlFor="password" className="inputTitle">
+            비밀번호
+          </label>
           <input
             type="password"
             className="input"
@@ -166,10 +170,11 @@ const Signup = () => {
             onChange={handlePassword}
           />
         </div>
-        <label htmlFor="password_certify" className="inputTitle">
-          비밀번호 확인
-        </label>
+
         <div className="inputWrap">
+          <label htmlFor="password_certify" className="inputTitle">
+            비밀번호 확인
+          </label>
           <input
             type="password"
             className="input"
@@ -199,6 +204,10 @@ const Signup = () => {
             </div>
           )}
         </div>
+      </div>
+      <div className="please-box">
+        이메일로 회원가입 인증링크가 전송됩니다. 실제 사용되는 이메일을
+        입력해주세요.
       </div>
       <div className="signup-box-bottom">
         <button

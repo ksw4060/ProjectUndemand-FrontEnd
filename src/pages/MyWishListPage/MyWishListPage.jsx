@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
+// CSS
 import "./MyWishListPage.css";
 
 function MyWishListPage({ isLoggedin, memberId }) {
   const [wishLists, setWishLists] = useState([]);
+
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
+
+  useEffect(() => {
+    if (!isLoggedin) {
+      swal({
+        title: "로그인을 해주세요",
+      });
+      navigate("/login");
+    }
+  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const fetchWishLists = async () => {

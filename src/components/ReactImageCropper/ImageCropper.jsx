@@ -145,7 +145,7 @@ const ImageCropper = ({
       console.log("프로필 이미지 Path : ", uploadResponse.data);
 
       // 일정 시간 대기
-      await delay(1000); // 1초 대기
+      await delay(1000);
 
       // 프로필 데이터와 이미지 다시 가져오기
       await Promise.all([
