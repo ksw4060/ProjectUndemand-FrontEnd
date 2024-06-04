@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "./InquiryPage.css";
 import axios from "axios";
 
 function InquiryPage() {
-  const [selectedInquirySortOption, setSelectedInquirySortOption] =
-    useState("최신순");
-  const [sortOptionClick, setSortOptionClick] = useState(false);
-  const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] =
-    useState("전체 보기");
-  const [filterOptionClick, setFilterOptionClick] = useState(false);
+  // const [selectedInquirySortOption, setSelectedInquirySortOption] =
+  //   useState("최신순");
+  // const [sortOptionClick, setSortOptionClick] = useState(false);
+  // const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] =
+  //   useState("전체 보기");
+  // const [filterOptionClick, setFilterOptionClick] = useState(false);
   const [inquiryData, setInquiryData] = useState([]);
   const [inquiryDataLength, setInquiryDataLength] = useState(0);
 
@@ -34,28 +34,8 @@ function InquiryPage() {
       <div className="inquiry-page-top">
         <h3>Q&A</h3>
         <div className="inquiry-count">{`${inquiryDataLength}개의 문의 글`}</div>
-        <div className="count-box">
-          <div className="product-inquiry-count">
-            <span>상품 문의 글</span>
-          </div>
-          <div className="delivery-inquiry-count">
-            <span>배송 문의 글</span>
-          </div>
-          <div className="exchange-inquiry-count">
-            <span>교환 문의 글</span>
-          </div>
-          <div className="return-inquiry-count">
-            <span>반품 문의 글</span>
-          </div>
-          <div className="cancellation-inquiry-count">
-            <span>취소 문의 글</span>
-          </div>
-          <div className="other-inquiry-count">
-            <span>기타 문의 글</span>
-          </div>
-        </div>
       </div>
-      <div className="inquiry-page-middle">
+      {/* <div className="inquiry-page-middle">
         <div className="inquiry-filter">
           <div className="inquiry-sort-box">
             <div
@@ -92,7 +72,7 @@ function InquiryPage() {
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="inquiry-article-section">
         {inquiryData.map((tableRow) => (
           <div key={tableRow.inquiryId} className="inquiry-section">
