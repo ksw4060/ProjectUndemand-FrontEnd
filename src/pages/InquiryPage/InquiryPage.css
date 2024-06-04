@@ -30,7 +30,7 @@
 
 .inquiry-page-middle {
     width: 70%;
-    padding: 60px 0px;
+    padding-top: 30px;
 }
 
 .inquiry-filter {
@@ -117,4 +117,10 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+}
+
+.inquiry-article-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

@@ -79,7 +79,7 @@
     color: rgb(222, 189, 255);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
     .swiper-button-prev {
         left: var(--swiper-navigation-sides-offset, -28px);
     }
