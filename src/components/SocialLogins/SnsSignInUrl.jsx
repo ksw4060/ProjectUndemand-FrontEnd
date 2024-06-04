@@ -5,13 +5,13 @@ const SnsSignInUrl = ({ type }) => {
     let AUTH_URL = "";
 
     switch (type) {
-      case "naver":
+      case "Naver":
         AUTH_URL = "http://localhost:8080/oauth2/authorization/naver";
         break;
-      case "kakao":
+      case "Kakao":
         AUTH_URL = "http://localhost:8080/oauth2/authorization/kakao";
         break;
-      case "google":
+      case "Google":
         AUTH_URL = "http://localhost:8080/oauth2/authorization/google";
         break;
       default:
@@ -23,7 +23,12 @@ const SnsSignInUrl = ({ type }) => {
 
   return (
     <button onClick={handleSignIn} className={`sns-button ${type}-button`}>
-      Login with {type}
+      {type !== "Kakao" && (
+        <>
+          <div className={`${type}-button-image`}></div>
+          <span>Sign in with {type}</span>
+        </>
+      )}
     </button>
   );
 };

@@ -1,60 +1,123 @@
 .sns-login-content {
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .sns-login-button-box {
-    align-items: center;
-    justify-content: center;
+  align-items: center;
+  justify-content: center;
 
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
-.sns-button{
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    height: 60px;
-    margin-bottom: 20px;
-
-    display: block;
-}
-
-.kakao-button {
-    background-image: url('../../../public/kakao_login_large_wide.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-
-    border-radius: 12px;
-    border: none;
-
-    background-color: 	#FEE500;
-}
-
-.kakao-button:hover {
-    cursor: pointer;
-}
-
-
-.google-button {
-/* background-image: url('../../../public/google_login_medium.png'); */
-/* 구글 로그인 이미지 파일의 경로를 지정해야 합니다. */
-}
-
-.naver-button {
-/* background-image: url('../../../public/naver_login_medium.png'); */
-/* 네이버 로그인 이미지 파일의 경로를 지정해야 합니다. */
-}
-
-/* 기본 버튼 스타일 */
 .sns-button {
-/* 버튼의 스타일을 여기에 추가하세요. */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  width: 100%;
+  min-width: 250px;
+  height: 60px;
+  margin-bottom: 20px;
+
+  /* Shadow properties */
+  box-shadow: 4px 4px 4px rgb(199, 198, 198);
+}
+
+.sns-button div {
+  position: absolute;
+  left: 7px; /*You can adjust this value to change the position of image*/
+}
+
+.Kakao-button {
+  background-image: url("../../../public/kakao_login_large_wide.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  border-radius: 10px;
+  border: none;
+
+  background-color: #fee500;
+}
+
+.Kakao-button:hover {
+  cursor: pointer;
+  border: none;
+}
+
+.Google-button {
+  /* background-image: url("../../../public/google_login_large_wide.png"); */
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  border-radius: 10px;
+  border: none;
+
+  background-color: #4285f4;
+}
+
+.Google-button:hover {
+  cursor: pointer;
+  border: none;
+}
+
+.Google-button span {
+  font-size: 18px;
+
+  color: #ffffff;
+}
+
+.Naver-button {
+  /* background-image: url("../../../public/naver_login_large_wide.png"); */
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  border-radius: 10px;
+  border: none;
+
+  background-color: #03c75a;
+}
+
+.Naver-button:hover {
+  cursor: pointer;
+  border: none;
+}
+
+.Naver-button span {
+  font-size: 18px;
+
+  color: #ffffff;
+}
+
+.Google-button-image {
+  background-image: url("../../../public/web_neutral_sq_na@3x.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: #ffffff;
+
+  border-radius: 3px;
+
+  width: 45px;
+  height: 45px;
+}
+.Naver-button-image {
+  background-image: url("../../../public/btnG_icon_circle.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-color: #03c75a;
+
+  width: 45px;
+  height: 45px;
 }
