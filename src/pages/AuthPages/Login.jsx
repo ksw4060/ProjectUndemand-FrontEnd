@@ -1,24 +1,29 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+// 외부
 import axios from "axios";
-import "../../css/Signup.css";
-import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
 import swal from "sweetalert";
+// 컴포넌트 & CSS
+import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
+import "./Signup.css";
 // import { type } from "@testing-library/user-event/dist/type/index.js";
 
-const Login = () => {
+const Login = ({ isLoggedin, memberId }) => {
   const navigate = useNavigate();
-  const authorization = localStorage.getItem("Authorization");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // 이미 로그인 된 상태에서, 로그인 페이지 접근 제한
   useEffect(() => {
-    if (authorization) {
-      console.log("이미 로그인 된 상태에서 로그인 페이지에 접속.");
+    if (isLoggedin) {
+      swal({
+        title:
+          "이미 로그인을 한 상태에서, 로그인 페이지 접근은 불가합니다. You cannot access the login page while logged in.",
+      });
       navigate("/");
     }
-  }, [navigate, authorization]);
+  }, [isLoggedin, navigate]);
 
   const handleEmail = (e) => {
     const newEmail = e.target.value;
@@ -81,11 +86,11 @@ const Login = () => {
 
         setTimeout(() => {
           window.location.replace("/");
-        }, 300);
+        }, 100);
       }
     } catch (error) {
       swal({
-        title: "가입되지 않은 이메일 이거나, 이메일 인증이 되지 않았습니다.",
+        title: "가입되지 않은 이메일 이거나, 이메일이 인증 되지 않았습니다.",
       });
       console.error("로그인 실패 : ", error.response);
     }
@@ -97,10 +102,10 @@ const Login = () => {
         <div className="title">Login Page</div>
       </div>
       <div className="signup-box-middle">
-        <label htmlFor="email" className="inputTitle">
-          email
-        </label>
         <div className="inputWrap">
+          <label htmlFor="email" className="inputTitle">
+            email
+          </label>
           <input
             type="email"
             className="input"
@@ -110,10 +115,10 @@ const Login = () => {
           />
         </div>
 
-        <label htmlFor="password" className="inputTitle">
-          password
-        </label>
         <div className="inputWrap">
+          <label htmlFor="password" className="inputTitle">
+            password
+          </label>
           <input
             type="password"
             className="input"

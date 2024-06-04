@@ -47,6 +47,8 @@
 /* 프로필 유저 정보 수정 페이지 - 이미지  */
 .profile-image-wrapper {
   position: relative;
+  width: 410px;
+  height: 410px;
 }
 
 .profile-image {

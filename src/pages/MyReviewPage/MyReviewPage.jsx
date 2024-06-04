@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaRegStar, FaStar } from "react-icons/fa6";
-import ReviewUpdateModal from "../../components/ReviewUpdateModal/ReviewUpdateModal";
+// 외부 라이브러리 및 모듈
 import axios from "axios";
+import swal from "sweetalert";
+// 컴포넌트 & CSS
+import ReviewUpdateModal from "../../components/ReviewUpdateModal/ReviewUpdateModal";
 import "./MyReviewPage.css";
 
 function MyReviewPage({ isLoggedin, memberId }) {
@@ -21,14 +24,15 @@ function MyReviewPage({ isLoggedin, memberId }) {
   const [selectedRId, setSelectedRId] = useState(null);
   const [thumbnailImages, setThumbnailImages] = useState([]);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
 
   useEffect(() => {
     if (!isLoggedin) {
-      alert("로그인을 하지 않았을 때에는 나의 리뷰를 볼 수 없습니다");
-      navigate("http://localhost:3000");
+      swal({
+        title: "로그인을 해주세요",
+      });
+      navigate("/login");
     }
-    console.log("로그인 상태 : " + isLoggedin);
   }, [isLoggedin, navigate]);
 
   useEffect(() => {

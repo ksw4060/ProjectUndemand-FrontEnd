@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./MyProfilePage.css";
+import swal from "sweetalert";
 
-function MyProfilePage({ isLoggedin, memberId, profileData }) {
-  //   const [profileData, setProfileData] = useState(null);
+function MyProfilePage({ isLoggedin, memberId, profileData, profileImageUrl }) {
+  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
 
-  const ProfileImageSrc = localStorage.getItem("ProfileImage");
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
+  useEffect(() => {
+    if (!isLoggedin) {
+      swal({
+        title: "로그인을 해주세요",
+      });
+      navigate("/login");
+    }
+  }, [isLoggedin, navigate]);
 
-  const statusToKorean = (status) => {
-    return status ? "True" : "False";
-  };
-
-  if (!profileData) {
-    return <div>로그인 시간이 만료되었습니다. 다시 로그인 해주세요.</div>;
-  }
+  const email = profileData?.member?.email || "없음";
+  const username = profileData?.member?.username || "없음";
+  const nickname = profileData?.member?.nickname || "없음";
+  const memberAges = profileData?.memberAges || "없음";
+  const memberGender = profileData?.memberGender || "없음";
+  const joinedAt = profileData?.member?.joined_at.substring(0, 10) || "없음";
 
   return (
     <div className="my-profile-page">
@@ -41,55 +40,39 @@ function MyProfilePage({ isLoggedin, memberId, profileData }) {
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>이름</span>
-                <span>{profileData.member.username || `없음`}</span>
+                <span>{username}</span>
               </div>
             </div>
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>이메일</span>
-                <span>{profileData.member.email || `없음`}</span>
+                <span>{email}</span>
               </div>
             </div>
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>닉네임</span>
-                <span>{profileData.member.nickname || `없음`}</span>
-              </div>
-            </div>
-            {/* <div className="profile-info-container">
-              <div className="profile-info profile-font-size-and-weight">
-                <span>이메일인증</span>
-                <span>
-                  {statusToKorean(profileData.member.is_certified_email)}
-                </span>
+                <span>{nickname}</span>
               </div>
             </div>
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
-                <span>휴대폰 인증</span>
-                <span>{statusToKorean(profileData.member.phone)}</span>
+                <span>성별</span>
+                <span>{memberGender}</span>
               </div>
-            </div> */}
-            {/* <div className="profile-info-container">
+            </div>
+            <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
-                <span>소셜 로그인</span>
-                <span>
-                  {` ${profileData.member.social_type}` || `일반 로그인 멤버`}
-                </span>
+                <span>연령대</span>
+                <span>{memberAges}</span>
               </div>
-            </div> */}
+            </div>
             <div className="profile-info-container">
               <div className="profile-info profile-font-size-and-weight">
                 <span>회원가입 날짜</span>
-                <span>{profileData.member.joined_at.substring(0, 10)}</span>
+                <span>{joinedAt}</span>
               </div>
             </div>
-            {/* <span className="user-name-info">
-              계정활성화여부 : {statusToKorean(profileData.member.is_active)}
-            </span>
-            <span className="user-name-info">
-              관리자여부 : {statusToKorean(profileData.member.is_admin)}
-            </span> */}
             <br />
             <div className="profile-navi-page">
               <Link to="/user/mypage/update-info">{`회원정보 수정하기`}</Link>

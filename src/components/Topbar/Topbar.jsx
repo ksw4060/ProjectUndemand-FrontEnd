@@ -13,19 +13,12 @@ function Topbar({
   isLoggedin,
   cartProducts,
   profileData,
+  profileImageUrl,
   profileImage,
   memberRole,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
-  const ProfileImageSrc = localStorage.getItem("ProfileImage");
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `http://localhost:8080${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
   const categoryLinks = [
     {
       to: "/products/BEST",

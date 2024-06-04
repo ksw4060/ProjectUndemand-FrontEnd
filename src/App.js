@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile, fetchProfileImage } from "./profileSlice";
 import Topbar from "./components/Topbar/Topbar.jsx";
 import ChannelTalk from "./ChannelTalk.js";
 import { Main } from "./pages/Main/Main.jsx";
@@ -30,9 +32,6 @@ function App() {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [memberRole, setMemberRole] = useState("");
   const [memberId, setMemberId] = useState("");
-  // 프로필 데이터를 갱신(useEffect) 하는 기준
-  const [profileImage, setProfileImage] = useState(null);
-  const [profileData, setProfileData] = useState(null);
 
   const [selectedCategoryOption, setSelectedCategoryOption] = useState(null);
   const [selectedSubCategoryOption, setSelectedSubCategoryOption] =
@@ -47,6 +46,30 @@ function App() {
   const [isCategoryPage, setIsCategoryPage] = useState(false);
   const channelTalkPlugInKey = process.env.REACT_APP_CHANNELTALK_PLUGIN_KEY;
 
+  const dispatch = useDispatch();
+  const profileData = useSelector((state) => state.profile.profileData);
+  // 리덕스 상태에서 프로필 이미지 가져오기
+  const profileImage = useSelector((state) => state.profile.profileImage);
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+
+  // Blob 데이터를 URL로 변환하여 상태를 업데이트하는 useEffect
+  useEffect(() => {
+    if (profileImage) {
+      //   const imageUrl = URL.createObjectURL(profileImage);
+      console.log(profileImage);
+      setProfileImageUrl(
+        `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileImage.replace(
+          "src/main/resources/static/",
+          ""
+        )}`
+      );
+    } else {
+      setProfileImageUrl(
+        "https://defaultst.imweb.me/common/img/default_profile.png"
+      );
+    }
+  }, [profileImage]);
+
   const channelTalkLoad = () => {
     ChannelTalk.loadScript();
     const channelTalkConfig = {
@@ -59,28 +82,22 @@ function App() {
     ChannelTalk.setAppearance("system");
   };
 
+  // 로그인 했을 때, 프로필 데이터와 이미지 다시 가져오기
   useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const authorization = localStorage.getItem("Authorization");
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/profile/${memberId}`,
-          {
-            headers: {
-              Authorization: authorization,
-            },
-          }
-        );
-        setProfileData(response.data);
-        setProfileImage(response.data.profileImgPath);
-        console.log(response.data);
-        // 로컬 스토리지에 ProfileImage 저장
-        localStorage.setItem("ProfileImage", response.data.profileImgPath);
-      } catch (error) {
-        console.error(error);
+    const fetchData = async () => {
+      if (memberId) {
+        // 프로필 데이터와 이미지 다시 가져오기
+        await Promise.all([
+          dispatch(fetchProfile(memberId)),
+          dispatch(fetchProfileImage(memberId)),
+        ]);
       }
     };
 
+    fetchData();
+  }, [memberId, dispatch]);
+
+  useEffect(() => {
     const fetchCartData = async () => {
       try {
         const response = await axios.get(
@@ -96,9 +113,7 @@ function App() {
         console.error(error);
       }
     };
-
     if (memberId) {
-      fetchProfileData();
       fetchCartData();
     }
   }, [memberId]);
@@ -266,10 +281,9 @@ function App() {
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
             cartProducts={cartProducts}
-            // 2024.05.04 회원 프로필 데이터를 위해 memberId 추가
-            // 2024.05.23 회원 프로필 데이터를 위해 profileData 추가
             profileData={profileData}
             profileImage={profileImage}
+            profileImageUrl={profileImageUrl}
             memberRole={memberRole}
           />
         </div>
@@ -283,8 +297,14 @@ function App() {
       >
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/signup"
+            element={<Signup isLoggedin={isLoggedin} memberId={memberId} />}
+          />
+          <Route
+            path="/login"
+            element={<Login isLoggedin={isLoggedin} memberId={memberId} />}
+          />
           <Route
             path="/login/oauth2/code/kakao" //kakao_redirect_url
             element={<KakaoLoginHandeler />}
@@ -296,8 +316,8 @@ function App() {
                 isLoggedin={isLoggedin}
                 memberId={memberId}
                 profileData={profileData}
-                setProfileData={setProfileData}
-                profileImage={profileImage}
+                profileImageUrl={profileImageUrl}
+                setProfileImageUrl={setProfileImageUrl}
               />
             }
           />
@@ -320,6 +340,7 @@ function App() {
                 handleCategoryOptionSelect={handlePCategorySelect}
                 handleSubcategoryOptionSelect={handleCCategorySelect}
                 profileData={profileData}
+                profileImageUrl={profileImageUrl}
                 cartProducts={cartProducts}
               />
             }

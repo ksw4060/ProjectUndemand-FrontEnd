@@ -9,6 +9,7 @@ import { IoMdSearch } from "react-icons/io";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import axios from "axios";
 import swal from "sweetalert";
+import { useSelector } from "react-redux";
 
 function CategoryPage({
   isLoggedin,
@@ -23,6 +24,7 @@ function CategoryPage({
   handleCategoryOptionSelect,
   handleSubcategoryOptionSelect,
   profileData,
+  profileImageUrl,
   cartProducts,
 }) {
   const { condition } = useParams();
@@ -54,16 +56,6 @@ function CategoryPage({
   const [totalPageSize, setTotalPageSize] = useState(0);
 
   const navigate = useNavigate();
-  // Profile Image Url - CategoryPage [24.05.28 ksw]
-  const profileImageUrl =
-    profileData && profileData.profileImgPath
-      ? `${
-          process.env.REACT_APP_BACKEND_URL_FOR_IMG
-        }${profileData.profileImgPath.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      : "https://defaultst.imweb.me/common/img/default_profile.png";
 
   useEffect(() => {
     setUrlCondition(condition.split("-")[0]);
