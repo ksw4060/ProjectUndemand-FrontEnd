@@ -154,7 +154,7 @@ const ImageCropper = ({
       ]);
 
       closeModal(); // 모달 닫기
-      navigate("/"); // 마이 페이지로 이동
+      navigate("/user/mypage/profile"); // 마이 페이지로 이동
     } catch (error) {
       setError("프로필 이미지 변경 요청 중 오류가 발생했습니다.");
       console.error("프로필 이미지 변경 요청 중 오류가 발생했습니다:", error);
