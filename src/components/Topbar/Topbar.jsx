@@ -83,23 +83,20 @@ function Topbar({
   const handleLogoutClick = async () => {
     try {
       // 로그아웃 API 요청
+      const logoutUrl = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}/logout`;
       await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}/logout`,
+        logoutUrl,
         {},
         {
           withCredentials: true, // 쿠키를 포함하여 요청
         }
       );
 
-      // 로컬 스토리지에서 Authorization 값 확인
-      const authorization = localStorage.getItem("Authorization");
       setIsLoggedin(false);
-
       // 로컬 스토리지에서 Authorization 값 제거
       localStorage.removeItem("Authorization");
       localStorage.removeItem("memberId");
       localStorage.removeItem("memberRole");
-
       console.log("로그아웃 완료.");
 
       window.location.replace("/login");
