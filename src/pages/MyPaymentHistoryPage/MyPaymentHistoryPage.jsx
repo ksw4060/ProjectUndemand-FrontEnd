@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import swal from "sweetalert";
 // CSS
 import "./MyPaymentHistoryPage.css";
 
 function MyPaymentHistoryPage({ memberId, isLoggedin }) {
   const [paymentHistory, setPaymentHistory] = useState([]);
-
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
-
-  useEffect(() => {
-    if (!isLoggedin) {
-      swal({
-        title: "로그인을 해주세요",
-      });
-      navigate("/login");
-    }
-  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {

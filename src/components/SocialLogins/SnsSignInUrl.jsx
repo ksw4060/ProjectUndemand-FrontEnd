@@ -1,6 +1,6 @@
 import React from "react";
 
-const SnsSignInUrl = ({ type }) => {
+const SnsSignInUrl = ({ type, isLoggedin, setIsLoggedin }) => {
   const handleSignIn = () => {
     let AUTH_URL = "";
 
@@ -17,6 +17,7 @@ const SnsSignInUrl = ({ type }) => {
       default:
         AUTH_URL = "";
     }
+    console.log("isLoggedin. SnsSignInUrl");
 
     window.location.href = AUTH_URL;
   };

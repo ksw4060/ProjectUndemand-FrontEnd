@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 // 외부 라이브러리 및 모듈
 import axios from "axios";
-import swal from "sweetalert";
 // 컴포넌트 & CSS
 import ReviewUpdateModal from "../../components/ReviewUpdateModal/ReviewUpdateModal";
 import "./MyReviewPage.css";
@@ -23,17 +21,6 @@ function MyReviewPage({ isLoggedin, memberId }) {
   const [rUModalOpen, setRUModalOpen] = useState(false);
   const [selectedRId, setSelectedRId] = useState(null);
   const [thumbnailImages, setThumbnailImages] = useState([]);
-
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
-
-  useEffect(() => {
-    if (!isLoggedin) {
-      swal({
-        title: "로그인을 해주세요",
-      });
-      navigate("/login");
-    }
-  }, [isLoggedin, navigate]);
 
   useEffect(() => {
     const fetchProductReviewData = async () => {

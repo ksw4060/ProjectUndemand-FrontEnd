@@ -1,20 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import "./MyProfilePage.css";
-import swal from "sweetalert";
 
 function MyProfilePage({ isLoggedin, memberId, profileData, profileImageUrl }) {
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
-
-  useEffect(() => {
-    if (!isLoggedin) {
-      swal({
-        title: "로그인을 해주세요",
-      });
-      navigate("/login");
-    }
-  }, [isLoggedin, navigate]);
-
   const email = profileData?.member?.email || "없음";
   const username = profileData?.member?.username || "없음";
   const nickname = profileData?.member?.nickname || "없음";

@@ -11,7 +11,10 @@ import { fetchProfile, fetchProfileImage } from "./profileSlice";
 // 컴포넌트들
 import Topbar from "./components/Topbar/Topbar.jsx";
 import ChannelTalk from "./ChannelTalk.js";
-import TokenRefreshComponent from "./components/TokenRefresh/TokenRefresh.jsx";
+import {
+  TokenRefreshComponent,
+  socialLoginAccessToken,
+} from "./components/TokenRefresh/TokenRefresh.jsx";
 import PrivateRoutes from "../src/components/Routes/PrivateRoutes.jsx";
 import AdminRoutes from "./components/Routes/AdminRoutes.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -33,6 +36,7 @@ import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 // 기타
 import "./App.css";
 import axios from "axios";
+import swal from "sweetalert";
 import "react-image-crop/dist/ReactCrop.css";
 import { CookieUtil, decodeJWT } from "./components/CookieUtil/CookieUtil.jsx";
 
@@ -62,35 +66,16 @@ function App() {
   const profileImage = useSelector((state) => state.profile.profileImage);
   const [profileImageUrl, setProfileImageUrl] = useState("");
 
-  // Cookie 에서 CookieUtil.getCookie('Authorization') 에 대한 테스트진행
   useEffect(() => {
-    const fetchAuthorization = () => {
-      console.info("========fetchAuthorization=======");
-      const Authorization = CookieUtil.getCookie("Authorization");
-      if (Authorization) {
-        localStorage.setItem("Authorization", Authorization);
-        const decoded = decodeJWT(Authorization);
-        if (decoded) {
-          localStorage.setItem("memberId", decoded.id);
-          localStorage.setItem("memberRole", decoded.role);
-          setMemberId(decoded.id);
-          setMemberRole(decoded.role);
-        }
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("redirectedFromSocialLogin")) {
+      socialLoginAccessToken(navigate).then(() => {
         setIsLoggedin(true);
-      } else {
-        setIsLoggedin(false);
-        setMemberId("");
-        setMemberRole("");
-      }
-      console.log("========================");
-      console.log(Authorization);
-      console.log("========================");
-    };
-
-    if (location.pathname === "/") {
-      fetchAuthorization();
+        setMemberId(localStorage.getItem("memberId"));
+        setMemberRole(localStorage.getItem("memberRole"));
+      });
     }
-  }, [location.pathname]);
+  }, [navigate]);
 
   // Blob 데이터를 URL로 변환하여 상태를 업데이트하는 useEffect
   useEffect(() => {
@@ -320,11 +305,14 @@ function App() {
             handleCategoryOptionSelect={handlePCategorySelect}
             handleSubcategoryOptionSelect={handleCCategorySelect}
             isLoggedin={isLoggedin}
+            setIsLoggedin={setIsLoggedin}
             cartProducts={cartProducts}
             profileData={profileData}
             profileImage={profileImage}
             profileImageUrl={profileImageUrl}
             memberRole={memberRole}
+            setMemberId={setMemberId}
+            setMemberRole={setMemberRole}
           />
         </div>
       ) : (
@@ -343,7 +331,9 @@ function App() {
           />
           <Route
             path="/login"
-            element={<Login isLoggedin={isLoggedin} memberId={memberId} />}
+            element={
+              <Login isLoggedin={isLoggedin} setIsLoggedin={setIsLoggedin} />
+            }
           />
           <Route
             path="/login/oauth2/code/kakao" //kakao_redirect_url

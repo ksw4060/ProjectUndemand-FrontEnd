@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MdOutlineShoppingBag, MdOutlineMenu } from "react-icons/md";
 import "./Topbar.css";
-import swal from "sweetalert";
+import axios from "axios";
 
 function Topbar({
   isMenuVisible,
@@ -11,11 +11,14 @@ function Topbar({
   processedMUCategoryData,
   handleConditionSelect,
   isLoggedin,
+  setIsLoggedin,
   cartProducts,
   profileData,
   profileImageUrl,
   profileImage,
   memberRole,
+  setMemberId,
+  setMemberRole,
 }) {
   const [hoveredLinkIndex, setHoveredLinkIndex] = useState(null);
   const [isBurgerClicked, setIsBurgerClicked] = useState(false);
@@ -51,6 +54,19 @@ function Topbar({
       contents: processedCategoryData,
     },
   ];
+  useEffect(() => {
+    // 로컬 스토리지에서 로그인 상태를 확인하여 상태를 설정합니다.
+    const accessToken = localStorage.getItem("Authorization");
+    if (accessToken) {
+      setIsLoggedin(true);
+      setMemberId(localStorage.getItem("memberId"));
+      setMemberRole(localStorage.getItem("memberRole"));
+    } else {
+      setIsLoggedin(false);
+      setMemberId("");
+      setMemberRole("");
+    }
+  }, []);
 
   const handleMouseOver = (index) => {
     setHoveredLinkIndex(index);
@@ -64,34 +80,33 @@ function Topbar({
    * 로그아웃 클릭 시 , 브라우저에 저장된 Access, Refresh 를 제거합니다.
    * @returns
    */
-  const handleLogoutClick = () => {
-    // 로컬 스토리지에서 Authorization 값 확인
-    const authorization = localStorage.getItem("Authorization");
+  const handleLogoutClick = async () => {
+    try {
+      // 로그아웃 API 요청
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}/logout`,
+        {},
+        {
+          withCredentials: true, // 쿠키를 포함하여 요청
+        }
+      );
 
-    if (!authorization) {
-      swal({
-        title: "경고: 로그아웃 할 수 없습니다. 인증 정보가 없습니다.",
-      });
-      return; // 로그아웃을 진행하지 않고 함수 종료
+      // 로컬 스토리지에서 Authorization 값 확인
+      const authorization = localStorage.getItem("Authorization");
+      setIsLoggedin(false);
+
+      // 로컬 스토리지에서 Authorization 값 제거
+      localStorage.removeItem("Authorization");
+      localStorage.removeItem("memberId");
+      localStorage.removeItem("memberRole");
+
+      console.log("로그아웃 완료.");
+
+      window.location.replace("/login");
+    } catch (error) {
+      console.error("로그아웃 요청 중 오류가 발생했습니다:", error);
     }
-
-    // 로컬 스토리지에서 Authorization 값 제거
-    localStorage.removeItem("Authorization");
-    localStorage.removeItem("ProfileImage");
-    localStorage.removeItem("memberId");
-    localStorage.removeItem("memberRole");
-    // 쿠키 스토리지에서 refreshToken 값 제거
-    deleteCookie("refreshToken");
-
-    console.log("로그아웃 완료.");
-
-    window.location.replace("/login");
   };
-
-  //쿠키삭제
-  function deleteCookie(name) {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-  }
 
   const handleBurgerBtnClick = () => {
     setIsBurgerClicked((prevState) => !prevState);

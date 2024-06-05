@@ -1,8 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import swal from "sweetalert";
 // Component
 import PencilIcon from "../../components/ReactImageCropper/PencilIcon.jsx";
 import Modal from "../../components/ReactImageCropper/Modal.jsx";
@@ -32,21 +30,11 @@ const UpdateUserInfoPage = ({
   );
   const [modalOpen, setModalOpen] = useState(false);
 
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
   const dispatch = useDispatch(); // 리덕스 디스패치를 위한 훅
 
   const updateAvatar = (imgSrc) => {
     avatarUrl.current = imgSrc;
   };
-
-  useEffect(() => {
-    if (!isLoggedin) {
-      swal({
-        title: "로그인을 해주세요",
-      });
-      navigate("/login");
-    }
-  }, [isLoggedin, navigate]);
 
   const handleEditGender = () => setIsEditingGender(true);
   const handleConfirmGender = async () => {
