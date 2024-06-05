@@ -1,5 +1,3 @@
-import React from "react";
-
 // 쿠키 및 로컬 스토리지 관련 유틸리티 함수 정의
 const CookieUtil = {
   // 기존의 쿠키 및 로컬 스토리지 함수들...
@@ -16,17 +14,6 @@ const CookieUtil = {
       }
     }
     return null;
-  },
-
-  // 로컬 스토리지 설정 함수
-  setLocalStorage: (key, value) => {
-    localStorage.setItem(key, value);
-
-    // 커스텀 이벤트 발생
-    const event = new CustomEvent("localStorageChanged", {
-      detail: { key, value },
-    });
-    window.dispatchEvent(event);
   },
 };
 
@@ -50,17 +37,70 @@ const decodeJWT = (token) => {
   }
 };
 
-const extractUserInfo = () => {
-  const token = CookieUtil.getCookie("accessToken"); // 엑세스 토큰 이름을 'accessToken'으로 가정
-  if (token) {
-    const decoded = decodeJWT(token);
-    if (decoded) {
-      const userId = decoded.id;
-      const userRole = decoded.role;
-      CookieUtil.setLocalStorage("userId", userId);
-      CookieUtil.setLocalStorage("userRole", userRole);
+const extractUserInfoFromAccessAndRefresh = (AccessToken, RefreshToken) => {
+  console.log("extract UserInfo From Access And Refresh 호출됨");
+
+  if (AccessToken) {
+    // 기존에 저장된 Authorization 토큰과 memberId를 삭제합니다.
+    localStorage.removeItem("Authorization");
+    localStorage.removeItem("memberId");
+    localStorage.removeItem("memberRole");
+
+    // accessToken 디코딩
+    const decodedToken = decodeJWT(AccessToken);
+
+    // decodedToken이 존재한다면 실행
+    if (decodedToken?.memberId && decodedToken?.role) {
+      const memberId = decodedToken.memberId;
+      const memberRole = decodedToken.role;
+
+      // 로컬 스토리지에 새로운 값 저장
+      localStorage.setItem("memberId", memberId);
+      localStorage.setItem("memberRole", memberRole);
+      localStorage.setItem("Authorization", "Bearer " + AccessToken);
+
+      // 쿠키에 refreshToken 저장
+      const refreshAuthorization = "Bearer+" + RefreshToken;
+      document.cookie = `refreshAuthorization=${refreshAuthorization}; path=/; SameSite=Lax`;
+    } else {
+      console.error("decodedToken에 id 또는 role이 없음");
     }
+  } else {
+    console.error("AccessToken이 존재하지 않아, extractUserInfo 실패.");
   }
 };
 
-export { CookieUtil, decodeJWT, extractUserInfo };
+const extractUserInfoFromAccess = (AccessToken) => {
+  console.log("extract User Info From Access 호출됨");
+
+  if (AccessToken) {
+    // 기존에 저장된 Authorization 토큰과 memberId를 삭제합니다.
+    localStorage.removeItem("Authorization");
+    localStorage.removeItem("memberId");
+    localStorage.removeItem("memberRole");
+
+    // accessToken 디코딩
+    const decodedToken = decodeJWT(AccessToken);
+
+    // decodedToken이 존재한다면 실행
+    if (decodedToken?.memberId && decodedToken?.role) {
+      const memberId = decodedToken.memberId;
+      const memberRole = decodedToken.role;
+
+      // 로컬 스토리지에 새로운 값 저장
+      localStorage.setItem("memberId", memberId);
+      localStorage.setItem("memberRole", memberRole);
+      localStorage.setItem("Authorization", "Bearer " + AccessToken);
+    } else {
+      console.error("decodedToken에 memberId 또는 role이 없음");
+    }
+  } else {
+    console.error("AccessToken이 존재하지 않아, extractUserInfo 실패.");
+  }
+};
+
+export {
+  CookieUtil,
+  extractUserInfoFromAccessAndRefresh,
+  extractUserInfoFromAccess,
+};

@@ -12,7 +12,7 @@ import { fetchProfile, fetchProfileImage } from "./profileSlice";
 import Topbar from "./components/Topbar/Topbar.jsx";
 import ChannelTalk from "./ChannelTalk.js";
 import {
-  TokenRefreshComponent,
+  PeriodicAccessTokenRefresher,
   socialLoginAccessToken,
 } from "./components/TokenRefresh/TokenRefresh.jsx";
 import PrivateRoutes from "../src/components/Routes/PrivateRoutes.jsx";
@@ -36,9 +36,7 @@ import { MyReviewPage } from "./pages/MyReviewPage/MyReviewPage.jsx";
 // 기타
 import "./App.css";
 import axios from "axios";
-import swal from "sweetalert";
 import "react-image-crop/dist/ReactCrop.css";
-import { CookieUtil, decodeJWT } from "./components/CookieUtil/CookieUtil.jsx";
 
 function App() {
   const [categoryData, setCategoryData] = useState([]);
@@ -293,7 +291,7 @@ function App() {
 
   return (
     <div className="Body">
-      <TokenRefreshComponent />
+      <PeriodicAccessTokenRefresher />
       {isReceiptPage === false && isCategoryPage === false ? (
         <div className={`Top-section ${isScroll ? "scroll" : ""}`}>
           <Topbar

@@ -82,7 +82,7 @@ function Topbar({
    */
   const handleLogoutClick = async () => {
     try {
-      // 로그아웃 API 요청
+      // 로그아웃 API 요청시, 서버에서 refreshAuthorization 를 삭제해줍니다.
       const logoutUrl = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}/logout`;
       await axios.post(
         logoutUrl,
@@ -98,6 +98,7 @@ function Topbar({
       localStorage.removeItem("memberId");
       localStorage.removeItem("memberRole");
       console.log("로그아웃 완료.");
+      //
 
       window.location.replace("/login");
     } catch (error) {
