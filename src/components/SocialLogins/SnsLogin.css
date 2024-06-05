@@ -100,7 +100,7 @@
 }
 
 .Google-button-image {
-  background-image: url("../../../public/web_neutral_sq_na@3x.png");
+  background-image: url("../../../public/google_login_btn.png");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -112,7 +112,7 @@
   height: 45px;
 }
 .Naver-button-image {
-  background-image: url("../../../public/btnG_icon_circle.png");
+  background-image: url("../../../public/naver_login_btn.png");
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

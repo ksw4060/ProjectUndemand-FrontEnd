@@ -7,9 +7,9 @@ const SnsLogins = () => {
   return (
     <div className="sns-login-content">
       <div className="sns-login-button-box">
-        <SnsSignInUrl type="Kakao" />
-        <SnsSignInUrl type="Google" />
         <SnsSignInUrl type="Naver" />
+        <SnsSignInUrl type="Google" />
+        <SnsSignInUrl type="Kakao" />
       </div>
     </div>
   );
