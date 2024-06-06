@@ -46,7 +46,7 @@
 }
 
 .payment-histories {
-  background-color: rgb(251, 252, 245);
+  background-color: rgb(255, 255, 255);
 
   min-width: 540px;
   width: 60%;
@@ -185,7 +185,7 @@
 }
 
 .payhisSmallButton:hover {
-  background-color: rgb(200, 196, 196);
+  background-color: rgb(215, 213, 213);
   color: black;
   cursor: pointer;
 }
@@ -224,7 +224,7 @@
   font-weight: bold;
 
   color: white;
-  background-color: rgb(61, 81, 173);
+  background-color: rgb(0, 0, 0);
 }
 
 .payment-history-review-container button:hover {
