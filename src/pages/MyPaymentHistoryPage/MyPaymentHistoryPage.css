@@ -1,105 +1,251 @@
 .my-payment-history-page {
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin-top: 30px;
+  width: 100%;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  margin-top: 30px;
 }
 
 .payhis-page-title {
-    width: 70%;
-    display: flex;
-    /* flex-flow: column; */
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 60px;
+  width: 70%;
+  display: flex;
+  /* flex-flow: column; */
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 60px;
 }
 
-.payhis-page-title>span {
-    font-size: 25px;
-    font-weight: bold;
+.payhis-page-title > span {
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .total-payhis-count {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .payhis-page-filter {
-    width: 70%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-bottom: 1.5px solid rgb(210, 210, 210);
+  width: 70%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1.5px solid rgb(210, 210, 210);
 }
 
 .payhis-sort-box {
-    width: 20%;
-    position: relative;
+  width: 20%;
+  position: relative;
 }
 
 .payhis-filter-box {
-    width: 20%;
-    position: relative;
+  width: 20%;
+  position: relative;
+}
+
+.payment-histories {
+  background-color: rgb(251, 252, 245);
+
+  min-width: 540px;
+  width: 60%;
+  max-width: 600px;
+
+  display: flex;
+  flex-direction: column; /* 위 아래로 배열 */
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin: 30px 0; /* 위아래 마진 30px */
+  padding: 30px;
+  gap: 20px; /* 플렉스 자식들 간의 간격 */
+  border-radius: 5px;
+
+  /* Shadow properties */
+  box-shadow: -1px -1px 1px rgba(199, 198, 198, 0.5),
+    10px 10px 10px rgba(199, 198, 198, 0.7);
+}
+
+.order-group-title {
+  width: 100%;
+  height: 20px;
+
+  display: flex;
+  flex-direction: row; /* 수평 방향으로 배치 */
+  justify-content: space-between; /* 아이템 간의 여백을 균등하게 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.payment-content-title {
+  width: 100%;
+  height: 20px;
+
+  display: flex;
+  flex-direction: row; /* 수평 방향으로 배치 */
+  justify-content: space-between; /* 아이템 간의 여백을 균등하게 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.payment-content-title button {
+  height: 30px;
+
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.payment-history-container {
+  width: 100%;
+  height: 100%;
 }
 
 .payhis-container {
-    width: 70%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 1.5px solid rgb(210, 210, 210);
-    margin: 30px 0; /* Top and bottom margins are 30px */
-    padding-bottom: 30px;
+  width: 100%;
 
-    gap: 40px; /* Set horizontal gap between flex children */
-}
+  display: flex;
+  flex-direction: column; /* 위 아래로 배열 */
+  justify-content: space-between;
+  align-items: flex-start;
 
-.payhis-product-img-container {
-    width: 164px;
-    height: 164px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(210, 210, 210);
-}
+  margin: 30px 0; /* 위아래 마진 30px */
+  padding: 30px;
 
-.payhis-product-img-container>img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+  border: 2px solid rgb(218, 217, 217);
+  border-radius: 8px;
 }
 
 .payhis-product-info-container {
-    width: 65%;
-    height: 164px;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-between;
-    align-items: flex-start;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  flex-direction: row; /* 수평 방향으로 배치 */
+  justify-content: space-between; /* 아이템 간의 여백을 균등하게 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.payhis-product-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover; /* 이미지가 영역에 맞게 잘리도록 설정 */
+
+  border-radius: 3px;
 }
 
 .payhis-product-info {
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+  width: 80%;
+  max-width: 350px;
+  min-width: 280px;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  margin-left: 20px; /* 이미지와 정보 사이의 간격 설정 */
 }
 
-.payhis-product-info>span:first-child {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.payhis-product-info>span {
-    margin-bottom: 8px;
+.weight-font17 {
+  font-size: 17px;
+  font-weight: bold;
 }
 
 .payhis-info-container {
-    width: 13%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row; /* 수평 배열 */
+  justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+  align-items: flex-start;
+
+  margin-bottom: 20px;
+}
+
+.price-cart-container {
+  width: 100%; /* 전체 너비 사용 */
+  height: 40px;
+
+  display: flex;
+  flex-direction: row; /* 수평 배열 */
+  justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+  align-items: center;
+}
+
+.payhisSmallButton {
+  width: 85px;
+  height: 28px;
+
+  border-radius: 5px;
+  border: 1px solid rgb(208, 208, 208);
+  /* border-style: none; */
+
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+
+  transition: 0.3s;
+}
+
+.payhisSmallButton:hover {
+  background-color: rgb(200, 196, 196);
+  color: black;
+  cursor: pointer;
+}
+
+.payment-history-btn-container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row; /* 수평 배열 */
+  justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+  align-items: center;
+}
+
+.payment-history-btn-container button {
+  width: 48%;
+  height: 40px;
+
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.payment-history-review-container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row; /* 수평 배열 */
+  justify-content: space-between; /* 요소들을 양쪽 끝에 배치 */
+  align-items: center;
+}
+
+.payment-history-review-container button {
+  width: 100%;
+  height: 40px;
+
+  font-size: 17px;
+  font-weight: bold;
+
+  color: white;
+  background-color: rgb(61, 81, 173);
+}
+
+.payment-history-review-container button:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  cursor: pointer;
+}
+
+.payment-history-cart-container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: row; /* 수평 배열 */
+
+  justify-content: center;
+  align-items: center;
+}
+
+.payment-history-cart-container button {
+  width: 100%;
+  height: 40px;
+
+  font-size: 18px;
 }

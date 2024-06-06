@@ -143,7 +143,6 @@ const ImageCropper = ({
 
       //   setProfileImageUrl(uploadResponse.data);
       console.log("프로필 이미지 Path : ", uploadResponse.data);
-
       // 일정 시간 대기
       await delay(1000);
 

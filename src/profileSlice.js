@@ -36,7 +36,6 @@ export const fetchProfileImage = createAsyncThunk(
           },
         }
       );
-      console.log(getProfileImgResponse.data);
 
       if (getProfileImgResponse.status === 200) {
         const profileImage = getProfileImgResponse.data;
