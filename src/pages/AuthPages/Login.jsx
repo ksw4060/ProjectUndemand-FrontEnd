@@ -6,7 +6,7 @@ import axios from "axios";
 import swal from "sweetalert";
 // 컴포넌트 & CSS
 import { SnsLogins } from "../../components/SocialLogins/SnsLogins.jsx";
-import { extractUserInfoFromAccessAndRefresh } from "../../components/CookieUtil/CookieUtil.jsx";
+import { extractUserInfoFromAccessAndRefresh } from "../../components/Token/TokenUtil.jsx";
 
 import "./Signup.css";
 // import { type } from "@testing-library/user-event/dist/type/index.js";

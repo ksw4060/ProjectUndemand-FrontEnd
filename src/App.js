@@ -1,20 +1,17 @@
 // React 관련 hooks
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 // React Router 관련 hooks
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-
 // Redux 액션
 import { fetchProfile, fetchProfileImage } from "./profileSlice";
-
 // 컴포넌트들
 import Topbar from "./components/Topbar/Topbar.jsx";
 import ChannelTalk from "./ChannelTalk.js";
 import {
   PeriodicAccessTokenRefresher,
   socialLoginAccessToken,
-} from "./components/TokenRefresh/TokenRefresh.jsx";
+} from "./components/Token/TokenUtil.jsx";
 import PrivateRoutes from "../src/components/Routes/PrivateRoutes.jsx";
 import AdminRoutes from "./components/Routes/AdminRoutes.jsx";
 import Footer from "./components/Footer/Footer.jsx";
