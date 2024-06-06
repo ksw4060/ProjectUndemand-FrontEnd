@@ -24,6 +24,7 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
         );
 
         setPaymentHistory(response.data);
+        console.log(response.data);
 
         // 그룹화된 데이터로 상태 설정
         const groupedData = groupByOrderId(response.data);
@@ -42,7 +43,7 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
       <div className="payhis-page-title">
         <span>나의 구매 기록</span>
         <div className="total-payhis-count">
-          ({`${Object.keys(orderGroup).length}개의 구매 기록`})
+          ({`${Object.keys(orderGroup).length}개`})
         </div>
       </div>
       <div className="payhis-page-filter">
@@ -70,18 +71,19 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
                   <div key={index} className="payhis-product-info-container">
                     <img
                       src={productImgPathUrl}
-                      alt={product.product}
+                      alt={product.productName}
                       className="payhis-product-img"
                     />
                     <div className="payhis-product-info">
                       <div className="price-cart-container">
                         <span className="weight-font17">
-                          {product.product}, {product.option}
+                          {product.productName}, {product.option}
                         </span>
                       </div>
                       <div className="price-cart-container">
                         <span className="weight-font17">
-                          {product.productPrice}원, n개
+                          {product.productPrice} 원, {product.productQuantity}{" "}
+                          개
                         </span>
                         <button className="payhisSmallButton">To Cart</button>
                       </div>
@@ -129,8 +131,9 @@ const groupByOrderId = (paymentHistory) => {
       statusType,
       totalPrice,
       imagePath,
-      product,
+      productName,
       productPrice,
+      productQuantity,
       option,
     } = payment;
 
@@ -156,8 +159,9 @@ const groupByOrderId = (paymentHistory) => {
 
     groups[orderId].products.push({
       imagePath,
-      product,
+      productName,
       productPrice,
+      productQuantity,
       option,
     });
 
