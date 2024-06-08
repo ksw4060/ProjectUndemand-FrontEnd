@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 // CSS
 import "./MyPaymentHistoryPage.css";
 
 function MyPaymentHistoryPage({ memberId, isLoggedin }) {
-  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [paymentHistories, setPaymentHistories] = useState([]);
   const [orderGroup, setOrderGroup] = useState({});
+  const navigate = useNavigate(); // navigate 사용
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {
@@ -24,7 +26,7 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
           }
         );
 
-        setPaymentHistory(response.data);
+        setPaymentHistories(response.data);
 
         // 그룹화된 데이터로 상태 설정
         const groupedData = groupByOrderId(response.data);
@@ -37,6 +39,12 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
 
     fetchPaymentHistory();
   }, [memberId]);
+
+  const handleViewDetail = (orderId) => {
+    navigate(`/user/mypage/payment-detail/${orderId}`, {
+      state: orderGroup[orderId],
+    });
+  };
 
   return (
     <div className="my-payment-history-page">
@@ -57,7 +65,12 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
             <span className="weight-font17">
               {new Date(orderGroup[orderId].paiedAt).toLocaleDateString()}
             </span>
-            <button className="payhisSmallButton">상세보기</button>
+            <button
+              className="payhisSmallButton"
+              onClick={() => handleViewDetail(orderId)}
+            >
+              상세보기
+            </button>
           </div>
           <div className="payment-history-container">
             <div className="payhis-container">

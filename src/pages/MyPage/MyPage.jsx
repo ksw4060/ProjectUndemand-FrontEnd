@@ -4,6 +4,7 @@ import swal from "sweetalert";
 
 import { MyProfilePage } from "../MyProfilePage/MyProfilePage.jsx";
 import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPage.jsx";
+import { PaymentDetailPage } from "../PaymentDetail/PaymentDetailPage.jsx";
 import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
 import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
 import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
@@ -79,6 +80,12 @@ function MyPage({
           path="/payment-history"
           element={
             <MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/payment-detail/:orderId"
+          element={
+            <PaymentDetailPage isLoggedin={isLoggedin} memberId={memberId} />
           }
         />
         <Route

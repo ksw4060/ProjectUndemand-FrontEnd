@@ -387,6 +387,7 @@ function App() {
               />
             }
           />
+
           <Route element={<PrivateRoutes isLoggedin={isLoggedin} />}>
             <Route
               path="/cart"
