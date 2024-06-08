@@ -17,7 +17,13 @@ function Inventory() {
     const fetchAllInvensData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
+          }
         );
         const productInven = response.data.filter(
           (inven) => parseInt(inven.productId) === parseInt(productId)
@@ -53,6 +59,7 @@ function Inventory() {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({

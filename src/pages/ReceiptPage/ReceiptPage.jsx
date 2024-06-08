@@ -33,6 +33,7 @@ function ReceiptPage() {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setOrderedProducts(response.data);
@@ -52,6 +53,7 @@ function ReceiptPage() {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       console.log(response);

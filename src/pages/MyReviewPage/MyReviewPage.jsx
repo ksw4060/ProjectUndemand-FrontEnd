@@ -33,8 +33,9 @@ function MyReviewPage({ isLoggedin, memberId }) {
           `${process.env.REACT_APP_BACKEND_BASE_URL}/review/user/${memberId}`,
           {
             headers: {
-              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+              Authorization: authorization,
             },
+            withCredentials: true,
           }
         );
         console.log(response.data);
@@ -52,7 +53,13 @@ function MyReviewPage({ isLoggedin, memberId }) {
       try {
         const thumbnailPromises = productReviewData.map(async (userReview) => {
           const response = await axios.get(
-            `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${userReview.productId}`
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${userReview.productId}`,
+            {
+              headers: {
+                Authorization: localStorage.getItem("Authorization"),
+              },
+              withCredentials: true,
+            }
           );
           return response.data[0];
         });
@@ -84,8 +91,9 @@ function MyReviewPage({ isLoggedin, memberId }) {
         `${process.env.REACT_APP_BACKEND_BASE_URL}/review/${reviewId}/${memberId}`,
         {
           headers: {
-            Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+            Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       // 리뷰 삭제 후 상태 업데이트

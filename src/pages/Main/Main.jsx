@@ -29,6 +29,10 @@ const Main = () => {
             order: "",
             keyword: "",
           },
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
         }
       );
       setMainBest(response.data.content);
@@ -50,6 +54,10 @@ const Main = () => {
             order: "",
             keyword: "",
           },
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
         }
       );
       setMainNew(response.data.content);
@@ -71,6 +79,10 @@ const Main = () => {
             order: "",
             keyword: "",
           },
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
         }
       );
       setMainRecommend(response.data.content);

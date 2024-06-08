@@ -89,7 +89,13 @@ const Signup = ({ isLoggedin, memberId }) => {
     try {
       const response = await axios.post(
         "http://localhost:8080/join",
-        signupData
+        signupData,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
       const data = response;
       console.log(data);

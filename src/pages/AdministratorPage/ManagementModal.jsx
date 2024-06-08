@@ -41,6 +41,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -72,6 +73,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -100,6 +102,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -140,6 +143,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
             "Content-Type": "multipart/form-data",
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -178,6 +182,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -216,6 +221,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -249,6 +255,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -277,6 +284,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -315,6 +323,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -352,6 +361,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -388,6 +398,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
             "Content-Type": "multipart/form-data",
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -412,6 +423,7 @@ function ManagementModal({ selectedProductData, modalClose, type }) {
             "Content-Type": "multipart/form-data",
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({

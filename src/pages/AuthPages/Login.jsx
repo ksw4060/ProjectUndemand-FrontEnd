@@ -48,8 +48,15 @@ const Login = ({ isLoggedin, setIsLoggedin }) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}/login`,
-        LoginData
+        LoginData,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
+
       const newAccessToken = response.data.accessToken;
       const newRefreshToken = response.data.refreshToken;
 

@@ -49,6 +49,7 @@ function ArticleSubmitModal({
             "Content-Type": "multipart/form-data",
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -76,7 +77,13 @@ function ArticleSubmitModal({
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/members/${memberId}`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/members/${memberId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
+          }
         );
         setNickName(response.data.nickname);
         setUserEmail(response.data.email);
@@ -113,7 +120,13 @@ function ArticleSubmitModal({
     await axios
       .post(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/new/${productId}`,
-        requestData
+        requestData,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       )
       .then((response) => {
         swal({

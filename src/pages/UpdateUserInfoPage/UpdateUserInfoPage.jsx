@@ -85,7 +85,10 @@ const UpdateUserInfoPage = ({
         "Content-Type": "application/json",
       };
 
-      await axios.put(url, newNickname, { headers });
+      await axios.put(url, newNickname, {
+        headers,
+        withCredentials: true,
+      });
       dispatch(fetchProfile(memberId));
       console.log("Nickname Put Seccess");
     } catch (error) {

@@ -9,7 +9,6 @@ import { IoMdSearch } from "react-icons/io";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import axios from "axios";
 import swal from "sweetalert";
-import { useSelector } from "react-redux";
 
 function CategoryPage({
   isLoggedin,
@@ -106,6 +105,10 @@ function CategoryPage({
               order: order,
               keyword: keyword,
             },
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
           }
         );
         setAllProducts(response.data.content);

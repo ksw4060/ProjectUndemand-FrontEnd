@@ -17,7 +17,13 @@ function InquiryPage() {
     const fetchInquiryData = async () => {
       try {
         const inquiryResponse = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
+          }
         );
         setInquiryData(inquiryResponse.data);
         setInquiryDataLength(inquiryResponse.data.length);

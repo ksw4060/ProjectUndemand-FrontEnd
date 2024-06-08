@@ -51,7 +51,13 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
         setLoading(false);
       }
       const invenResponse = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
       const invenResData = invenResponse.data;
       const filteredInventory = invenResData.filter(
@@ -66,7 +72,13 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
   const fetchThumbnail = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/thumbnail/${productId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
       setThumbnailImages(response.data);
     } catch (error) {
@@ -83,6 +95,7 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         const paymentHistories = response.data.filter(
@@ -106,7 +119,13 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
   const fetchProductReviewData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/product/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/review/product/${productId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
       setProductReviewData(response.data);
     } catch (error) {
@@ -117,7 +136,13 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
   const fetchProductInquiryData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/list/${productId}`
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/inquiry/list/${productId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
       setProductInquiryData(response.data);
     } catch (error) {
@@ -195,6 +220,7 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setCartProducts(response.data);
@@ -215,6 +241,7 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         )
         .then((response) => {

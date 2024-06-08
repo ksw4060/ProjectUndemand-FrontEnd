@@ -13,6 +13,7 @@ export const fetchProfile = createAsyncThunk(
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       return response.data;
@@ -34,6 +35,7 @@ export const fetchProfileImage = createAsyncThunk(
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
 

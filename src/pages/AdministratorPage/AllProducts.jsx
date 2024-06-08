@@ -35,6 +35,10 @@ function AllProducts() {
               condition: "",
               productType: "",
             },
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
           }
         );
         setAllProducts(response.data.content);
@@ -55,6 +59,7 @@ function AllProducts() {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
+          withCredentials: true,
         }
       );
       swal({
@@ -119,6 +124,7 @@ function AllProducts() {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setProductReviewData(response.data);
@@ -133,6 +139,7 @@ function AllProducts() {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setProductInquiryData(response.data);

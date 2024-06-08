@@ -116,6 +116,7 @@ function ArticleViewModal({
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setInquiryDetailData(response.data);
@@ -154,6 +155,7 @@ function ArticleViewModal({
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         console.log(response.data);

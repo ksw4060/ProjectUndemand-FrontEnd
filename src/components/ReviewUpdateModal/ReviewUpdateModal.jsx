@@ -21,6 +21,12 @@ function ReviewUpdateModal({
         {
           reviewContent: reviewContent,
           rating: rating,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
         }
       );
       swal({

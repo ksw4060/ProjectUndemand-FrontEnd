@@ -18,13 +18,13 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
           `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
           {
             headers: {
-              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+              Authorization: authorization,
             },
+            withCredentials: true,
           }
         );
 
         setPaymentHistory(response.data);
-        console.log(response.data);
 
         // 그룹화된 데이터로 상태 설정
         const groupedData = groupByOrderId(response.data);
@@ -135,6 +135,7 @@ const groupByOrderId = (paymentHistory) => {
       productPrice,
       productQuantity,
       option,
+      productId,
     } = payment;
 
     if (!groups[orderId]) {
@@ -163,6 +164,7 @@ const groupByOrderId = (paymentHistory) => {
       productPrice,
       productQuantity,
       option,
+      productId,
     });
 
     return groups;

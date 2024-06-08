@@ -126,6 +126,7 @@ function App() {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         setCartProducts(response.data);
@@ -142,7 +143,13 @@ function App() {
     const fetchCategoryData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys`
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/categorys`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("Authorization"),
+            },
+            withCredentials: true,
+          }
         );
         setCategoryData(response.data);
       } catch (error) {

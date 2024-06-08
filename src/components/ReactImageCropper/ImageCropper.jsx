@@ -121,6 +121,7 @@ const ImageCropper = ({
             "Content-Type": "multipart/form-data",
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       const profileImage = uploadResponse.data;

@@ -26,6 +26,10 @@ const Carousel = () => {
           params: {
             limit: 5,
           },
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
         }
       );
       setCarouselProducts(response.data);

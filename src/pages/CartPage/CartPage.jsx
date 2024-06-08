@@ -24,6 +24,7 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
             headers: {
               Authorization: authorization,
             },
+            withCredentials: true,
           }
         );
         setCartProducts(response.data);
@@ -57,6 +58,7 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       const response = await axios.get(
@@ -65,6 +67,7 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       setCartProducts(response.data);
@@ -82,6 +85,7 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       const updatedCartProducts = cartProducts.filter(
@@ -107,6 +111,7 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
           headers: {
             Authorization: authorization,
           },
+          withCredentials: true,
         }
       );
       navigate(`/cart/order`, {

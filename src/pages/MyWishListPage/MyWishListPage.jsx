@@ -9,16 +9,14 @@ function MyWishListPage({ isLoggedin, memberId }) {
   useEffect(() => {
     const fetchWishLists = async () => {
       try {
-        // 로컬 스토리지에서 Authorization 토큰 가져오기
-        const authorization = localStorage.getItem("Authorization");
-
         // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_BASE_URL}/wishlist/${memberId}`,
           {
             headers: {
-              Authorization: authorization, // 토큰을 Authorization 헤더에 추가
+              Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
 

@@ -20,6 +20,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
             headers: {
               Authorization: localStorage.getItem("Authorization"),
             },
+            withCredentials: true,
           }
         );
         const memberWishlist = response.data;
@@ -47,6 +48,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
               headers: {
                 Authorization: localStorage.getItem("Authorization"),
               },
+              withCredentials: true,
             }
           );
           console.log(response.data);
@@ -58,6 +60,7 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
               headers: {
                 Authorization: localStorage.getItem("Authorization"),
               },
+              withCredentials: true,
             }
           );
           console.log(response.data);
