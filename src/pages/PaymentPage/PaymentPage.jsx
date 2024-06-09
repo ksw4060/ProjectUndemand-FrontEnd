@@ -162,6 +162,7 @@ function PaymentPage() {
 
   const handleShowPayOption = () => {
     setShowPayOption(true);
+    console.log("handleShowPayOption Click");
   };
 
   return (

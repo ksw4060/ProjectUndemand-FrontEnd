@@ -11,6 +11,7 @@ import { MdOutlineShoppingBag } from "react-icons/md";
 import ArticleViewModal from "../../components/ArticleViewModal/ArticleViewModal.jsx";
 import ArticleSubmitModal from "../../components/ArticleSubmitModal/ArticleSubmitModal.jsx";
 import WishBtn from "../../components/WishBtn/WishBtn.jsx";
+import { handleCartSubmit } from "../CartPage/CartUtil.jsx";
 import swal from "sweetalert";
 
 function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
@@ -208,74 +209,6 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
       if (searchInventory) {
         setSelectedInvenId(searchInventory.inventoryId);
       }
-    }
-  };
-
-  const handleCartSubmit = async () => {
-    const fetchCartData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/${memberId}`,
-          {
-            headers: {
-              Authorization: localStorage.getItem("Authorization"),
-            },
-            withCredentials: true,
-          }
-        );
-        setCartProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (isLoggedin) {
-      await axios
-        .post(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/cart/add/${selectedInvenId}`,
-          {
-            memberId: memberId,
-            quantity: quantity,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("Authorization"),
-            },
-            withCredentials: true,
-          }
-        )
-        .then((response) => {
-          swal({
-            title: `장바구니에 상품을 담았습니다!`,
-            text: `장바구니로 이동하시겠어요?`,
-            icon: "success",
-            buttons: {
-              cancel: "취소",
-              navigate: "확인",
-            },
-          }).then((value) => {
-            switch (value) {
-              case "navigate":
-                navigate("/cart");
-                break;
-
-              default:
-                break;
-            }
-          });
-          fetchCartData();
-        })
-        .catch((error) => {
-          if (error.response.data === `For input string: "null"`) {
-            swal({
-              title: "모든 옵션을 선택해 주세요!",
-            });
-          }
-        });
-    } else {
-      swal({
-        title: "로그인 후 이용 가능해요!",
-      });
     }
   };
 
@@ -503,7 +436,16 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
                     {/* <li className="option-btn">주문하기</li> */}
                     <li
                       className="option-btn"
-                      onClick={() => handleCartSubmit()}
+                      onClick={() =>
+                        handleCartSubmit(
+                          isLoggedin,
+                          selectedInvenId,
+                          memberId,
+                          quantity,
+                          setCartProducts,
+                          navigate
+                        )
+                      }
                     >
                       <MdOutlineShoppingBag />
                       <span>장바구니</span>

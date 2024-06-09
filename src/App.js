@@ -74,20 +74,35 @@ function App() {
 
   // Blob 데이터를 URL로 변환하여 상태를 업데이트하는 useEffect
   useEffect(() => {
-    if (profileImage) {
-      //   const imageUrl = URL.createObjectURL(profileImage);
-      console.log(profileImage);
-      setProfileImageUrl(
-        `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${profileImage.replace(
-          "src/main/resources/static/",
-          ""
-        )}`
-      );
-    } else {
-      setProfileImageUrl(
-        "https://defaultst.imweb.me/common/img/default_profile.png"
-      );
-    }
+    const setImageUrl = async () => {
+      if (profileImage) {
+        const imageUrl = `${
+          process.env.REACT_APP_BACKEND_URL_FOR_IMG
+        }${profileImage.replace("src/main/resources/static/", "")}`;
+
+        try {
+          const response = await fetch(imageUrl);
+          if (response.ok) {
+            setProfileImageUrl(imageUrl);
+          } else {
+            setProfileImageUrl(
+              "https://defaultst.imweb.me/common/img/default_profile.png"
+            );
+          }
+        } catch (error) {
+          console.error("Failed to fetch image:", error);
+          setProfileImageUrl(
+            "https://defaultst.imweb.me/common/img/default_profile.png"
+          );
+        }
+      } else {
+        setProfileImageUrl(
+          "https://defaultst.imweb.me/common/img/default_profile.png"
+        );
+      }
+    };
+
+    setImageUrl();
   }, [profileImage]);
 
   const channelTalkLoad = () => {
@@ -350,6 +365,8 @@ function App() {
                 profileData={profileData}
                 profileImageUrl={profileImageUrl}
                 setProfileImageUrl={setProfileImageUrl}
+                cartProducts={cartProducts}
+                setCartProducts={setCartProducts}
               />
             }
           />

@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import swal from "sweetalert";
 // CSS
 import "./PaymentDetailPage.css";
+import { handleCartSubmit, handleAddAllToCart } from "../CartPage/CartUtil.jsx";
 
-function PaymentDetailPage({ memberId }) {
+function PaymentDetailPage({
+  isLoggedin,
+  memberId,
+  cartProducts,
+  setCartProducts,
+}) {
   const { orderId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const paymentDetails = location.state || {};
-  const [orderDetail, setOrderDetail] = useState(paymentDetails);
   const [orderGroup, setOrderGroup] = useState({});
-  const [paymentHistories, setPaymentHistories] = useState([]);
+  const [orderDetail, setOrderDetail] = useState(paymentDetails);
+  const [productInventory, setProductInventory] = useState([]);
 
   useEffect(() => {
     const fetchPaymentHistory = async () => {
       try {
-        // 로컬 스토리지에서 Authorization 토큰 가져오기
         const authorization = localStorage.getItem("Authorization");
-
-        // Authorization 헤더를 포함한 axios 요청
         const response = await axios.get(
           `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
           {
@@ -29,16 +34,44 @@ function PaymentDetailPage({ memberId }) {
           }
         );
 
-        setPaymentHistories(response.data);
-
-        // 그룹화된 데이터로 상태 설정
         const groupedData = groupByOrderId(response.data);
         setOrderGroup(groupedData);
-        console.log(groupedData);
+        const detail = groupedData[orderId] || {};
+        setOrderDetail(detail);
+        console.log(detail);
 
-        if (!orderDetail || Object.keys(orderDetail).length === 0) {
-          setOrderDetail(groupedData[orderId] || {});
-        }
+        // 각 상품에 대해 데이터 조회
+        const fetchProductData = async () => {
+          const inventories = [];
+          for (const product of detail.products) {
+            const productResponse = await axios.get(
+              `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${product.productId}`
+            );
+
+            if (productResponse.status === 200) {
+              const invenResponse = await axios.get(
+                `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
+                {
+                  headers: {
+                    Authorization: localStorage.getItem("Authorization"),
+                  },
+                  withCredentials: true,
+                }
+              );
+
+              const invenResData = invenResponse.data;
+              const filteredInventory = invenResData.filter(
+                (inven) =>
+                  parseInt(inven.productId) === parseInt(product.productId)
+              );
+
+              inventories.push(...filteredInventory);
+            }
+          }
+          setProductInventory(inventories);
+        };
+
+        fetchProductData();
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);
       }
@@ -47,48 +80,67 @@ function PaymentDetailPage({ memberId }) {
     fetchPaymentHistory();
   }, [memberId, orderId]);
 
-  console.log(orderDetail);
+  const handleSearchInvenId = (color, size) => {
+    if (color && size) {
+      const searchInventory = productInventory.find(
+        (item) => item.color === color && item.size === size
+      );
+      if (searchInventory) {
+        return searchInventory.inventoryId;
+      }
+    }
+    return null;
+  };
+
+  const parseOption = (option) => {
+    const [color, size] = option.split(", ").map((item) => item.trim());
+
+    return { color, size };
+  };
 
   return (
     <div className="payment-histories">
       <h1>주문 상세</h1>
-      <p>주문 번호: {orderId}</p>
       {orderDetail && Object.keys(orderDetail).length > 0 ? (
         <div>
-          <div className="order-detail">
-            <h2>결제 정보</h2>
-            <div className="payment-content-title">
-              <span>상품 가격</span>
-              <span>{orderDetail.totalPrice} 원</span>
-            </div>
-            <div className="payment-content-title">
-              <span>할인 금액</span>
-              <span>0 원</span>
-            </div>
-            <div className="payment-content-title">
-              <span>배송비</span>
-              <span>0 원</span>
-            </div>
-            <div className="payment-content-title">
-              <span>결제 상태</span>
-              <span>{orderDetail.statusType}</span>
-            </div>
-            <div className="payment-content-title">
-              <span>{orderDetail.payMethod.toUpperCase()} / 일시불</span>
-              <span>{orderDetail.totalPrice} 원</span>
-            </div>
-            <div className="payment-content-title">
-              <span className="weight-font17">총 결제 금액</span>
-              <span className="weight-font17">{orderDetail.totalPrice} 원</span>
-            </div>
-          </div>
           {/* MyPaymentHistoryPage */}
-          <div key={orderId} className="payment-histories">
+          <div key={orderId} className="histories-detail-container">
             <div className="payment-content-title">
               <span className="weight-font17">
                 {new Date(orderDetail.paiedAt).toLocaleDateString()}
               </span>
               <span className="weight-font17">주문 번호 {orderId}</span>
+            </div>
+            <div className="order-detail payhis-container">
+              <h2>결제 정보</h2>
+              <hr style={{ border: "0.5px solid #fafafa", margin: "8px 0" }} />
+              <div className="payment-content-title">
+                <span>상품 가격</span>
+                <span>{orderDetail.totalPrice} 원</span>
+              </div>
+              <div className="payment-content-title">
+                <span>할인 금액</span>
+                <span>0 원</span>
+              </div>
+              <div className="payment-content-title">
+                <span>배송비</span>
+                <span>0 원</span>
+              </div>
+              <div className="payment-content-title">
+                <span>결제 상태</span>
+                <span>{orderDetail.statusType}</span>
+              </div>
+              <hr style={{ border: "0.5px solid #fafafa", margin: "8px 0" }} />
+              <div className="payment-content-title">
+                <span>{orderDetail.payMethod.toUpperCase()} / 일시불</span>
+                <span>{orderDetail.totalPrice} 원</span>
+              </div>
+              <div className="payment-content-title">
+                <span className="weight-font17">총 결제 금액</span>
+                <span className="weight-font17">
+                  {orderDetail.totalPrice} 원
+                </span>
+              </div>
             </div>
             <div className="payment-history-container">
               <div className="payhis-container">
@@ -97,13 +149,17 @@ function PaymentDetailPage({ memberId }) {
                 </div>
                 {orderDetail.products.map((product, index) => {
                   const productImgPathUrl = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.imagePath}`;
+                  const { color, size } = parseOption(product.option);
+                  const invenId = handleSearchInvenId(color, size);
                   return (
                     <div key={index} className="payhis-product-info-container">
-                      <img
-                        src={productImgPathUrl}
-                        alt={product.productName}
-                        className="payhis-product-img"
-                      />
+                      <Link to={`/product/${product.productId}`}>
+                        <img
+                          src={productImgPathUrl}
+                          alt={product.productName}
+                          className="payhis-product-img"
+                        />
+                      </Link>
                       <div className="payhis-product-info">
                         <div className="price-cart-container">
                           <span className="weight-font17">
@@ -115,7 +171,21 @@ function PaymentDetailPage({ memberId }) {
                             {product.productPrice} 원, {product.productQuantity}{" "}
                             개
                           </span>
-                          <button className="payhisSmallButton">To Cart</button>
+                          <button
+                            className="payhisSmallButton"
+                            onClick={() =>
+                              handleCartSubmit(
+                                isLoggedin,
+                                invenId,
+                                memberId,
+                                product.productQuantity,
+                                setCartProducts,
+                                navigate
+                              )
+                            }
+                          >
+                            To Cart
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -132,29 +202,42 @@ function PaymentDetailPage({ memberId }) {
               <button className="payhisSmallButton">구매후기 쓰기</button>
             </div>
             <div className="payment-history-cart-container">
-              <button className="payhisSmallButton">
+              <button
+                className="payhisSmallButton"
+                onClick={() =>
+                  handleAddAllToCart(
+                    isLoggedin,
+                    orderId,
+                    orderGroup,
+                    handleSearchInvenId,
+                    memberId,
+                    setCartProducts,
+                    navigate,
+                    parseOption
+                  )
+                }
+              >
                 전체 상품 장바구니에 담기
               </button>
+            </div>
+            <div className="order-detail payhis-container">
+              <h2>{orderDetail.ordererName}</h2>
+              <hr style={{ border: "0.5px solid #fafafa", margin: "10px 0" }} />
+              <div className="payment-content-title">
+                <span>{orderDetail.buyerAddr} </span>
+              </div>
+              <div className="payment-content-title">
+                <span>{orderDetail.phoneNumber} </span>
+              </div>
+              <div className="payment-content-title">
+                <span>배송 요청사항 : 없음</span>
+              </div>
             </div>
           </div>
         </div>
       ) : (
         <p>주문 상세 정보를 불러오는 중입니다...</p>
       )}
-      <div className="order-detail">
-        <div className="payment-content-title">
-          <h2>{orderDetail.ordererName}</h2>
-        </div>
-        <div className="payment-content-title">
-          <span>{orderDetail.buyerAddr} </span>
-        </div>
-        <div className="payment-content-title">
-          <span>{orderDetail.phoneNumber} </span>
-        </div>
-        <div className="payment-content-title">
-          <span>배송 요청사항 : 없음</span>
-        </div>
-      </div>
     </div>
   );
 }
@@ -173,6 +256,7 @@ const groupByOrderId = (paymentHistory) => {
       orderedAt,
       paiedAt,
       payMethod,
+      bankName,
       phoneNumber,
       review,
       statusType,
@@ -197,6 +281,7 @@ const groupByOrderId = (paymentHistory) => {
         orderedAt,
         paiedAt,
         payMethod,
+        bankName,
         phoneNumber,
         review,
         statusType,

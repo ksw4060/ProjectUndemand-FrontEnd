@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import swal from "sweetalert";
 // CSS
 import "./MyPaymentHistoryPage.css";
+import { handleCartSubmit, handleAddAllToCart } from "../CartPage/CartUtil.jsx";
 
-function MyPaymentHistoryPage({ memberId, isLoggedin }) {
-  const [paymentHistories, setPaymentHistories] = useState([]);
+function MyPaymentHistoryPage({
+  memberId,
+  isLoggedin,
+  cartProducts,
+  setCartProducts,
+}) {
   const [orderGroup, setOrderGroup] = useState({});
+  const [productInventory, setProductInventory] = useState([]);
   const navigate = useNavigate(); // navigate 사용
 
   useEffect(() => {
@@ -26,12 +33,45 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
           }
         );
 
-        setPaymentHistories(response.data);
-
         // 그룹화된 데이터로 상태 설정
         const groupedData = groupByOrderId(response.data);
         setOrderGroup(groupedData);
-        console.log(groupedData);
+
+        // 각 상품에 대해 데이터 조회
+        const fetchProductData = async () => {
+          const inventories = [];
+          for (const orderId in groupedData) {
+            const products = groupedData[orderId].products;
+            for (const product of products) {
+              const productResponse = await axios.get(
+                `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${product.productId}`
+              );
+
+              if (productResponse.status === 200) {
+                const invenResponse = await axios.get(
+                  `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
+                  {
+                    headers: {
+                      Authorization: localStorage.getItem("Authorization"),
+                    },
+                    withCredentials: true,
+                  }
+                );
+
+                const invenResData = invenResponse.data;
+                const filteredInventory = invenResData.filter(
+                  (inven) =>
+                    parseInt(inven.productId) === parseInt(product.productId)
+                );
+
+                inventories.push(...filteredInventory);
+              }
+            }
+          }
+          setProductInventory(inventories);
+        };
+
+        fetchProductData();
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);
       }
@@ -39,6 +79,23 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
 
     fetchPaymentHistory();
   }, [memberId]);
+
+  const handleSearchInvenId = (color, size) => {
+    if (color && size) {
+      const searchInventory = productInventory.find(
+        (item) => item.color === color && item.size === size
+      );
+      if (searchInventory) {
+        return searchInventory.inventoryId;
+      }
+    }
+    return null;
+  };
+
+  const parseOption = (option) => {
+    const [color, size] = option.split(", ").map((item) => item.trim());
+    return { color, size };
+  };
 
   const handleViewDetail = (orderId) => {
     navigate(`/user/mypage/payment-detail/${orderId}`, {
@@ -72,7 +129,10 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
               상세보기
             </button>
           </div>
-          <div className="payment-history-container">
+          <div
+            className="payment-history-container"
+            style={{ marginTop: "20px" }}
+          >
             <div className="payhis-container">
               <div className="payhis-info-container">
                 <span className="weight-font17">배송시작</span>
@@ -80,13 +140,17 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
               </div>
               {orderGroup[orderId].products.map((product, index) => {
                 const productImgPathUrl = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.imagePath}`;
+                const { color, size } = parseOption(product.option);
+                const invenId = handleSearchInvenId(color, size);
                 return (
                   <div key={index} className="payhis-product-info-container">
-                    <img
-                      src={productImgPathUrl}
-                      alt={product.productName}
-                      className="payhis-product-img"
-                    />
+                    <Link to={`/product/${product.productId}`}>
+                      <img
+                        src={productImgPathUrl}
+                        alt={product.productName}
+                        className="payhis-product-img"
+                      />
+                    </Link>
                     <div className="payhis-product-info">
                       <div className="price-cart-container">
                         <span className="weight-font17">
@@ -98,7 +162,21 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
                           {product.productPrice} 원, {product.productQuantity}{" "}
                           개
                         </span>
-                        <button className="payhisSmallButton">To Cart</button>
+                        <button
+                          className="payhisSmallButton"
+                          onClick={() =>
+                            handleCartSubmit(
+                              isLoggedin,
+                              invenId,
+                              memberId,
+                              product.productQuantity,
+                              setCartProducts,
+                              navigate
+                            )
+                          }
+                        >
+                          To Cart
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -115,7 +193,21 @@ function MyPaymentHistoryPage({ memberId, isLoggedin }) {
             <button className="payhisSmallButton">구매후기 쓰기</button>
           </div>
           <div className="payment-history-cart-container">
-            <button className="payhisSmallButton">
+            <button
+              className="payhisSmallButton"
+              onClick={() =>
+                handleAddAllToCart(
+                  isLoggedin,
+                  orderId,
+                  orderGroup,
+                  handleSearchInvenId,
+                  memberId,
+                  setCartProducts,
+                  navigate,
+                  parseOption
+                )
+              }
+            >
               전체 상품 장바구니에 담기
             </button>
           </div>

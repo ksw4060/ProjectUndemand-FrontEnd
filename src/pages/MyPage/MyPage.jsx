@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
-import swal from "sweetalert";
 
 import { MyProfilePage } from "../MyProfilePage/MyProfilePage.jsx";
 import { MyPaymentHistoryPage } from "../MyPaymentHistoryPage/MyPaymentHistoryPage.jsx";
@@ -17,6 +16,8 @@ function MyPage({
   profileData,
   profileImageUrl,
   setProfileImageUrl,
+  cartProducts,
+  setCartProducts,
 }) {
   const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
   // PrivateRoutes 설정으로 인해, 이용불가. 추후 구현예정 [24.06.05]
@@ -79,13 +80,23 @@ function MyPage({
         <Route
           path="/payment-history"
           element={
-            <MyPaymentHistoryPage isLoggedin={isLoggedin} memberId={memberId} />
+            <MyPaymentHistoryPage
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+              cartProducts={cartProducts}
+              setCartProducts={setCartProducts}
+            />
           }
         />
         <Route
           path="/payment-detail/:orderId"
           element={
-            <PaymentDetailPage isLoggedin={isLoggedin} memberId={memberId} />
+            <PaymentDetailPage
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+              cartProducts={cartProducts}
+              setCartProducts={setCartProducts}
+            />
           }
         />
         <Route
