@@ -98,6 +98,19 @@ function PaymentDetailPage({
     return { color, size };
   };
 
+  const getStatusTypeInKorean = (statusType) => {
+    switch (statusType) {
+      case "COMPLETE_PAYMENT":
+        return "결제 완료";
+      case "CANCELED":
+        return "취소됨";
+      case "REFUND":
+        return "환불됨";
+      default:
+        return statusType;
+    }
+  };
+
   return (
     <div className="payment-histories">
       <h1>주문 상세</h1>
@@ -128,7 +141,7 @@ function PaymentDetailPage({
               </div>
               <div className="payment-content-title">
                 <span>결제 상태</span>
-                <span>{orderDetail.statusType}</span>
+                <span>{getStatusTypeInKorean(orderDetail.statusType)}</span>
               </div>
               <hr style={{ border: "0.5px solid #fafafa", margin: "8px 0" }} />
               <div className="payment-content-title">
