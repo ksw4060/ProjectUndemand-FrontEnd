@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CartPage.css";
 import axios from "axios";
@@ -13,6 +13,7 @@ import swal from "sweetalert";
 function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
   const navigate = useNavigate();
   const axiosInstance = axios.create({ withCredentials: true }); // 결제 로직에서 중요한 녀석입니다. 삭제 금지.
+  const [isMobileWidth, setIsMobileWidth] = useState(false);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -130,75 +131,162 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
     return acc + cartProduct.totalPrice;
   }, 0);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileWidth(window.innerWidth <= 700);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="cart-page">
       <div className="cart-page-wrapper">
-        <div className="cart">
-          <div className="cart-top">
-            <header className="page-title">장바구니</header>
-          </div>
-          {cartProducts.map((cartProduct, index) => {
-            return (
-              <div key={cartProduct.cartId} className="cart-middle">
-                <img
-                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
-                  alt={cartProduct.productName}
-                  className="cart-img"
-                />
-                <div className="cart-option-info">
-                  <div className="cart-product-name">
-                    {cartProduct.productName}
-                  </div>
-                  <div className="cart-product-type">
-                    {cartProduct.productType}
-                  </div>
-                  <div className="cart-product-color">{cartProduct.color}</div>
-                  <div className="cart-product-size-quantity">
-                    <div className="size">
-                      <span>{cartProduct.size}</span>
+        {isMobileWidth === true ? (
+          <div className="cart">
+            <div className="cart-top">
+              <header className="page-title">장바구니</header>
+            </div>
+            {cartProducts.map((cartProduct, index) => {
+              return (
+                <div key={cartProduct.cartId} className="cart-middle">
+                  <img
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
+                    alt={cartProduct.productName}
+                    className="cart-img"
+                  />
+                  <div className="cart-option-info">
+                    <div className="cart-product-name">
+                      {cartProduct.productName}
                     </div>
-                    <div className="quantity">
-                      <span>수량</span>
-                      <div className="quantity-input-cart">
-                        <span>{cartProduct.quantity}</span>
-                        <div className="btn-flex-cart">
-                          <MdOutlineKeyboardArrowUp
-                            onClick={() =>
-                              handleIncrement(
-                                cartProduct.cartId,
-                                cartProduct.quantity
-                              )
-                            }
-                          />
-                          <MdOutlineKeyboardArrowDown
-                            onClick={() =>
-                              handleDecrement(
-                                cartProduct.cartId,
-                                cartProduct.quantity
-                              )
-                            }
-                          />
+                    <div className="cart-product-type">
+                      {cartProduct.productType}
+                    </div>
+                    <div className="cart-product-color">
+                      {cartProduct.color}
+                    </div>
+                    <div className="cart-product-size-quantity">
+                      <div className="size">
+                        <span>{cartProduct.size}</span>
+                      </div>
+                      <div className="quantity">
+                        <span>수량</span>
+                        <div className="quantity-input-cart">
+                          <span>{cartProduct.quantity}</span>
+                          <div className="btn-flex-cart">
+                            <MdOutlineKeyboardArrowUp
+                              onClick={() =>
+                                handleIncrement(
+                                  cartProduct.cartId,
+                                  cartProduct.quantity
+                                )
+                              }
+                            />
+                            <MdOutlineKeyboardArrowDown
+                              onClick={() =>
+                                handleDecrement(
+                                  cartProduct.cartId,
+                                  cartProduct.quantity
+                                )
+                              }
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <div className="cart-btn-container">
+                      <WishBtn
+                        memberId={memberId}
+                        productId={cartProduct.productId}
+                        isLoggedin={isLoggedin}
+                        pageType={"cart"}
+                      />
+                      <FaRegTrashCan
+                        onClick={() => handleRemoveBtn(cartProduct.cartId)}
+                      />
+                    </div>
                   </div>
-                  <div className="cart-btn-container">
-                    <WishBtn
-                      memberId={memberId}
-                      productId={cartProduct.productId}
-                      isLoggedin={isLoggedin}
-                      pageType={"cart"}
-                    />
-                    <FaRegTrashCan
-                      onClick={() => handleRemoveBtn(cartProduct.cartId)}
-                    />
-                  </div>
+                  <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
                 </div>
-                <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="cart">
+            <div className="cart-top">
+              <header className="page-title">장바구니</header>
+            </div>
+            {cartProducts.map((cartProduct, index) => {
+              return (
+                <div key={cartProduct.cartId} className="cart-middle">
+                  <img
+                    src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${cartProduct.productThumbnail}`}
+                    alt={cartProduct.productName}
+                    className="cart-img"
+                  />
+                  <div className="cart-option-info">
+                    <div className="cart-product-name">
+                      {cartProduct.productName}
+                    </div>
+                    <div className="cart-product-type">
+                      {cartProduct.productType}
+                    </div>
+                    <div className="cart-product-color">
+                      {cartProduct.color}
+                    </div>
+                    <div className="cart-product-size-quantity">
+                      <div className="size">
+                        <span>{cartProduct.size}</span>
+                      </div>
+                      <div className="quantity">
+                        <span>수량</span>
+                        <div className="quantity-input-cart">
+                          <span>{cartProduct.quantity}</span>
+                          <div className="btn-flex-cart">
+                            <MdOutlineKeyboardArrowUp
+                              onClick={() =>
+                                handleIncrement(
+                                  cartProduct.cartId,
+                                  cartProduct.quantity
+                                )
+                              }
+                            />
+                            <MdOutlineKeyboardArrowDown
+                              onClick={() =>
+                                handleDecrement(
+                                  cartProduct.cartId,
+                                  cartProduct.quantity
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="cart-btn-container">
+                      <WishBtn
+                        memberId={memberId}
+                        productId={cartProduct.productId}
+                        isLoggedin={isLoggedin}
+                        pageType={"cart"}
+                      />
+                      <FaRegTrashCan
+                        onClick={() => handleRemoveBtn(cartProduct.cartId)}
+                      />
+                    </div>
+                  </div>
+                  <div className="cart-product-price">{`${cartProduct.totalPrice} 원`}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <div className="bill">
           <div className="bill-top">
             <header className="page-title">주문 내역</header>

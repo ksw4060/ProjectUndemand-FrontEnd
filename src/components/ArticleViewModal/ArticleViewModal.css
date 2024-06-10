@@ -192,11 +192,15 @@
 }
 
 .modal-review-box {
-    width: 65%;
+    width: 88%;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
     align-items: flex-start;
+}
+
+.modal-review-box.admin-review-box {
+    width: 65%;
 }
 
 .star-rate {

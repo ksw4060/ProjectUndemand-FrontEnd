@@ -13,16 +13,16 @@ function ArticleViewModal({
   product,
   thumbnailImage,
 }) {
-  const [selectedReviewSortOption, setSelectedReviewSortOption] =
-    useState("최신순");
-  const [selectedInquirySortOption, setSelectedInquirySortOption] =
-    useState("최신순");
-  const [sortOptionClick, setSortOptionClick] = useState(false);
-  const [selectedReviewFilterOption, setSelectedReviewFilterOption] =
-    useState("평점");
-  const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] =
-    useState("전체 보기");
-  const [filterOptionClick, setFilterOptionClick] = useState(false);
+  // const [selectedReviewSortOption, setSelectedReviewSortOption] =
+  //   useState("최신순");
+  // const [selectedInquirySortOption, setSelectedInquirySortOption] =
+  //   useState("최신순");
+  // const [sortOptionClick, setSortOptionClick] = useState(false);
+  // const [selectedReviewFilterOption, setSelectedReviewFilterOption] =
+  //   useState("평점");
+  // const [selectedInquiryFilterOption, setSelectedInquiryFilterOption] =
+  //   useState("전체 보기");
+  // const [filterOptionClick, setFilterOptionClick] = useState(false);
 
   const [selectedReviewId, setSelectedReviewId] = useState("");
   const [reviewAnswerModalOpen, setReviewAnswerModalOpen] = useState(false);
@@ -203,8 +203,8 @@ function ArticleViewModal({
               </div>
               <div className="review-count">{`${productReviewData.length}개의 리뷰`}</div>
             </div>
-            <div className="pagination-info-section">{`1-10/${productReviewData.length}개의 리뷰`}</div>
-            <div className="review-filter-section">
+            {/* <div className="pagination-info-section">{`1-10/${productReviewData.length}개의 리뷰`}</div> */}
+            {/* <div className="review-filter-section">
               <div className="review-sort-box">
                 <div
                   className="selected-sort-option"
@@ -241,7 +241,7 @@ function ArticleViewModal({
                   <li>{`별 (0)`}</li>
                 </ul>
               </div>
-            </div>
+            </div> */}
             {productReviewData.length > 0 &&
               productReviewData.map((tableRow, index) => (
                 <div key={tableRow.reviewId} className="review-section">
@@ -249,7 +249,11 @@ function ArticleViewModal({
                     src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
                     alt={`상품명 ${product.productName}의 ${index}번 리뷰`}
                   />
-                  <div className="modal-review-box">
+                  <div
+                    className={`modal-review-box ${
+                      modalType === "adminReview" && "admin-review-box"
+                    }`}
+                  >
                     <div className="star-rate">
                       {renderStars(tableRow.rating)}
                     </div>
@@ -286,7 +290,7 @@ function ArticleViewModal({
           <>
             <div className="inquiry-title-section">
               <div className="inquiry-count">{`10개의 문의 글`}</div>
-              <div className="count-box">
+              {/* <div className="count-box">
                 <div className="product-inquiry-count">
                   <span>상품 문의 글</span>
                 </div>
@@ -305,10 +309,10 @@ function ArticleViewModal({
                 <div className="other-inquiry-count">
                   <span>기타 문의 글</span>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <div className="pagination-info-section">{`1-10/10개의 문의 글`}</div>
-            <div className="inquiry-filter-section">
+            {/* <div className="pagination-info-section">{`1-10/10개의 문의 글`}</div> */}
+            {/* <div className="inquiry-filter-section">
               <div className="inquiry-sort-box">
                 <div
                   className="selected-sort-option"
@@ -345,7 +349,7 @@ function ArticleViewModal({
                   <li>{`기타 문의`}</li>
                 </ul>
               </div>
-            </div>
+            </div> */}
             {productInquiryData.map((tableRow) => (
               <div
                 key={tableRow.inquiryId}

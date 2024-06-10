@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "./ReceiptPage.css";
 
 function ReceiptPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const {
     memberId,
     ordererName,
@@ -69,7 +68,7 @@ function ReceiptPage() {
           to="/"
           onClick={() => {
             handleReceiptConfirm();
-            navigate("/");
+            window.location.replace("/");
           }}
         >
           Project Undemand
@@ -112,7 +111,7 @@ function ReceiptPage() {
         className="receipt-confirm-btn"
         onClick={() => {
           handleReceiptConfirm();
-          navigate("/");
+          window.location.replace("/");
         }}
       >
         확인

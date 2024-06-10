@@ -270,7 +270,7 @@ function ProductDetailPage({ isLoggedin, memberId, setCartProducts }) {
             }).then((value) => {
               switch (value) {
                 case "navigate":
-                  navigate("/user/mypage/review");
+                  navigate("/user/mypage/my-review");
                   break;
 
                 default:
