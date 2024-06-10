@@ -78,7 +78,12 @@ function App() {
     }
   }, [navigate]);
 
-  // Blob 데이터를 URL로 변환하여 상태를 업데이트하는 useEffect
+  /**
+   * 1. profile 데이터로부터 profileImage 를 리덕스 상태로부터 받아 존재할시
+   * 2. 서버로부터 profileImageUrl 을 fetch 받아옵니다.
+   * 3. Http OK 의 정상적인 응답을 받으면, 프로필 이미지 등록 성공.
+   * 4. 아닐 시,
+   */
   useEffect(() => {
     const setImageUrl = async () => {
       if (profileImage) {
