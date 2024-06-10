@@ -93,6 +93,15 @@ const WishBtn = ({ memberId, productId, isLoggedin, pageType }) => {
           {!isWishlist ? <FaRegHeart /> : <FaHeart />}
         </span>
       );
+    } else if (pageType === "profileWishList") {
+      return (
+        <div
+          className="my-wishlist-heart-btn"
+          onClick={() => handleWishSubmit()}
+        >
+          {!isWishlist ? <FaRegHeart /> : <FaHeart />}
+        </div>
+      );
     }
   };
 
