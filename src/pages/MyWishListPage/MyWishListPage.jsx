@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 // CSS
 import "./MyWishListPage.css";
+import WishBtn from "../../components/WishBtn/WishBtn.jsx";
 
 function MyWishListPage({ isLoggedin, memberId }) {
   const [wishLists, setWishLists] = useState([]);
@@ -21,6 +23,7 @@ function MyWishListPage({ isLoggedin, memberId }) {
         );
 
         setWishLists(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(`잘못된 요청입니다:`, error);
       }
@@ -37,17 +40,27 @@ function MyWishListPage({ isLoggedin, memberId }) {
       <div className="my-wish-list-container">
         {wishLists.map((wishItem) => (
           <div key={wishItem.wishListId} className="my-wish-product-card">
-            <img
-              src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${wishItem.productThumbnails[0]}`}
-              alt={`찜한 상품 이미지`}
-            />
+            <Link to={`/product/${wishItem.productId}`}>
+              <img
+                src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${wishItem.productThumbnails[0]}`}
+                alt={wishItem.productName}
+                className="wish-product-image"
+              />
+            </Link>
             <div className="my-wish-product-info">
               <div className="pd-name-type">
-                <span>{wishItem.productName}</span>
-                <span>{wishItem.productType}</span>
+                <WishBtn
+                  memberId={memberId}
+                  productId={wishItem.productId}
+                  isLoggedin={isLoggedin}
+                  pageType={"profileWishList"}
+                />
+                <span>
+                  {wishItem.productName}, {wishItem.productType}
+                </span>
               </div>
               <div className="pd-price">
-                <span>{`상품 가격: ${wishItem.price} 원`}</span>
+                <span>{`${wishItem.price} 원`}</span>
               </div>
             </div>
           </div>
