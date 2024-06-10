@@ -63,8 +63,8 @@ function MyProfilePage({ isLoggedin, memberId, profileData, profileImageUrl }) {
             </div>
             <br />
             <div className="profile-navi-page">
-              <Link to="/user/mypage/update-info">{`회원정보 수정하기`}</Link>
-              <Link to="/user/mypage/profile-detail">{`프로필 상세보기`}</Link>
+              <Link to="/user/mypage/update-info">{`수정하기`}</Link>
+              <Link to="/user/mypage/profile-detail">{`상세보기`}</Link>
             </div>
           </div>
         </div>

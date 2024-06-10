@@ -1,9 +1,12 @@
 /* 프로필 유저 정보 수정 페이지 - 컨테이너 */
 .update-user-info-page {
+  min-width: 650px;
   width: 100%;
+  max-width: 680px;
+
+  min-height: 900px;
   height: 100%;
-  max-width: 700px;
-  max-height: 1800px;
+  max-height: 1000px;
 
   display: flex;
   flex-flow: column;
@@ -12,6 +15,12 @@
   margin-top: 30px;
 
   padding: 20px;
+
+  border-radius: 8px;
+
+  /* Shadow properties */
+  box-shadow: -1px -1px 1px rgba(199, 198, 198, 0.5),
+    10px 10px 10px rgba(199, 198, 198, 0.7);
 }
 /* 프로필 유저 정보 수정 페이지 - 제목 */
 .update-user-info-page-title {
@@ -43,14 +52,26 @@
   /* 회원 정보 상단 여백 */
   margin-top: 50px;
 }
+/* 프로필 - 이미지  */
+.profile-image-modal-container {
+  width: 100%;
+  height: 100%;
+  max-height: 500px;
 
-/* 프로필 유저 정보 수정 페이지 - 이미지  */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  margin-bottom: 50px;
+}
+/* 프로필 - 이미지  */
 .profile-image-wrapper {
   position: relative;
   width: 410px;
   height: 410px;
 }
-
+/* 프로필 - 이미지  */
 .profile-image {
   width: 400px; /* equivalent to w-[400px] */
   height: 400px; /* equivalent to h-[400px] */
@@ -83,93 +104,17 @@
   background-color: #d9dbdf; /* light gray for hover effect */
 }
 
-/* 프로필 유저 정보 수정 페이지 - 프로필 이미지 위의 수정버튼 박스 */
-.user-info-input-container > div {
+/*  프로필 이미지 위의 수정버튼 박스 */
+.user-info-container {
   width: 100%;
   height: 100%;
+  max-height: 230px;
 
   display: flex;
   flex-flow: column;
 
   justify-content: center;
   align-items: center;
-}
-
-/* 프로필 이미지 컨테이너 */
-.account-img-container {
-  height: 400px;
-}
-
-.profile-img-container {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgb(210, 210, 210);
-  border-bottom: 1px solid rgb(210, 210, 210);
-
-  margin-bottom: 20px;
-}
-
-.user-info-input-container > div > span {
-  width: 70%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 17px;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.uii-container {
-  margin-bottom: 10px;
-  width: 80%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-
-.uii-cover {
-  width: 100%;
-  height: 38px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border: 1.5px solid rgb(99, 99, 99);
-  border-radius: 8px;
-
-  margin-top: 5px;
-  padding: 10px;
-}
-
-.uii-cover > input {
-  width: 100%;
-  height: 100%;
-  border-width: 0px;
-  border-radius: 8px;
-  outline: none;
-  font-size: 16px;
-}
-
-.uii-cover > span {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-width: 0px;
-  border-radius: 8px;
-  outline: none;
-  font-size: 16px;
-}
-
-.uii-address {
-  margin-bottom: 15px;
 }
 
 .profile-info-data-container {
@@ -188,7 +133,7 @@
 
 /* ----------- 계정 활성화/비활성화 버튼 ----------- 휴대폰 인증, 이메일 인증 */
 .account-activate {
-  width: 70%;
+  width: 75%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -221,7 +166,7 @@
 }
 
 .profile-checkbox {
-  width: 70%;
+  width: 75%;
   height: 100%;
   display: flex;
   justify-content: space-between;

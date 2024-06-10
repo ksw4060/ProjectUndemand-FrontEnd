@@ -103,11 +103,11 @@ const UpdateUserInfoPage = ({
   return (
     <div className="update-user-info-page">
       <div className="update-user-info-page-title">
-        <span>회원 정보 수정</span>
+        <span>프로필 정보 수정</span>
       </div>
 
       <div className="user-info-input-container">
-        <div className="profile-container">
+        <div className="profile-image-modal-container">
           <div className="profile-image-wrapper">
             <img
               src={profileImageUrl}
