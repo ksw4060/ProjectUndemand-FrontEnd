@@ -61,6 +61,12 @@ function App() {
   const profileImage = useSelector((state) => state.profile.profileImage);
   const [profileImageUrl, setProfileImageUrl] = useState("");
 
+  /**
+   *  소셜로그인 성공시, 메인도메인 주소에 redirectedFromSocialLogin 라는 파라미터가 추가되어지며
+   * 그 즉시, useEffect 훅이 실행되어 집니다.
+   * 1. 서버로부터 받은, HttpOnly Cookie 를 통해, 엑세스토큰을 클라이언트에 발급받습니다.
+   * 2. 로그인 상태, 회원Id, 회원Role 의 상태를 설정하고, 각 페이지에 보내줍니다.
+   * */
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has("redirectedFromSocialLogin")) {
@@ -85,17 +91,19 @@ function App() {
           if (response.ok) {
             setProfileImageUrl(imageUrl);
           } else {
+            console.log("프로필 이미지 파일이 서버에 존재하지 않습니다.");
             setProfileImageUrl(
               "https://defaultst.imweb.me/common/img/default_profile.png"
             );
           }
         } catch (error) {
-          console.error("Failed to fetch image:", error);
+          console.error("Failed to fetch Profile image:", error);
           setProfileImageUrl(
             "https://defaultst.imweb.me/common/img/default_profile.png"
           );
         }
       } else {
+        console.log("최초 프로필 이미지가 설정되지 않았습니다.");
         setProfileImageUrl(
           "https://defaultst.imweb.me/common/img/default_profile.png"
         );
