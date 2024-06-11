@@ -47,7 +47,7 @@ const UpdateUserInfoPage = ({
         "Content-Type": "application/json",
       };
 
-      await axios.put(url, newGender, { headers });
+      await axios.put(url, newGender, { headers, withCredentials: true });
       dispatch(fetchProfile(memberId));
       console.log("Gender Put Seccess");
     } catch (error) {
@@ -66,7 +66,7 @@ const UpdateUserInfoPage = ({
         "Content-Type": "application/json",
       };
 
-      await axios.put(url, newAge, { headers });
+      await axios.put(url, newAge, { headers, withCredentials: true });
       dispatch(fetchProfile(memberId));
       console.log("Age Put Seccess");
     } catch (error) {
