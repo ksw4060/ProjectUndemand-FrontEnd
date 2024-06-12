@@ -47,8 +47,8 @@
   border-radius: 20px;
 
   /* Shadow properties */
-  box-shadow: -1px -1px 1px rgba(199, 198, 198, 0.5),
-    10px 10px 10px rgba(199, 198, 198, 0.7);
+  box-shadow: -1px -1px 1px rgba(218, 216, 216, 0.5),
+    20px 20px 20px rgba(199, 198, 198, 0.7);
 }
 
 .profile-image-container {
