@@ -1,6 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 // 외부
 import axios from "axios";
 import swal from "sweetalert";
@@ -17,15 +17,15 @@ const Login = ({ isLoggedin, setIsLoggedin }) => {
   const [password, setPassword] = useState("");
 
   // 이미 로그인 된 상태에서, 로그인 페이지 접근 제한
-  //   useEffect(() => {
-  //     if (isLoggedin) {
-  //       swal({
-  //         title:
-  //           "이미 로그인을 한 상태에서, 로그인 페이지 접근은 불가합니다. You cannot access the login page while logged in.",
-  //       });
-  //       navigate("/");
-  //     }
-  //   }, [isLoggedin, navigate]);
+  useEffect(() => {
+    if (isLoggedin) {
+      swal({
+        title:
+          "이미 로그인을 한 상태에서, 로그인 페이지 접근은 불가합니다. You cannot access the login page while logged in.",
+      });
+      navigate("/");
+    }
+  }, [isLoggedin, navigate]);
 
   const handleEmail = (e) => {
     const newEmail = e.target.value;
@@ -77,42 +77,53 @@ const Login = ({ isLoggedin, setIsLoggedin }) => {
   };
 
   return (
-    <div className="signup-box">
-      <div className="signup-box-top">
-        <div className="title">Login Page</div>
-      </div>
-      <div className="signup-box-middle">
-        <div className="inputWrap">
-          <label htmlFor="email" className="inputTitle">
-            email
-          </label>
-          <input
-            type="email"
-            className="input"
-            id="email"
-            value={email}
-            onChange={handleEmail}
-          />
+    <div className="signin-container">
+      <div className="login-input-container">
+        <div className="signup-box-top">
+          <div className="title">Login</div>
         </div>
+        <div className="login-box">
+          <div className="inputWrap">
+            <label htmlFor="email" className="inputTitle">
+              email
+            </label>
+            <input
+              type="email"
+              className="input"
+              id="email"
+              value={email}
+              onChange={handleEmail}
+            />
+          </div>
+          <div className="inputWrap">
+            <label htmlFor="password" className="inputTitle">
+              password
+            </label>
+            <input
+              type="password"
+              className="input"
+              id="password"
+              value={password}
+              onChange={handlePassword}
+            />
+          </div>
+          <div className="link-container">
+            <Link to="/signup" className="login-link-font">{`회원가입`}</Link>
+            <Link
+              to="/user/mypage/update-info"
+              className="login-link-font"
+            >{`비밀번호 재설정`}</Link>
+          </div>
+        </div>
+      </div>
 
-        <div className="inputWrap">
-          <label htmlFor="password" className="inputTitle">
-            password
-          </label>
-          <input
-            type="password"
-            className="input"
-            id="password"
-            value={password}
-            onChange={handlePassword}
-          />
+      <div className="signin-button-container">
+        <div className="signin-button-box">
+          <button onClick={handleLogin} className="signinButton">
+            Login
+          </button>
+          <SnsLogins isLoggedin={isLoggedin} setIsLoggedin={setIsLoggedin} />
         </div>
-      </div>
-      <div className="signup-box-bottom">
-        <button onClick={handleLogin} className="loginButton">
-          Login
-        </button>
-        <SnsLogins isLoggedin={isLoggedin} setIsLoggedin={setIsLoggedin} />
       </div>
     </div>
   );

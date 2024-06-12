@@ -123,103 +123,107 @@ const Signup = ({ isLoggedin, memberId }) => {
   };
 
   return (
-    <div className="signup-box">
-      <div className="signup-box-top">
-        <div className="title">PU 회원가입</div>
-      </div>
-      <div className="signup-box-middle">
-        <div className="inputWrap">
-          <label htmlFor="email" className="inputTitle">
-            이메일 주소
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            className="input"
-            onChange={handleEmail}
-          />
-        </div>
-        <div className="errorMessageWrap">
-          {!emailValid && email.length > 0 && (
-            <div>올바른 이메일을 입력해주세요.</div>
-          )}
-        </div>
-
-        <div className="inputWrap">
-          <label htmlFor="nickname" className="inputTitle">
-            닉네임
-          </label>
-          <input
-            type="text"
-            className="input"
-            id="nickname"
-            value={nickname}
-            onChange={handleNickname}
-          />
-        </div>
-        <div className="errorMessageWrap">
-          {!nicknameValid && nickname.length === 0 && (
-            <div>닉네임을 입력해주세요.</div>
-          )}
-        </div>
-
-        <div className="inputWrap">
-          <label htmlFor="password" className="inputTitle">
-            비밀번호
-          </label>
-          <input
-            type="password"
-            className="input"
-            id="password"
-            value={password}
-            onChange={handlePassword}
-          />
-        </div>
-
-        <div className="inputWrap">
-          <label htmlFor="password_certify" className="inputTitle">
-            비밀번호 확인
-          </label>
-          <input
-            type="password"
-            className="input"
-            id="password_certify"
-            value={passwordCheck}
-            onChange={handlePasswordCheck}
-          />
-        </div>
-        <div className="errorMessageWrap">
-          {!passwordCheckValid && passwordCheck.length > 0 && (
-            <div>비밀번호가 일치하지 않습니다.</div>
-          )}
-        </div>
-        <div className="errorMessageWrap">
-          {!passwordValid && (
-            <div>
-              <div>
-                비밀번호는 최소 8자에서 최대 20자 사이의 문자열이어야 합니다.
-              </div>
-              <div>
-                적어도 하나의 알파벳, 숫자, 특수 문자가 포함되어야 합니다.
-              </div>
-              <div>
-                문자열에는 알파벳, 숫자, 특수 문자 이외의 다른 문자가
-                포함되어서는 안 됩니다.
-              </div>
+    <div className="signup-container">
+      <div className="signup-box-background">
+        <div className="signup-box">
+          <div className="signup-box-top">
+            <div className="title">회원가입</div>
+          </div>
+          <div className="signup-box-middle">
+            <div className="inputWrap">
+              <label htmlFor="email" className="inputTitle">
+                이메일
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                className="input"
+                onChange={handleEmail}
+              />
             </div>
-          )}
+            <div className="errorMessageWrap">
+              {!emailValid && email.length > 0 && (
+                <div>
+                  이메일로 회원가입 인증링크가 제공됩니다. 실제 사용하시는
+                  이메일을 입력해주세요.
+                </div>
+              )}
+            </div>
+            <div className="please-box"></div>
+            <div className="inputWrap">
+              <label htmlFor="nickname" className="inputTitle">
+                닉네임
+              </label>
+              <input
+                type="text"
+                className="input"
+                id="nickname"
+                value={nickname}
+                onChange={handleNickname}
+              />
+            </div>
+            <div className="errorMessageWrap">
+              {!nicknameValid && nickname.length === 0 && (
+                <div>닉네임을 입력해주세요.</div>
+              )}
+            </div>
+
+            <div className="inputWrap">
+              <label htmlFor="password" className="inputTitle">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                className="input"
+                id="password"
+                value={password}
+                onChange={handlePassword}
+              />
+            </div>
+
+            <div className="inputWrap">
+              <label htmlFor="password_certify" className="inputTitle">
+                비밀번호 확인
+              </label>
+              <input
+                type="password"
+                className="input"
+                id="password_certify"
+                value={passwordCheck}
+                onChange={handlePasswordCheck}
+              />
+            </div>
+            <div className="errorMessageWrap">
+              {!passwordCheckValid && passwordCheck.length > 0 && (
+                <div>비밀번호가 일치하지 않습니다.</div>
+              )}
+            </div>
+            <div className="errorMessageWrap">
+              {!passwordValid && (
+                <div>
+                  <div>
+                    비밀번호는 최소 8자에서 최대 20자 사이의 문자열이어야
+                    합니다.
+                  </div>
+                  <div>
+                    적어도 하나의 알파벳, 숫자, 특수 문자가 포함되어야 합니다.
+                  </div>
+                  <div>
+                    문자열에는 알파벳, 숫자, 특수 문자 이외의 다른 문자가
+                    포함되어서는 안 됩니다.
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="please-box">
-        이메일로 회원가입 인증링크가 전송됩니다. 실제 사용되는 이메일을
-        입력해주세요.
       </div>
       <div className="signup-box-bottom">
         <button
           onClick={handleSignup}
           disabled={notAllow}
-          className="loginButton"
+          className="signinButton"
         >
           회원가입
         </button>
