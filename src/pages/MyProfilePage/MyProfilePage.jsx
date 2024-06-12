@@ -13,7 +13,7 @@ function MyProfilePage({ isLoggedin, memberId, profileData, profileImageUrl }) {
   return (
     <div className="my-profile-page">
       <div className="my-profile-page-title">
-        <span>My Page</span>
+        <span>My Profile</span>
       </div>
       <div className="short-my-profile">
         <div className="profile-container">

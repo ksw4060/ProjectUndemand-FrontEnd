@@ -101,77 +101,78 @@ const UpdateUserInfoPage = ({
   const memberGender = profileData?.memberGender || "없음";
 
   return (
-    <div className="update-user-info-page">
+    <div className="profile-update-container">
       <div className="update-user-info-page-title">
         <span>프로필 정보 수정</span>
       </div>
-
-      <div className="user-info-input-container">
-        <div className="profile-image-modal-container">
-          <div className="profile-image-wrapper">
-            <img
-              src={profileImageUrl}
-              alt="profileImage"
-              className="profile-image"
-            />
-            <button
-              className="change-photo-button"
-              title="Change photo"
-              onClick={() => setModalOpen(true)}
-            >
-              <PencilIcon />
-            </button>
+      <div className="update-user-info-page">
+        <div className="user-info-input-container">
+          <div className="profile-image-modal-container">
+            <div className="profile-image-wrapper">
+              <img
+                src={profileImageUrl}
+                alt="profileImage"
+                className="profile-image"
+              />
+              <button
+                className="change-photo-button"
+                title="Change photo"
+                onClick={() => setModalOpen(true)}
+              >
+                <PencilIcon />
+              </button>
+            </div>
+            {modalOpen && (
+              <Modal
+                memberId={memberId}
+                profileData={profileData}
+                updateAvatar={updateAvatar}
+                closeModal={() => setModalOpen(false)}
+                setProfileImageUrl={setProfileImageUrl}
+              />
+            )}
           </div>
-          {modalOpen && (
-            <Modal
-              memberId={memberId}
-              profileData={profileData}
-              updateAvatar={updateAvatar}
-              closeModal={() => setModalOpen(false)}
-              setProfileImageUrl={setProfileImageUrl}
+          <div className="user-info-container">
+            <UserDataFormat
+              label="성별"
+              type="text"
+              data={memberGender}
+              onEdit={handleEditGender}
+              onConfirm={handleConfirmGender}
+              isEditing={isEditingGender}
+              ref={genderRef}
             />
-          )}
+            <UserDataFormat
+              label="연령대"
+              type="text"
+              data={memberAges}
+              onEdit={handleEditAge}
+              onConfirm={handleConfirmAge}
+              isEditing={isEditingAge}
+              ref={ageRef}
+            />
+            <UserDataFormat
+              label="닉네임"
+              type="text"
+              data={nickname}
+              onEdit={handleEditNickname}
+              onConfirm={handleConfirmNickname}
+              isEditing={isEditingNickname}
+              ref={nicknameRef}
+            />
+          </div>
         </div>
-        <div className="user-info-container">
-          <UserDataFormat
-            label="성별"
-            type="text"
-            data={memberGender}
-            onEdit={handleEditGender}
-            onConfirm={handleConfirmGender}
-            isEditing={isEditingGender}
-            ref={genderRef}
-          />
-          <UserDataFormat
-            label="연령대"
-            type="text"
-            data={memberAges}
-            onEdit={handleEditAge}
-            onConfirm={handleConfirmAge}
-            isEditing={isEditingAge}
-            ref={ageRef}
-          />
-          <UserDataFormat
-            label="닉네임"
-            type="text"
-            data={nickname}
-            onEdit={handleEditNickname}
-            onConfirm={handleConfirmNickname}
-            isEditing={isEditingNickname}
-            ref={nicknameRef}
-          />
+        <div className="profile-info-container">
+          <div className="account-activate">
+            <span>계정 비활성화</span>
+            <button>비활성화</button>
+          </div>
         </div>
-      </div>
-      <div className="profile-info-container">
-        <div className="account-activate">
-          <span>계정 비활성화</span>
-          <button>비활성화</button>
-        </div>
-      </div>
-      <div className="profile-info-container">
-        <div className="account-activate">
-          <span>휴대폰 인증</span>
-          <button>인증하기</button>
+        <div className="profile-info-container">
+          <div className="account-activate">
+            <span>휴대폰 인증</span>
+            <button>인증하기</button>
+          </div>
         </div>
       </div>
     </div>

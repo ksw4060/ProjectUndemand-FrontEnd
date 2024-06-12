@@ -1,12 +1,24 @@
 /* 프로필 유저 정보 수정 페이지 - 컨테이너 */
-.update-user-info-page {
-  min-width: 650px;
-  width: 100%;
-  max-width: 680px;
-
-  min-height: 900px;
+.profile-update-container {
+  width: 70%;
   height: 100%;
-  max-height: 1000px;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 30px;
+}
+
+.update-user-info-page {
+  min-width: 400px;
+  width: 100%;
+  max-width: 450px;
+
+  min-height: 700px;
+  height: 100%;
+  max-height: 800px;
 
   display: flex;
   flex-flow: column;
@@ -16,7 +28,7 @@
 
   padding: 20px;
 
-  border-radius: 8px;
+  border-radius: 20px;
 
   /* Shadow properties */
   box-shadow: -1px -1px 1px rgba(199, 198, 198, 0.5),
@@ -24,16 +36,12 @@
 }
 /* 프로필 유저 정보 수정 페이지 - 제목 */
 .update-user-info-page-title {
-  width: 70%;
-  height: 80px;
+  width: 100%;
+  height: 70px;
 
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
 }
 
 .update-user-info-page-title > span {
@@ -43,14 +51,14 @@
 
 .user-info-input-container {
   width: 100%;
-  height: 800px;
+  height: 100%;
   /* 위-아래 배치, 정렬 */
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
   /* 회원 정보 상단 여백 */
-  margin-top: 50px;
+  margin-top: 20px;
 }
 /* 프로필 - 이미지  */
 .profile-image-modal-container {
@@ -63,29 +71,37 @@
   align-items: center;
   flex-direction: column;
 
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 /* 프로필 - 이미지  */
 .profile-image-wrapper {
   position: relative;
-  width: 410px;
-  height: 410px;
+  width: 300px;
+  height: 300px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 /* 프로필 - 이미지  */
 .profile-image {
-  width: 400px; /* equivalent to w-[400px] */
-  height: 400px; /* equivalent to h-[400px] */
-  border-radius: 50%; /* equivalent to rounded-full */
-  border-width: 2px; /* equivalent to border-2 */
-  border-color: #cbd5e0; /* equivalent to border-gray-400 */
+  width: 300px;
+  height: 300px;
 
-  /* padding: 20px; */
+  object-fit: cover;
+  border-radius: 50%;
+
+  padding: 5px;
+  margin-top: 20px;
+
+  border-color: #cbd5e0; /* equivalent to border-gray-400 */
 }
 
 /* 프로필 유저 정보 수정 페이지 - 편집 버튼 */
 .change-photo-button {
   position: absolute;
-  bottom: -0.5rem; /* 프로필 이미지 편집 버튼의 위아래 위치 조정 */
+  bottom: -1.2rem; /* 프로필 이미지 편집 버튼의 위아래 위치 조정 */
 
   left: 0;
   right: 0;
@@ -106,9 +122,10 @@
 
 /*  프로필 이미지 위의 수정버튼 박스 */
 .user-info-container {
+  margin-top: 10px;
+
   width: 100%;
   height: 100%;
-  max-height: 230px;
 
   display: flex;
   flex-flow: column;
@@ -119,12 +136,12 @@
 
 .profile-info-data-container {
   width: 100%;
-  height: 70px;
+  height: 50px;
 }
 
 .profile-info-container {
   width: 100%;
-  height: 70px;
+  height: 50px;
 
   display: flex;
   justify-content: center;
@@ -133,7 +150,7 @@
 
 /* ----------- 계정 활성화/비활성화 버튼 ----------- 휴대폰 인증, 이메일 인증 */
 .account-activate {
-  width: 75%;
+  width: 83%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -143,22 +160,26 @@
 }
 
 .account-activate > span {
-  font-size: 17px;
-  font-weight: bold;
+  font-size: 16px;
+  /* font-weight: bold; */
 }
 
 .account-activate > button {
-  width: 80px;
-  height: 40px;
+  width: 75px;
+  height: 32px;
+
   border-radius: 20px;
   border: 0.1px solid rgb(210, 210, 210);
-  font-size: 16px;
+
+  font-size: 15px;
+  font-weight: bold;
+
   color: rgb(34, 34, 34);
   background-color: rgb(255, 255, 255);
 }
 
 .userinfo-checkbox {
-  width: 80%;
+  width: 83%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -166,7 +187,7 @@
 }
 
 .profile-checkbox {
-  width: 75%;
+  width: 83%;
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -174,20 +195,23 @@
 }
 
 .userinfo-checkbox > span {
-  font-size: 17px;
-  font-weight: bold;
+  font-size: 16px;
+  /* font-weight: bold; */
 }
 
 .userinfo-checkbox > button {
   width: 80px;
   height: 40px;
+
   border-radius: 20px;
   border: 0.1px solid rgb(210, 210, 210);
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: bold;
+
   color: rgb(34, 34, 34);
   background-color: rgb(255, 255, 255);
 
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .profile-info-confirm-btn {
@@ -203,11 +227,15 @@
 }
 
 .profile-info-edit-btn {
-  width: 50px;
-  height: 40px;
+  width: 45px;
+  height: 32px;
+
   border-radius: 20px;
   border: 0.1px solid rgb(210, 210, 210);
-  font-size: 16px;
+
+  font-size: 15px;
+  font-weight: bold;
+
   color: rgb(34, 34, 34);
   background-color: rgb(255, 255, 255);
 }
@@ -244,7 +272,7 @@
   width: 100%;
   padding: 0.375rem 1.75rem 0.375rem 0.75rem;
 
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 400;
   line-height: 1.5;
   font-family: "chaenil", sans-serif;
@@ -289,7 +317,7 @@
 
 .uii-cover {
   width: 100%;
-  height: 38px;
+  height: 30px;
 
   display: flex;
   justify-content: center;
@@ -298,8 +326,8 @@
   border: 1.5px solid rgb(99, 99, 99);
   border-radius: 8px;
 
-  margin-top: 5px;
-  padding: 10px;
+  margin-top: 1px;
+  padding: 5px;
 }
 
 .uii-cover > input {
@@ -308,7 +336,7 @@
   border-width: 0px;
   border-radius: 8px;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .uii-cover > span {
