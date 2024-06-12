@@ -16,7 +16,10 @@
 }
 
 .my-page-navigator {
-  width: 20%;
+  min-width: 300px;
+  width: 30%;
+  max-width: 400px;
+
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -24,7 +27,11 @@
 }
 
 .my-page-navigator > span > a {
-  font-size: 18px;
+  font-size: 17px;
   color: rgb(34, 34, 34);
   cursor: pointer;
+}
+
+.my-page-navigator > span {
+  margin-left: 2px;
 }

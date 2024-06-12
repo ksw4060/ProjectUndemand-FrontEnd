@@ -20,7 +20,9 @@ function MyPage({
   setCartProducts,
 }) {
   const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트 훅
+
   // PrivateRoutes 설정으로 인해, 이용불가. 추후 구현예정 [24.06.05]
+
   //   useEffect(() => {
   //     const checkLoginStatus = async () => {
   //       if (!isLoggedin) {
