@@ -36,6 +36,9 @@ function MyWishListPage({ isLoggedin, memberId }) {
     <div className="my-wish-list-page">
       <div className="my-wish-list-page-title">
         <span>찜한 상품</span>
+        <div className="total-payhis-count">
+          ({`${Object.keys(wishLists).length}개`})
+        </div>
       </div>
       <div className="my-wish-list-container">
         {wishLists.map((wishItem) => (

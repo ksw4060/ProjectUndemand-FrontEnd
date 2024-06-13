@@ -106,7 +106,7 @@ function MyPaymentHistoryPage({
   return (
     <div className="my-payment-history-page">
       <div className="payhis-page-title">
-        <span>나의 구매 기록</span>
+        <span>구매 내역</span>
         <div className="total-payhis-count">
           ({`${Object.keys(orderGroup).length}개`})
         </div>

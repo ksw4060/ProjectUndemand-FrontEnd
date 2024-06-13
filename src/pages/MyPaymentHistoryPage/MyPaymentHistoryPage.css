@@ -11,6 +11,8 @@
 
 .payhis-page-title {
   width: 70%;
+  height: 70px;
+
   display: flex;
   /* flex-flow: column; */
   justify-content: flex-start;

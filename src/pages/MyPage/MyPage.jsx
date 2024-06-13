@@ -8,6 +8,9 @@ import { MyWishListPage } from "../MyWishListPage/MyWishListPage.jsx";
 import { MyReviewPage } from "../MyReviewPage/MyReviewPage.jsx";
 import { UpdateUserInfoPage } from "../UpdateUserInfoPage/UpdateUserInfoPage.jsx";
 import PasswordCheckPage from "../PasswordCheckPage/PasswordCheckPage.jsx";
+import { AddressListPage } from "../Address/AddressListPage.jsx";
+import { AddressRegistrationPage } from "../Address/AddressRegistrationPage.jsx";
+import { AddressUpdatePage } from "../Address/AddressUpdatePage.jsx";
 import "./MyPage.css";
 
 function MyPage({
@@ -64,6 +67,9 @@ function MyPage({
           <span>
             <Link to="/user/mypage/my-review">내 리뷰</Link>
           </span>
+          <span>
+            <Link to="/user/mypage/address">배송 목록</Link>
+          </span>
         </div>
       </div>
       <Routes>
@@ -110,6 +116,27 @@ function MyPage({
         <Route
           path="/my-review"
           element={<MyReviewPage isLoggedin={isLoggedin} memberId={memberId} />}
+        />
+        <Route
+          path="/address"
+          element={
+            <AddressListPage isLoggedin={isLoggedin} memberId={memberId} />
+          }
+        />
+        <Route
+          path="/address-registration"
+          element={
+            <AddressRegistrationPage
+              isLoggedin={isLoggedin}
+              memberId={memberId}
+            />
+          }
+        />
+        <Route
+          path="/address-update/:addressId"
+          element={
+            <AddressUpdatePage isLoggedin={isLoggedin} memberId={memberId} />
+          }
         />
         <Route
           path="/password-check"

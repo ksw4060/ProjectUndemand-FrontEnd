@@ -7,10 +7,15 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  /* background-color: rgba(255, 255, 255, 0.75); */
   background-color: rgba(17, 24, 39, 0.75);
   backdrop-filter: blur(10px); /* equivalent to backdrop-blur-sm */
   transition: all 0.3s;
+
+  z-index: 12;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-wrapper {
@@ -31,13 +36,14 @@
 
 .modal-content {
   position: relative;
-  width: 95%; /* equivalent to w-[95%] */
-  max-width: 80%; /* equivalent to sm:w-[80%] */
-  min-height: 60vh; /* equivalent to min-h-[60vh] */
-  border-radius: 1rem; /* equivalent to rounded-2xl */
-  background-color: #ffffff; /* equivalent to bg-gray-800 */
-  /* background-color: #2d3748; equivalent to bg-gray-800 */
-  color: #f1f5f9; /* equivalent to text-slate-100 */
+  width: 95%;
+  max-width: 80%;
+  min-height: 60vh;
+
+  border-radius: 1rem;
+  background-color: #ffffff;
+  color: #f1f5f9;
+
   text-align: left;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* equivalent to shadow-xl */
   transition: all 0.3s;

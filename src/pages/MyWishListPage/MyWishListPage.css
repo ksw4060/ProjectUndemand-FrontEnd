@@ -9,8 +9,9 @@
 
 .my-wish-list-page-title {
   width: 70%;
+  height: 70px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
 }
 
