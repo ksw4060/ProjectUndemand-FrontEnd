@@ -93,7 +93,6 @@ function PaymentPage() {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
           },
-          withCredentials: true,
         }
       );
       console.log(response.data);

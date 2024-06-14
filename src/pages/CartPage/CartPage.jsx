@@ -112,7 +112,6 @@ function CartPage({ memberId, isLoggedin, cartProducts, setCartProducts }) {
           headers: {
             Authorization: authorization,
           },
-          withCredentials: true,
         }
       );
       navigate(`/cart/order`, {
