@@ -101,7 +101,9 @@
 }
 
 .signup-box-bottom {
+  min-width: 400px;
   width: 50%;
+  max-width: 500px;
 
   margin-top: 40px;
 }
