@@ -4,7 +4,10 @@ import axios from "axios";
 import swal from "sweetalert";
 // CSS
 import "./MyPaymentHistoryPage.css";
+import "../../components/ReviewModal/ReviewModal.css";
+
 import { handleCartSubmit, handleAddAllToCart } from "../CartPage/CartUtil.jsx";
+import { ReviewModal } from "../../components/ReviewModal/ReviewModal.jsx";
 
 function MyPaymentHistoryPage({
   memberId,
@@ -14,69 +17,75 @@ function MyPaymentHistoryPage({
 }) {
   const [orderGroup, setOrderGroup] = useState({});
   const [productInventory, setProductInventory] = useState([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const ReviewTitleImage =
+    "https://png.pngtree.com/png-clipart/20220530/original/pngtree-shopping-basket-equipment-market-mall-png-image_7768946.png";
+
   const navigate = useNavigate(); // navigate 사용
 
-  useEffect(() => {
-    const fetchPaymentHistory = async () => {
-      try {
-        // 로컬 스토리지에서 Authorization 토큰 가져오기
-        const authorization = localStorage.getItem("Authorization");
+  const fetchPaymentHistory = async () => {
+    try {
+      // 로컬 스토리지에서 Authorization 토큰 가져오기
+      const authorization = localStorage.getItem("Authorization");
 
-        // Authorization 헤더를 포함한 axios 요청
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
-          {
-            headers: {
-              Authorization: authorization,
-            },
-            withCredentials: true,
-          }
-        );
+      // Authorization 헤더를 포함한 axios 요청
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/paymenthistory/${memberId}`,
+        {
+          headers: {
+            Authorization: authorization,
+          },
+          withCredentials: true,
+        }
+      );
 
-        // 그룹화된 데이터로 상태 설정
-        const groupedData = groupByOrderId(response.data);
-        setOrderGroup(groupedData);
+      // 그룹화된 데이터로 상태 설정
+      const groupedData = groupByOrderId(response.data);
+      setOrderGroup(groupedData);
+      console.log(response.data);
+      console.log(groupedData);
 
-        // 각 상품에 대해 데이터 조회
-        const fetchProductData = async () => {
-          const inventories = [];
-          for (const orderId in groupedData) {
-            const products = groupedData[orderId].products;
-            for (const product of products) {
-              const productResponse = await axios.get(
-                `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${product.productId}`
+      // 각 상품에 대해 데이터 조회
+      const fetchProductData = async () => {
+        const inventories = [];
+        for (const orderId in groupedData) {
+          const products = groupedData[orderId].products;
+          for (const product of products) {
+            const productResponse = await axios.get(
+              `${process.env.REACT_APP_BACKEND_BASE_URL}/products/${product.productId}`
+            );
+
+            if (productResponse.status === 200) {
+              const invenResponse = await axios.get(
+                `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
+                {
+                  headers: {
+                    Authorization: localStorage.getItem("Authorization"),
+                  },
+                  withCredentials: true,
+                }
               );
 
-              if (productResponse.status === 200) {
-                const invenResponse = await axios.get(
-                  `${process.env.REACT_APP_BACKEND_BASE_URL}/inventory`,
-                  {
-                    headers: {
-                      Authorization: localStorage.getItem("Authorization"),
-                    },
-                    withCredentials: true,
-                  }
-                );
+              const invenResData = invenResponse.data;
+              const filteredInventory = invenResData.filter(
+                (inven) =>
+                  parseInt(inven.productId) === parseInt(product.productId)
+              );
 
-                const invenResData = invenResponse.data;
-                const filteredInventory = invenResData.filter(
-                  (inven) =>
-                    parseInt(inven.productId) === parseInt(product.productId)
-                );
-
-                inventories.push(...filteredInventory);
-              }
+              inventories.push(...filteredInventory);
             }
           }
-          setProductInventory(inventories);
-        };
+        }
+        setProductInventory(inventories);
+      };
 
-        fetchProductData();
-      } catch (error) {
-        console.error(`잘못된 요청입니다:`, error);
-      }
-    };
+      fetchProductData();
+    } catch (error) {
+      console.error(`잘못된 요청입니다:`, error);
+    }
+  };
 
+  useEffect(() => {
     fetchPaymentHistory();
   }, [memberId]);
 
@@ -101,6 +110,14 @@ function MyPaymentHistoryPage({
     navigate(`/user/mypage/payment-detail/${orderId}`, {
       state: orderGroup[orderId],
     });
+  };
+
+  const openReviewModal = () => {
+    setIsReviewModalOpen(true);
+  };
+
+  const closeReviewModal = () => {
+    setIsReviewModalOpen(false);
   };
 
   return (
@@ -142,6 +159,7 @@ function MyPaymentHistoryPage({
                 const productImgPathUrl = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${product.imagePath}`;
                 const { color, size } = parseOption(product.option);
                 const invenId = handleSearchInvenId(color, size);
+
                 return (
                   <div key={index} className="payhis-product-info-container">
                     <Link to={`/product/${product.productId}`}>
@@ -184,14 +202,48 @@ function MyPaymentHistoryPage({
               })}
             </div>
           </div>
-
           <div className="payment-history-btn-container">
             <button className="payhisSmallButton">교환, 반품신청</button>
             <button className="payhisSmallButton">배송 조회</button>
           </div>
           <div className="payment-history-review-container">
-            <button className="payhisSmallButton">구매후기 쓰기</button>
+            <button className="payhisSmallButton" onClick={openReviewModal}>
+              구매후기 쓰기
+            </button>
           </div>
+          {isReviewModalOpen && (
+            <div className="review-modal-overlay">
+              <div className="review-modal-container">
+                <div className="review-modal-body">
+                  <div className="review-close-button">
+                    <div className="payment-review-title">
+                      <img
+                        src={ReviewTitleImage}
+                        alt={`review-title`}
+                        className="review-image-preview"
+                      />
+                      <span>구매후기 작성하기</span>
+                    </div>
+
+                    <button onClick={() => setIsReviewModalOpen(false)}>
+                      <img
+                        src="https://w7.pngwing.com/pngs/336/356/png-transparent-close-remove-delete-x-cross-reject-basic-user-interface-icon.png"
+                        alt="Close"
+                        className="review-close-image"
+                      />
+                    </button>
+                  </div>
+                  <ReviewModal
+                    isOpen={isReviewModalOpen}
+                    onClose={closeReviewModal}
+                    orderId={orderId}
+                    orderGroup={orderGroup}
+                    fetchPaymentHistory={fetchPaymentHistory}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
           <div className="payment-history-cart-container">
             <button
               className="payhisSmallButton"
@@ -246,7 +298,7 @@ const groupByOrderId = (paymentHistory) => {
     if (!groups[orderId]) {
       groups[orderId] = {
         orderId,
-        paymentId,
+
         memberId,
         buyerAddr,
         discount,
@@ -256,7 +308,6 @@ const groupByOrderId = (paymentHistory) => {
         paiedAt,
         payMethod,
         phoneNumber,
-        review,
         statusType,
         totalPrice,
         products: [],
@@ -270,6 +321,8 @@ const groupByOrderId = (paymentHistory) => {
       productQuantity,
       option,
       productId,
+      paymentId,
+      review,
     });
 
     return groups;

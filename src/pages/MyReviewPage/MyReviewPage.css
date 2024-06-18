@@ -116,12 +116,17 @@
 }
 
 .review-product {
+  width: 20%;
+  max-width: 130px;
+  height: 100%;
+
   display: flex;
-  /* flex-flow: column; */
+  flex-flow: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+
   background-color: rgb(255, 255, 255);
-  margin-right: 60px;
+  margin-right: 40px;
 }
 
 .review-product > img {
@@ -130,7 +135,7 @@
   object-fit: cover;
   object-position: center;
   margin-right: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .review-main-content-container {
