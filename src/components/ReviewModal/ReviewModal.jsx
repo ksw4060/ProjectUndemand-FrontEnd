@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import swal from "sweetalert";
+import { FaRegStar, FaStar } from "react-icons/fa6";
+import { adjustImageSize } from "../ReactImageCropper/ImageUtil.jsx";
 
 function ReviewModal({
   isOpen,
@@ -28,6 +30,9 @@ function ReviewModal({
   // Combine uploaded images with placeholders
   const displayImages = [...imagePreviews, ...placeholderArray];
 
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const qualityStep = 0.1; // 품질 감소 단계
+
   const handleRatingChange = (e) => {
     setRating(e.target.value);
   };
@@ -36,7 +41,7 @@ function ReviewModal({
     setReviewContent(e.target.value);
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const newFiles = Array.from(e.target.files);
 
     if (newFiles.length + images.length > 5) {
@@ -44,13 +49,20 @@ function ReviewModal({
       return;
     }
 
-    const newImages = [...images, ...newFiles];
-    setImages(newImages);
-    console.log(newImages);
+    const newImages = [];
+    const newImagePreviews = [];
 
-    const newImagePreviews = newFiles.map((image) =>
-      URL.createObjectURL(image)
-    );
+    for (const file of newFiles) {
+      const adjustedImage = await adjustImageSize(file);
+      newImages.push(adjustedImage);
+
+      console.log("Adjusted image size:", adjustedImage.size);
+
+      const previewUrl = URL.createObjectURL(adjustedImage);
+      newImagePreviews.push(previewUrl);
+    }
+
+    setImages((prevImages) => [...prevImages, ...newImages]);
     setImagePreviews((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
   };
 
@@ -58,8 +70,8 @@ function ReviewModal({
     const formData = new FormData();
     formData.append("rating", rating);
     formData.append("reviewContent", reviewContent);
-    images.forEach((image, index) => {
-      formData.append(`image_${index}`, image);
+    images.forEach((image) => {
+      formData.append("images", image); // images라는 키값으로 설정
     });
 
     try {
@@ -93,11 +105,14 @@ function ReviewModal({
     );
     if (selectedProduct) {
       setPaymentId(selectedProduct.paymentId);
-      console.log(selectedProduct.paymentId);
     }
   };
 
   if (!isOpen) return null;
+
+  const availableProducts = orderGroup[orderId]?.products.filter(
+    (product) => !product.review
+  );
 
   return (
     <div className="review-modal">
@@ -106,16 +121,18 @@ function ReviewModal({
           <label className="review-product-label">
             리뷰 작성이 가능한 상품
           </label>
-          <select value={selectedProduct} onChange={handleProductChange}>
-            <option value="">상품을 선택해주세요</option>
-            {orderGroup[orderId].products
-              .filter((product) => !product.review)
-              .map((product) => (
+          {availableProducts && availableProducts.length > 0 ? (
+            <select value={selectedProduct} onChange={handleProductChange}>
+              <option value="">상품을 선택해주세요</option>
+              {availableProducts.map((product) => (
                 <option key={product.productId} value={product.productId}>
                   {product.productName} ({product.option})
                 </option>
               ))}
-          </select>
+            </select>
+          ) : (
+            <p>리뷰 작성이 가능한 상품이 없습니다.</p>
+          )}
         </div>
         <div className="review-select-box">
           <label className="review-product-label">
@@ -149,14 +166,18 @@ function ReviewModal({
 
         <div className="review-select-box">
           <label className="review-product-label">별점</label>
-          <select value={rating} onChange={handleRatingChange}>
-            <option value={0}>별점을 선택해주세요</option>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-            <option value={4}>4</option>
-            <option value={5}>5</option>
-          </select>
+
+          <div className="rating-input">
+            {[...Array(5)].map((_, index) => (
+              <span
+                key={index}
+                onClick={() => setRating(index + 1)}
+                className="rating-star"
+              >
+                {index < rating ? <FaStar /> : <FaRegStar />}
+              </span>
+            ))}
+          </div>
         </div>
         <div className="review-select-box">
           <label className="review-product-label review-content-area">

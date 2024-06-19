@@ -144,6 +144,25 @@
   align-items: center;
 }
 
+.rating-input {
+  width: 200px;
+  height: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rating-star {
+  cursor: pointer;
+  font-size: 34px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .review-content-area {
   height: 200px;
 }
