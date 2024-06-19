@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+// import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Carousel from "../../components/Carousel/Carousel.jsx";
 import ProductSlide from "../../components/ProductSlide/ProductSlide.jsx";
@@ -9,11 +10,11 @@ const Main = () => {
   const [mainNewLoading, setMainNewLoading] = useState(true);
   const [mainRecommendLoading, setMainRecommendLoading] = useState(true);
   const [mainBest, setMainBest] = useState([]);
-  const memoizedMainBest = useMemo(() => mainBest, [mainBest]);
+  // const memoizedMainBest = useMemo(() => mainBest, [mainBest]);
   const [mainNew, setMainNew] = useState([]);
-  const memoizedMainNew = useMemo(() => mainNew, [mainNew]);
+  // const memoizedMainNew = useMemo(() => mainNew, [mainNew]);
   const [mainRecommend, setMainRecommend] = useState([]);
-  const memoizedMainRecommend = useMemo(() => mainRecommend, [mainRecommend]);
+  // const memoizedMainRecommend = useMemo(() => mainRecommend, [mainRecommend]);
   const pageSize = 7;
 
   useEffect(() => {
@@ -22,23 +23,41 @@ const Main = () => {
     getRecommendProducts();
   }, []);
 
+  // useEffect(() => {
+  //   if (memoizedMainBest.length > 0) {
+  //     setMainBestLoading(false);
+  //   }
+  // }, [memoizedMainBest]);
+
+  // useEffect(() => {
+  //   if (memoizedMainNew.length > 0) {
+  //     setMainNewLoading(false);
+  //   }
+  // }, [memoizedMainNew]);
+
+  // useEffect(() => {
+  //   if (memoizedMainRecommend.length > 0) {
+  //     setMainRecommendLoading(false);
+  //   }
+  // }, [memoizedMainRecommend]);
+
   useEffect(() => {
-    if (memoizedMainBest.length > 0) {
+    if (mainBest.length > 0) {
       setMainBestLoading(false);
     }
-  }, [memoizedMainBest]);
+  }, [mainBest]);
 
   useEffect(() => {
-    if (memoizedMainNew.length > 0) {
+    if (mainNew.length > 0) {
       setMainNewLoading(false);
     }
-  }, [memoizedMainNew]);
+  }, [mainNew]);
 
   useEffect(() => {
-    if (memoizedMainRecommend.length > 0) {
+    if (mainRecommend.length > 0) {
       setMainRecommendLoading(false);
     }
-  }, [memoizedMainRecommend]);
+  }, [mainRecommend]);
 
   const getBestProducts = async () => {
     try {
