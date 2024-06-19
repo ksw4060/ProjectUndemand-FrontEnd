@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 // 외부 라이브러리 및 모듈
 import axios from "axios";
+import swal from "sweetalert";
 // 컴포넌트 & CSS
 import ReviewUpdateModal from "../../components/ReviewUpdateModal/ReviewUpdateModal";
 import "./MyReviewPage.css";
@@ -21,6 +22,10 @@ function MyReviewPage({ isLoggedin, memberId }) {
   const [rUModalOpen, setRUModalOpen] = useState(false);
   const [selectedRId, setSelectedRId] = useState(null);
   const [thumbnailImages, setThumbnailImages] = useState([]);
+
+  const [isImagesChecked, setIsImagesChecked] = useState(false); // 이미지 상태 확인 여부 추가
+  const defaultImageURL =
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTRx9zMfm7p_YRHoXXLVhaI2YpE4bMGgwnyg&s";
 
   useEffect(() => {
     const fetchProductReviewData = async () => {
@@ -73,6 +78,32 @@ function MyReviewPage({ isLoggedin, memberId }) {
     fetchThumbnail();
   }, [productReviewData]);
 
+  useEffect(() => {
+    const checkImages = async () => {
+      const updatedReviewData = await Promise.all(
+        productReviewData.map(async (review) => {
+          const updatedImgPaths = await Promise.all(
+            review.reviewImgPaths.slice(0, 5).map(async (imgPath) => {
+              const url = `${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${imgPath}`;
+              try {
+                const response = await axios.head(url);
+                return response.status === 200 ? url : defaultImageURL;
+              } catch (error) {
+                return defaultImageURL;
+              }
+            })
+          );
+          return { ...review, reviewImgPaths: updatedImgPaths };
+        })
+      );
+      setProductReviewData(updatedReviewData);
+      setIsImagesChecked(true); // 이미지 상태 확인 완료
+    };
+    if (productReviewData.length > 0 && !isImagesChecked) {
+      checkImages();
+    }
+  }, [productReviewData, isImagesChecked]);
+
   const handleRUModalOpen = async (reviewId) => {
     setRUModalOpen(true);
     setSelectedRId(reviewId);
@@ -81,7 +112,7 @@ function MyReviewPage({ isLoggedin, memberId }) {
   const closeRUModal = () => {
     setRUModalOpen(false);
   };
-
+  /*
   const handleReviewDelete = async (reviewId) => {
     try {
       // 로컬 스토리지에서 Authorization 토큰 가져오기
@@ -104,7 +135,7 @@ function MyReviewPage({ isLoggedin, memberId }) {
       console.error(error.response.data);
     }
   };
-
+*/
   const renderStars = (rating) => {
     const filledStars = Math.floor(rating);
     const remainingStars = 5 - filledStars;
@@ -119,6 +150,44 @@ function MyReviewPage({ isLoggedin, memberId }) {
         ))}
       </>
     );
+  };
+
+  const handleReviewDelete = async (reviewId) => {
+    swal({
+      title: "리뷰 삭제",
+      text: "삭제 후 복구나 재등록이 불가능합니다. 정말 삭제하시겠습니까?",
+      icon: "warning",
+      buttons: ["아니오", "예"],
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          const authorization = localStorage.getItem("Authorization");
+          await axios.delete(
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/review/${reviewId}/${memberId}`,
+            {
+              headers: {
+                Authorization: authorization,
+              },
+              withCredentials: true,
+            }
+          );
+          setProductReviewData((prevData) =>
+            prevData.filter((review) => review.reviewId !== reviewId)
+          );
+          swal("리뷰가 성공적으로 삭제되었습니다.", {
+            icon: "success",
+          });
+        } catch (error) {
+          console.error(error.response.data);
+          swal("리뷰 삭제 중 오류가 발생했습니다.", {
+            icon: "error",
+          });
+        }
+      } else {
+        swal.close(); // '아니오' 버튼을 누르면 창을 닫습니다.
+      }
+    });
   };
 
   return (
@@ -189,10 +258,20 @@ function MyReviewPage({ isLoggedin, memberId }) {
                     {tableRow.reviewContent}
                   </div>
                 </div>
-                <img
-                  src={`${process.env.REACT_APP_BACKEND_URL_FOR_IMG}${tableRow.reviewImgPaths[0]}`}
-                  alt={`상품명 ${tableRow.productName}의 ${index}번 리뷰`}
-                />
+                <div className="review-images">
+                  {tableRow.reviewImgPaths
+                    .slice(0, 5)
+                    .map((imgPath, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={imgPath}
+                        alt={`상품명 ${
+                          tableRow.productName
+                        }의 ${index}번 리뷰 이미지 ${imgIndex + 1}`}
+                        className="review-image"
+                      />
+                    ))}
+                </div>
               </div>
               <div className="review-edit-del-container">
                 <div className="review-date">

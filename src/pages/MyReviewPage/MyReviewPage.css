@@ -28,7 +28,10 @@
 }
 
 .review-page-filter {
+  min-width: 700px;
   width: 70%;
+  max-width: 800px;
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -106,22 +109,70 @@
 }
 
 .review-container {
+  min-width: 700px;
   width: 70%;
+  max-width: 800px;
+
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
   border-bottom: 1.5px solid rgb(210, 210, 210);
   margin-top: 30px;
   padding-bottom: 30px;
 }
 
-.review-product {
+.review-images {
+  width: 100%;
+  max-width: 480px;
+  height: 130px;
+
+  gap: 5px;
+  padding-top: 15px;
+  padding-left: 5px;
+  padding-right: 10px;
+
   display: flex;
-  /* flex-flow: column; */
+  overflow-x: auto; /* 가로 스크롤 활성화 */
+  white-space: nowrap; /* 요소들이 한 줄로 배치되도록 설정 */
+  -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+}
+
+.review-image {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
+
+  border: 1px solid rgb(38, 38, 37);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.review-images::-webkit-scrollbar {
+  height: 8px; /* 스크롤바의 높이 설정 */
+}
+
+.review-images::-webkit-scrollbar-thumb {
+  background: #888; /* 스크롤바의 색상 설정 */
+  border-radius: 4px; /* 스크롤바의 모서리 둥글기 설정 */
+}
+
+.review-images::-webkit-scrollbar-thumb:hover {
+  background: #555; /* 스크롤바의 hover 색상 설정 */
+}
+
+.review-product {
+  width: 20%;
+  max-width: 130px;
+  height: 100%;
+
+  display: flex;
+  flex-flow: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+
   background-color: rgb(255, 255, 255);
-  margin-right: 60px;
+  margin-right: 40px;
 }
 
 .review-product > img {
@@ -130,7 +181,7 @@
   object-fit: cover;
   object-position: center;
   margin-right: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .review-main-content-container {

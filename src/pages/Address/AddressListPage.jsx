@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import swal from "sweetalert";
 // CSS
 import "./AddressListPage.css";
 import "./AddressRegistrationPage.css";
@@ -61,25 +62,67 @@ function AddressListPage({ isLoggedin, memberId }) {
   };
 
   const handleDeleteSelected = async () => {
+    swal({
+      title: "주소 삭제",
+      text: "선택하신 배송지 삭제 후 복구가 불가능합니다. 정말 삭제하시겠습니까?",
+      icon: "warning",
+      buttons: ["아니오", "예"],
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        try {
+          const deletePromises = selectedAddresses.map((addressId) =>
+            axios.delete(
+              `${process.env.REACT_APP_BACKEND_BASE_URL}/address/${memberId}/${addressId}`,
+              {
+                headers: {
+                  Authorization: localStorage.getItem("Authorization"),
+                },
+                withCredentials: true,
+              }
+            )
+          );
+          await Promise.all(deletePromises);
+          console.log("Addresses deleted");
+          fetchAddressLists(); // 주소 목록 다시 불러오기
+          setSelectedAddresses([]); // 선택된 주소 초기화
+          setAllChecked(false); // 전체 선택 체크박스 상태 초기화
+          swal("주소가 성공적으로 삭제되었습니다.", {
+            icon: "success",
+          });
+        } catch (error) {
+          console.error("Error deleting addresses:", error);
+          swal("주소 삭제 중 오류가 발생했습니다.", {
+            icon: "error",
+          });
+        }
+      } else {
+        swal.close(); // '아니오' 버튼을 누르면 창을 닫습니다.
+      }
+    });
+  };
+
+  const handleSetDefaultAddress = async (addressId) => {
     try {
-      const deletePromises = selectedAddresses.map((addressId) =>
-        axios.delete(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/address/${memberId}/${addressId}`,
-          {
-            headers: {
-              Authorization: localStorage.getItem("Authorization"),
-            },
-            withCredentials: true,
-          }
-        )
+      await axios.put(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/address/default/${memberId}/${addressId}`,
+        {},
+        {
+          headers: {
+            Authorization: localStorage.getItem("Authorization"),
+          },
+          withCredentials: true,
+        }
       );
-      await Promise.all(deletePromises);
-      console.log("Addresses deleted");
       fetchAddressLists(); // 주소 목록 다시 불러오기
-      setSelectedAddresses([]); // 선택된 주소 초기화
-      setAllChecked(false); // 전체 선택 체크박스 상태 초기화
+      swal("기본 배송지가 성공적으로 설정되었습니다.", {
+        icon: "success",
+      });
     } catch (error) {
-      console.error("Error deleting addresses:", error);
+      console.error("Error setting default address:", error);
+      swal("기본 배송지 설정 중 오류가 발생했습니다.", {
+        icon: "error",
+      });
     }
   };
 
@@ -128,7 +171,7 @@ function AddressListPage({ isLoggedin, memberId }) {
           <tbody>
             {addressLists.length > 0 ? (
               addressLists.map((address) => (
-                <tr key={address.addressId}>
+                <tr key={address.addressId} className="table-row">
                   <td>
                     <input
                       type="checkbox"
@@ -139,14 +182,15 @@ function AddressListPage({ isLoggedin, memberId }) {
                     />
                   </td>
                   <td>
-                    <a
-                      href={`/exec/front/Myshop/Addr/?mode=Fix&ma_idx=${address.addressId}&ma_fixed_flag=F&return_url=%2Fmyshop%2Faddr%2Flist.html`}
+                    <button
+                      onClick={() => handleSetDefaultAddress(address.addressId)}
+                      style={{ border: "none", background: "none" }}
                     >
                       <img
                         src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/btn_address_fix.gif"
                         alt="고정"
                       />
-                    </a>
+                    </button>
                   </td>
                   <td>
                     {address.defaultAddress ? (
@@ -154,6 +198,7 @@ function AddressListPage({ isLoggedin, memberId }) {
                         <img
                           src="//img.echosting.cafe24.com/skin/base_ko_KR/myshop/ico_addr_default.gif"
                           alt="기본"
+                          className="addrDefault"
                         />{" "}
                         <span>{address.addressName}</span>
                       </>
@@ -167,10 +212,12 @@ function AddressListPage({ isLoggedin, memberId }) {
                   <td>
                     <span>{address.recipientPhone}</span>
                   </td>
-                  <td className="left">
-                    (<span>{address.postCode}</span>){" "}
-                    <span>{address.address}</span>{" "}
-                    <span>{address.detailAddress}</span>
+                  <td className="table-cell-content">
+                    <span>
+                      ({address.postCode}){address.address}
+                      {", "}
+                      {address.detailAddress}
+                    </span>
                   </td>
                   <td>
                     <Link

@@ -164,6 +164,16 @@ function AddressRegistrationPage({ isLoggedin, memberId }) {
               <div className="postcode-modal-overlay">
                 <div className="postcode-modal-content">
                   <div className="postcode-modal-body">
+                    <div className="close-button">
+                      <button onClick={() => setIsOpen(false)}>
+                        <img
+                          src="https://w7.pngwing.com/pngs/336/356/png-transparent-close-remove-delete-x-cross-reject-basic-user-interface-icon.png"
+                          alt="Close"
+                          s
+                        />
+                      </button>
+                    </div>
+
                     <DaumPostcode
                       theme={themeObj}
                       style={postCodeStyle}

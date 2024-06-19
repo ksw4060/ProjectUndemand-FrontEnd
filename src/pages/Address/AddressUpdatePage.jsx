@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 // CSS
@@ -10,14 +10,16 @@ import DaumPostcode from "react-daum-postcode";
 function AddressUpdatePage({ isLoggedin, memberId }) {
   const { addressId } = useParams();
   const [isOpen, setIsOpen] = useState(false);
+  const isDefaultAddressRef = useRef(false); // useRef로 기본 주소 체크박스 상태 관리
+  const [defaultAddressState, setDefaultAddressState] = useState(false); // useState로 체크박스 상태 관리
   const [addressData, setAddressData] = useState({
     addressId: "",
     addressName: "",
     recipient: "",
-    zipCode: "",
+    postCode: "",
     address: "",
     detailAddress: "",
-    isDefaultAddress: false,
+    defaultAddress: false,
     phoneNumberPrefix: "",
     phoneNumberPart1: "",
     phoneNumberPart2: "",
@@ -51,6 +53,7 @@ function AddressUpdatePage({ isLoggedin, memberId }) {
           }
         );
         setAddressData(response.data);
+        isDefaultAddressRef.current = response.data.defaultAddress; // 초기 상태 설정
         console.log(response.data);
       } catch (error) {
         console.error("Error fetching address details:", error);
@@ -86,9 +89,15 @@ function AddressUpdatePage({ isLoggedin, memberId }) {
   const handleUpdateAddressSubmit = async (e) => {
     e.preventDefault();
     try {
+      // useRef와 useState 값을 addressData에 반영
+      const updatedAddressData = {
+        ...addressData,
+        defaultAddress: isDefaultAddressRef.current,
+      };
+      console.log(updatedAddressData); // 전송 전 updatedAddressData 확인
       const response = await axios.put(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/address/${memberId}/${addressId}`,
-        addressData,
+        updatedAddressData,
         {
           headers: {
             Authorization: localStorage.getItem("Authorization"),
@@ -111,7 +120,7 @@ function AddressUpdatePage({ isLoggedin, memberId }) {
     setAddressData((prevState) => ({
       ...prevState,
       address: data.address,
-      zipCode: data.zonecode,
+      postCode: data.zonecode,
     }));
     setIsOpen(false);
   };
@@ -120,6 +129,11 @@ function AddressUpdatePage({ isLoggedin, memberId }) {
     if (state === "FORCE_CLOSE" || state === "COMPLETE_CLOSE") {
       setIsOpen(false);
     }
+  };
+
+  const handleCheckboxChange = () => {
+    setDefaultAddressState((prevState) => !prevState);
+    isDefaultAddressRef.current = !defaultAddressState;
   };
 
   return (
@@ -255,13 +269,14 @@ function AddressUpdatePage({ isLoggedin, memberId }) {
         <div className="checkbox-group">
           <input
             type="checkbox"
-            id="isDefaultAddress"
-            name="isDefaultAddress"
-            checked={addressData.isDefaultAddress}
-            onChange={handleChange}
+            id="defaultAddress"
+            name="defaultAddress"
+            checked={defaultAddressState} // useState로 상태 관리
+            onChange={handleCheckboxChange} // 상태 변경
           />
-          <label htmlFor="isDefaultAddress">기본 배송지로 저장</label>
+          <label htmlFor="defaultAddress">기본 배송지로 저장</label>
         </div>
+
         <div className="form-actions">
           <button type="submit" onClick={handleUpdateAddressSubmit}>
             배송지 수정

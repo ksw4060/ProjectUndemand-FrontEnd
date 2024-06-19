@@ -207,32 +207,6 @@ function PaymentDetailPage({
               </div>
             </div>
 
-            <div className="payment-history-btn-container">
-              <button className="payhisSmallButton">교환, 반품신청</button>
-              <button className="payhisSmallButton">배송 조회</button>
-            </div>
-            <div className="payment-history-review-container">
-              <button className="payhisSmallButton">구매후기 쓰기</button>
-            </div>
-            <div className="payment-history-cart-container">
-              <button
-                className="payhisSmallButton"
-                onClick={() =>
-                  handleAddAllToCart(
-                    isLoggedin,
-                    orderId,
-                    orderGroup,
-                    handleSearchInvenId,
-                    memberId,
-                    setCartProducts,
-                    navigate,
-                    parseOption
-                  )
-                }
-              >
-                전체 상품 장바구니에 담기
-              </button>
-            </div>
             <div className="order-detail payhis-container">
               <h2>{orderDetail.ordererName}</h2>
               <hr style={{ border: "0.5px solid #fafafa", margin: "10px 0" }} />
