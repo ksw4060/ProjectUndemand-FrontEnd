@@ -112,12 +112,18 @@ function MyPaymentHistoryPage({
     });
   };
 
-  const openReviewModal = () => {
-    setIsReviewModalOpen(true);
+  const openReviewModal = (orderId) => {
+    setIsReviewModalOpen((prevState) => ({
+      ...prevState,
+      [orderId]: true,
+    }));
   };
 
-  const closeReviewModal = () => {
-    setIsReviewModalOpen(false);
+  const closeReviewModal = (orderId) => {
+    setIsReviewModalOpen((prevState) => ({
+      ...prevState,
+      [orderId]: false,
+    }));
   };
 
   return (
@@ -207,11 +213,14 @@ function MyPaymentHistoryPage({
             <button className="payhisSmallButton">배송 조회</button>
           </div>
           <div className="payment-history-review-container">
-            <button className="payhisSmallButton" onClick={openReviewModal}>
+            <button
+              className="payhisSmallButton"
+              onClick={() => openReviewModal(orderId)}
+            >
               구매후기 쓰기
             </button>
           </div>
-          {isReviewModalOpen && (
+          {isReviewModalOpen[orderId] && (
             <div className="review-modal-overlay">
               <div className="review-modal-container">
                 <div className="review-modal-body">
@@ -225,7 +234,7 @@ function MyPaymentHistoryPage({
                       <span>구매후기 작성하기</span>
                     </div>
 
-                    <button onClick={() => setIsReviewModalOpen(false)}>
+                    <button onClick={() => closeReviewModal(orderId)}>
                       <img
                         src="https://w7.pngwing.com/pngs/336/356/png-transparent-close-remove-delete-x-cross-reject-basic-user-interface-icon.png"
                         alt="Close"
@@ -234,8 +243,8 @@ function MyPaymentHistoryPage({
                     </button>
                   </div>
                   <ReviewModal
-                    isOpen={isReviewModalOpen}
-                    onClose={closeReviewModal}
+                    isOpen={isReviewModalOpen[orderId]}
+                    onClose={() => closeReviewModal(orderId)}
                     orderId={orderId}
                     orderGroup={orderGroup}
                     fetchPaymentHistory={fetchPaymentHistory}
