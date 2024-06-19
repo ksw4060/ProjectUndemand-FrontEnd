@@ -41,24 +41,6 @@ const Main = () => {
   //   }
   // }, [memoizedMainRecommend]);
 
-  useEffect(() => {
-    if (mainBest.length > 0) {
-      setMainBestLoading(false);
-    }
-  }, [mainBest]);
-
-  useEffect(() => {
-    if (mainNew.length > 0) {
-      setMainNewLoading(false);
-    }
-  }, [mainNew]);
-
-  useEffect(() => {
-    if (mainRecommend.length > 0) {
-      setMainRecommendLoading(false);
-    }
-  }, [mainRecommend]);
-
   const getBestProducts = async () => {
     try {
       const response = await axios.get(
@@ -133,6 +115,24 @@ const Main = () => {
       console.error("Error fetching product data:", error);
     }
   };
+
+  useEffect(() => {
+    if (mainBest.length > 0) {
+      setMainBestLoading(false);
+    }
+  }, [mainBest]);
+
+  useEffect(() => {
+    if (mainNew.length > 0) {
+      setMainNewLoading(false);
+    }
+  }, [mainNew]);
+
+  useEffect(() => {
+    if (mainRecommend.length > 0) {
+      setMainRecommendLoading(false);
+    }
+  }, [mainRecommend]);
 
   return (
     <div className="contents-body">
